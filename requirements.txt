@@ -1,0 +1,73 @@
+# init.el
+smex http://github.com/nonsequitur/smex (vendors/)
+
+# dss-bookmarks-registers.el
+bookmark+ http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el (vendors/)
+list-register http://www.bookshelf.jp/elc/list-register.el
+
+# dss-browser-integration.el
+moz http://github.com/bard/mozrepl/raw/master/chrome/content/moz.el (vendors/)
+webjump std?
+
+# dss-colorthemes.el
+color-theme http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme (app-emacs/color-theme)
+
+# dss-command-history-and-freqs.el
+command-frequency http://xahlee.org/emacs/command-frequency.html (vendors/)
+session http://emacs-session.sourceforge.net/ (app-emacs/session)
+
+# dss-ecb.el
+ecb http://ecb.sourceforge.net/ (app-emacs/ecb)
+cedet http://cedet.sourceforge.net/ (via app-emacs/ecb)
+
+# dss-ess.el
+ess http://ess.r-project.org/ (app-emacs/ess)
+
+# dss-haskell
+haskell-mode http://projects.haskell.org/haskellmode-emacs/ (app-emacs/haskell-mode)
+
+# dss-javascript.el
+js2-mode http://code.google.com/p/js2-mode/
+espresso http://www.nongnu.org/espresso/ (vendors/)
+
+# dss-lisps
+paredit http://mumble.net/~campbell/emacs/paredit.el (app-emacs/paredit)
+
+# dss-lua
+lua-mode http://lua-users.org/wiki/LuaEditorSupport (app-emacs/lua-mode)
+ 
+# dss-nxml.el
+nxml std
+whattf-dt (vendors/)
+
+# dss-org-mode.el
+org-mode http://www.orgmode.org/ (app-emacs/org-mode)
+
+# dss-python.el
+python-mode (app-emacs/python-mode) 
+  # the standard one, not Dave Love's, but I had to patch it for
+  # triple-quote strings
+ipython (dev-python/ipython)
+doctest-mode (app-emacs/python-mode)
+rst (app-emacs/rst)
+pylookup (vendors/)
+flymake-cursor http://paste.lisp.org/display/60617,1/raw (vendors/)
+auto-complete-python http://www.cx4a.org/pub/auto-complete-python.el (vendors/)
+pymacs http://pymacs.progiciels-bpi.ca/ (app-emacs/pymacs)
+ropemacs (installed via python)
+
+# dss-search-occur-etc.el
+isearch+ http://www.emacswiki.org/cgi-bin/wiki/isearch+.el (vendors/)
+fm http://www.damtp.cam.ac.uk/user/sje30/emacs/fm.el (vendors/)
+
+# dss-term.el
+multi-term http://www.emacswiki.org/emacs/download/multi-term.el (vendors/)
+
+# dss-vc.el
+dvc http://www.xsteve.at/prg/emacs_dvc/dvc.html (vendors/ via bzr)
+
+# dss-whitespace-and-linelen.el
+lineker http://www.helsinki.fi/~sjpaavol/programs/lineker.el (vendors/)
+show-wspace http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el (vendors/)
+col-highlight http://www.emacswiki.org/cgi-bin/wiki/col-highlight.el (vendors/)
+

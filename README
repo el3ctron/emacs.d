@@ -1,0 +1,14 @@
+This is my personal .emacs.d configuration.  Feel free to clone it or
+copy anything you like.  Everything in the top directory is licensed
+under the GPL v3 (see the COPYING file).
+
+I've structured this as Phil Hagelberg did in the "Emacs Starter Kit"
+(http://github.com/technomancy/emacs-starter-kit).  I've stolen ideas
+and code from many people on http://www.emacswiki.org/ and elsewhere.
+I've tried to include attribution wherever I remember the origin of
+stuff, but apologize in advance if I've missed someone.
+
+The 'dss' prefix stands for 'Damn Simple Solutions', my
+company name.
+
+See "requirements.txt".
