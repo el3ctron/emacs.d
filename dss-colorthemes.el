@@ -64,6 +64,7 @@
      (speedbar-highlight-face ((t (:background "#0000ff"))))
      (whitespace-newline ((t (:background "#000087"))))
      (trailing-whitespace ((t (:background "#000087"))))
+     (linum ((t (:foreground "yellow" :background "#000087"))))
      (show-ws-tab ((t (:background "#4e4e4e"))))
      (which-func ((t (:foreground "cyan"))))
      (info-xref ((t (:inherit link :foreground "purple"))))
@@ -75,7 +76,7 @@
      (org-agenda-dimmed-todo-face ((t (:foreground "grey"))))
      (org-agenda-structure ((t (:foreground "yellow"))))
      (org-clock-overlay ((t (:background "#0000d7"))))
-     (org-column ((t (:background "#303030" :strike-through nil :underline nil :slant normal :weight normal :height 1 :family "default"))))
+     (org-column ((t (:background "#303030"))))
      (org-column-title ((t (:background "#00005f" :underline t :weight bold))))
      (org-table ((t (:foreground "#005fff"))))
 

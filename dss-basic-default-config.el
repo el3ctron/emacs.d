@@ -35,11 +35,16 @@
 ;; misc minor / helper modes
 (global-font-lock-mode 1)
 (delete-selection-mode 1)
+(setq kill-whole-line t) ; if at the beg of line C-k includes the newline chars
+
 (setq show-paren-style (quote expression))
 (show-paren-mode t)
 
 (setq default-major-mode 'text-mode)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+
+
 
 ;; mouse and selection settings
 (add-hook 'after-init-hook (lambda ()

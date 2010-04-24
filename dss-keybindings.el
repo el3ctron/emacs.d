@@ -83,6 +83,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; additional custom maps, defined and hooked into global-map above
 
+;; f2-map
+
 (define-key f2-map "j" 'windmove-left)
 (define-key f2-map "l" 'windmove-right)
 (define-key f2-map "k" 'windmove-down)
@@ -93,7 +95,10 @@
 
 (define-key f2-map "[" 'isearch-forward-at-point)
 
-; promote, demote
+
+;; f4-map
+
+;; @@TR: add bindings for org node promote, demote
 (define-key f4-map "n" 'org-insert-heading-respect-content)
 (define-key f4-map "s" 'org-insert-subheading)
 (define-key f4-map "t" 'org-insert-todo-heading-respect-content)
@@ -106,6 +111,7 @@
                           "C-u C-u C-c C-x C-i -> org-clock-mark-default-task"
                           (interactive)
                           (org-clock-in '(16))))
+(define-key f4-map "." 'org-time-stamp)
 
 (define-key f4-map "c" 'org-clock-cancel)
 
@@ -164,8 +170,9 @@
 (define-key f6-map "o" 'fm-occur)
 (define-key f6-map ";" 'string-rectangle)
 
+
 ;; f7-map, which I rarely use these days
-(require 'k2-mode) ; my keymap extension package
+(require 'k2-mode) ; my old keymap extension package
 (k2-mode) ; start k2-mode by default
 
 ;(define-key f7-map "1" 'k2-kill-whole-sexp)
