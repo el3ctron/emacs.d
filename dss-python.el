@@ -6,7 +6,7 @@
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
-(setq pycodechecker "dss_pycheck")
+(setq pycodechecker "dss_pycheck") ; this is a wrapper around pep8.py, pyflakes and pylint
 (when (load "flymake" t)
   (load-library "flymake-cursor")
   (defun flymake-pycodecheck-init ()
@@ -61,6 +61,9 @@
   ;(local-set-key (kbd "M-<right>") 'py-forward-into-nomenclature)
   ;(local-set-key (kbd "M-<left>") 'py-backward-into-nomenclature)
   ;(local-set-key (kbd "M-DEL") 'py-backward-kill-nomenclature)
+
+  (local-set-key "\C-ch" 'pylookup-lookup)
+
   (define-key py-shell-map "\C-e" (lambda ()
                                     (interactive)
                                     (goto-char (point-max))))
@@ -68,6 +71,9 @@
   (define-key py-shell-map (quote [down]) 'comint-next-matching-input-from-input)
   )
 (add-hook 'python-mode-hook 'dss/python-mode-hook)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; python-mode helpers
 
 (autoload 'rst "rst")
 (add-to-list 'auto-mode-alist '("\\.rst$" . rst-mode))
@@ -87,8 +93,6 @@
 (add-to-list 'auto-mode-alist '("\\.pyx$" . cython-mode))
 (add-to-list 'auto-mode-alist '("\\.pxd$" . cython-mode))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; python-mode helpers
 
 (defun dss/pylint-msgid-at-point ()
   (interactive)
@@ -110,15 +114,16 @@
 
 ;; pylookup, to look though online Python docs
 ;; (git clone git://github.com/tsgates/pylookup.git)
-(load-file "~/.emacs.d/vendor/pylookup/pylookup.el")
+(setq dss-pylookup-dir (concat dss-vendor-dir "pylookup/"))
+(setq pylookup-program (concat dss-pylookup-dir "pylookup.py"))
+(setq pylookup-db-file (concat dss-pylookup-dir "pylookup.db"))
+
+(load-file (concat dss-pylookup-dir "pylookup.el"))
 (eval-when-compile (require 'pylookup))
-(setq pylookup-program "~/.emacs.d/vendor/pylookup/pylookup.py")
-(setq pylookup-db-file "~/.emacs.d/vendor/pylookup/pylookup.db")
 (autoload 'pylookup-lookup "pylookup"
   "Lookup SEARCH-TERM in the Python HTML indexes." t)
 (autoload 'pylookup-update "pylookup"
   "Run pylookup-update and create the database at `pylookup-db-file'." t)
-(global-set-key "\C-ch" 'pylookup-lookup)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-python)

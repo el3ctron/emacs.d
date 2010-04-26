@@ -1,8 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; nxml
-(add-to-list 'load-path "~/.emacs.d/vendor/nxml-html5-el")
+(setq dss-nxml-html5-dir (concat dss-vendor-dir "nxml-html5-el/"))
+(add-to-list 'load-path dss-nxml-html5-dir)
+
 (eval-after-load "rng-loc"
-  '(add-to-list 'rng-schema-locating-files "~/~/.emacs.d/vendor/nxml-html5-el/schemas.xml"))
+  '(add-to-list 'rng-schema-locating-files (concat dss-nxml-html5-dir "schemas.xml"))
 (require 'whattf-dt)
 
 (add-to-list 'auto-mode-alist '("\\.html$" . nxml-mode))

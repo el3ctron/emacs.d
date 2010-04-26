@@ -17,7 +17,6 @@
 
 ;; from http://emacs-fu.blogspot.com/2009_02_01_archive.html
 (setq
-  ;ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
   ido-ignore-buffers  '("\\` "  "^\*Back" ".*Completion" "^\*Ido" "^\*trace"
                         "^\*compilation" "^\*GTAGS" "^session\.*")
   ;ido-work-directory-list '("~/" "~/Desktop" "~/Documents" "~src")
