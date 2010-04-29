@@ -1,11 +1,18 @@
+(setq shell-command-switch "-lc")
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
 ;; multi-term
 (autoload 'multi-term "multi-term")
 (setq multi-term-program "/bin/bash")
-(eval-after-load "multi-term" '(progn (smex-update)))
-(defun dss/term()
-  (interactive)
-  (require 'multi-term)
-  (multi-term))
+(require 'multi-term)
+
+(defun dss/cd_term (dir)
+  (let (tmp-buffer)
+    (set-buffer (setq tmp-buffer (get-buffer-create "*multi-term-launcher*")))
+    (setq default-directory dir)
+    (multi-term)
+    (kill-buffer tmp-buffer)
+    ))
 
 (defun dss/term-toggle-mode ()
   "Toggle between term-char-mode and term-line-mode."
