@@ -19,11 +19,12 @@
 (setq session-save-file-coding-system 'utf-8)
 
 ;;; xahlee's lib
-(setq-default command-frequency-table-file (concat dss-ephemeral-dir "frequencies"))
-(require 'command-frequency)
-(command-frequency-table-load)
-(command-frequency-mode 1)
-(command-frequency-autosave-mode 1)
+(defun dss/command-freq-init ()
+  (setq-default command-frequency-table-file (concat dss-ephemeral-dir "frequencies"))
+  (require 'command-frequency)
+  (command-frequency-table-load)
+  (command-frequency-mode 1)
+  (command-frequency-autosave-mode nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-command-history-and-freqs)
