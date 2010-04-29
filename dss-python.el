@@ -1,7 +1,7 @@
 ;; python-mode
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/python-mode")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/ipython")
 (autoload 'python-mode "python-mode" "PY" t)
+
 
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
@@ -19,13 +19,37 @@
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pycodecheck-init)))
 
-(defun dss/load-rope-completion ()
+;; (defun dss/load-rope-completion ()
+;;   (interactive)
+;;   (require 'auto-complete-python)
+;;   (setq ropemacs-enable-autoimport nil)
+;;   (ac-ropemacs-setup)
+;;   (smex-update))
+;;
+
+;; setup pymacs
+(autoload 'pymacs-apply "pymacs")
+(autoload 'pymacs-call "pymacs")
+(autoload 'pymacs-eval "pymacs" nil t)
+(autoload 'pymacs-exec "pymacs" nil t)
+(autoload 'pymacs-load "pymacs" nil t)
+
+(defvar dss-ropemacs-loaded nil)
+(defun dss/ropemacs-init ()
   (interactive)
-  (require 'auto-complete-python)
-  (setq ropemacs-enable-autoimport t)
-  (ac-ropemacs-setup)
-  (setq ac-candidate-menu-height 20)
-  (smex-update))
+  (unless dss-ropemacs-loaded
+    (if (not (boundp 'ropemacs-global-prefix))
+        (setq ropemacs-global-prefix nil))
+    (pymacs-load "ropemacs" "rope-")
+    (setq ropemacs-enable-autoimport nil)
+    (setq dss-ropemacs-loaded t)))
+
+
+(defun dss/py-next-line ()
+  (interactive)
+  (end-of-line)
+  (py-newline-and-indent)
+  )
 
 (defun dss/python-mode-hook ()
   (dss/install-whitespace-cleanup-hook)
@@ -35,8 +59,6 @@
        'py-beginning-of-def-or-class)
   (setq outline-regexp "def\\|class ")
 
-  (require 'ipython)
-  (setq ipython-command "ipython")
   (setq py-python-command-args '("-colors" "Linux"))
   ;(require 'eldoc)
   ;(eldoc-mode 1)
@@ -51,33 +73,55 @@
         (dss/load-lineker-mode)
         ;(flyspell-prog-mode)
         (flymake-mode t)
-        (dss/load-rope-completion)
+        (dss/ropemacs-init)
         (ropemacs-mode t)
+
+        (dss/load-rope-completion)
         ;(ecb-rebuild-methods-buffer)
       ))
 
   ;; custom keybindings
-  ;(local-set-key (kbd "C-c a") 'py-beginning-of-def-or-class)
-  ;(local-set-key (kbd "M-<right>") 'py-forward-into-nomenclature)
-  ;(local-set-key (kbd "M-<left>") 'py-backward-into-nomenclature)
-  ;(local-set-key (kbd "M-DEL") 'py-backward-kill-nomenclature)
+  (define-key py-mode-map "\"" 'dss/electric-pair)
+  (define-key py-mode-map "\'" 'dss/electric-pair)
+  (define-key py-mode-map "(" 'dss/electric-pair);dss/electric-pair)
+  (define-key py-mode-map "[" 'dss/electric-pair)
+  (define-key py-mode-map "{" 'dss/electric-pair)
+  (define-key py-mode-map (kbd "M-RET") 'dss/py-next-line)
 
-  (local-set-key "\C-ch" 'pylookup-lookup)
+  (define-key py-shell-map "\"" 'dss/electric-pair)
+  (define-key py-shell-map "\'" 'dss/electric-pair)
+  (define-key py-shell-map "(" 'dss/electric-pair);dss/electric-pair)
+  (define-key py-shell-map "[" 'dss/electric-pair)
+  (define-key py-shell-map "{" 'dss/electric-pair)
 
   (define-key py-shell-map "\C-e" (lambda ()
                                     (interactive)
                                     (goto-char (point-max))))
   (define-key py-shell-map (quote [up]) 'comint-previous-matching-input-from-input)
   (define-key py-shell-map (quote [down]) 'comint-next-matching-input-from-input)
+
+  (local-set-key "\C-ch" 'pylookup-lookup)
   )
 (add-hook 'python-mode-hook 'dss/python-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; python-mode helpers
 
+;; ipython related
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/ipython")
+(require 'ipython)
+(setq ipython-command "ipython")
+(defun dss/start-ipy-complete ()
+  (interactive)
+  (setq ac-sources '(ac-source-dss-ipy-dot ac-source-dss-ipy ac-source-filename))
+  )
+(add-hook 'ipython-shell-hook 'dss/start-ipy-complete)
+(add-hook 'py-shell-hook 'dss/start-ipy-complete)
+;;
+
 (autoload 'rst "rst")
 (add-to-list 'auto-mode-alist '("\\.rst$" . rst-mode))
-
+;;
 (autoload 'doctest-mode "doctest-mode" "Editing mode for Python Doctest examples." t)
 (autoload 'doctest-register-mmm-classes "doctest-mode")
 (add-to-list 'auto-mode-alist '("\\.doctest$" . doctest-mode))

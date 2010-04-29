@@ -47,6 +47,8 @@
 (require 'dss-keybindings)
 (require 'dss-colorthemes)
 (require 'dss-browser-integration)
+(require 'dss-clipboard-integration)
+(require 'dss-yas)
 
 ;; alternative location for custom-set-variables and custom-set-faces
 (setq custom-file (concat dss-dotfiles-dir "custom.el"))
