@@ -148,7 +148,8 @@
 
 (defun dss/insert-todo ()
   (interactive)
-  (insert "# @@TR: "))
+  (insert comment-start)
+  (insert "@@TR: "))
 
 (defun open-next-line()
   (interactive)
