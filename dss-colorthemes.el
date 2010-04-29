@@ -85,6 +85,10 @@
      (outline-4 ((t (:foreground "#0087ff"))))
      (outline-5 ((t (:foreground "#0087af"))))
 
+     (ac-completion-face ((t (:foreground "red"))))
+     (popup-isearch-match ((t (:foreground "red"))))
+     (ac-selection-face ((t (:foreground "black" :background "cyan"))))
+
      (log-view-message ((t (:foreground "#0087af" :background "#1c1c1c"))))
      (diff-header ((t (:foreground "#0087af" :background "#1c1c1c"))))
      (diff-file-header ((t (:foreground "#0087af" :background "#121212"))))
