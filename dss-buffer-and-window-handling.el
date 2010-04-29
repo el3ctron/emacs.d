@@ -3,6 +3,7 @@
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
 
 ; http://dfan.org/blog/2009/02/19/emacs-dedicated-windows/
 (defun dss/toggle-current-window-dedication ()
