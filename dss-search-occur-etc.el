@@ -8,7 +8,7 @@
   (fm-start)
   (fm-toggle))
 (add-hook 'occur-mode-hook 'fm-start-off)
-(add-hook 'ibuffer-mode-hooks 'fm-start-off)
+;(add-hook 'ibuffer-mode-hooks 'fm-start-off)
 (add-hook 'ibuffer-occur-mode-hooks 'fm-start-off)
 (add-hook 'apropos-mode-hook 'fm-start-off)
 
