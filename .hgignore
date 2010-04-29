@@ -1,4 +1,7 @@
 ^.*\.elc$
+^\.#.*$
+^tramp$
+^ac-comphist.dat$
 
 # ignore my private user specific setup and custom.el
 ^tavis/.*$
