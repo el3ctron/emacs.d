@@ -16,6 +16,9 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (global-set-key (kbd "C-M-r") 'org-remember)
 
+(global-set-key (kbd "C-x r b") 'dss/bookmark-jump)
+(global-set-key (kbd "C-x r v") 'list-register)
+
 (define-key global-map [(f2)] f2-map)
 (define-key global-map "\eOQ" f2-map)
 (define-key global-map [(f3)] 'other-window)
@@ -95,6 +98,9 @@
 
 (define-key f2-map "[" 'isearch-forward-at-point)
 
+(define-key f2-map "=" 'dvc-status)
+(define-key f2-map "-" 'dvc-diff)
+
 
 ;; f4-map
 
@@ -102,6 +108,7 @@
 (define-key f4-map "n" 'org-insert-heading-respect-content)
 (define-key f4-map "s" 'org-insert-subheading)
 (define-key f4-map "t" 'org-insert-todo-heading-respect-content)
+(define-key f4-map "m" 'multi-term)
 
 (define-key f4-map "r" 'org-remember)
 
@@ -132,10 +139,14 @@
                           (interactive)
                           (org-refile '(4))))
 
-(define-key f4-map "l" (lambda ()
-                          "org-goto last refile location"
-                          (interactive)
-                          (org-refile '(16))))
+;; (define-key f4-map "l" (lambda ()
+;;                           "org-goto last refile location"
+;;                           (interactive)
+;;                           (org-refile '(16))))
+
+(define-key f4-map "l" 'list-bookmarks)
+
+(define-key f4-map "b" 'dss/bookmark-jump)
 
 (define-key f4-map "a" 'auto-complete-mode)
 (define-key f4-map "=" 'dss/toggle-current-window-dedication)
@@ -171,6 +182,7 @@
 (define-key f6-map "o" 'fm-occur)
 (define-key f6-map ";" 'string-rectangle)
 
+(define-key f6-map "k" 'dss/kill-buffer)
 
 ;; f7-map, which I rarely use these days
 (require 'k2-mode) ; my old keymap extension package
