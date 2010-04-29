@@ -44,5 +44,17 @@
     (ibuffer-switch-to-saved-filter-groups "default")))
 
 
+(defun dss/kill-clean-buffer ()
+  (interactive)
+  (let ((buf (current-buffer)))
+    (and buf (not (buffer-modified-p buf))
+         (kill-buffer buf))))
+
+(defun dss/kill-buffer ()
+  (interactive)
+  (let ((buf (current-buffer)))
+    (kill-buffer buf)))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-buffer-and-window-handling)
