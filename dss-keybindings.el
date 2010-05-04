@@ -11,6 +11,16 @@
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "M-s") 'ido-goto-symbol)
 
+(defun dss/hippie-expand ()
+  (interactive)
+  (if (not ac-completing)
+      (call-interactively 'hippie-expand)
+    (ac-expand)))
+(define-key ac-completing-map (kbd "M-/") 'ac-expand)
+(global-set-key (kbd "M-/") 'dss/hippie-expand)
+(global-set-key (kbd "M-TAB") 'dabbrev-expand)
+
+
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cb" 'org-iswitchb)
