@@ -2,9 +2,9 @@
 
 (setq require-final-newline t) ; auto-insert final newlines in all files
 
+(require 'lineker)
 (defun dss/load-lineker-mode ()
   (interactive)
-  (require 'lineker)
   (setq lineker-column-limit 90)
   (lineker-mode))
 
