@@ -173,4 +173,9 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
     (message "%s: %s" query definition)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-w3m")
+(setq w3m-icon-directory "/usr/share/emacs/etc/emacs-w3m")
+(require 'w3m-load)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-browser-integration)
