@@ -8,6 +8,7 @@ list-register http://www.bookshelf.jp/elc/list-register.el
 # dss-browser-integration.el
 moz http://github.com/bard/mozrepl/raw/master/chrome/content/moz.el (vendors/)
 webjump std?
+w3m
 
 # dss-colorthemes.el
 color-theme http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme (app-emacs/color-theme)
@@ -71,3 +72,5 @@ lineker http://www.helsinki.fi/~sjpaavol/programs/lineker.el (vendors/)
 show-wspace http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el (vendors/)
 col-highlight http://www.emacswiki.org/cgi-bin/wiki/col-highlight.el (vendors/)
 
+# dss-buffer-and-window-handling
+window-numbering-mode http://nschum.de/src/emacs/window-numbering-mode/
