@@ -1,3 +1,4 @@
+(require 'dss-paths)
 (setq-default bookmark-default-file (concat dss-ephemeral-dir "emacs.bmk"))
 (setq bookmark-save-flag 1)
 
@@ -19,9 +20,9 @@
 (setq session-save-file-coding-system 'utf-8)
 
 ;;; xahlee's lib
+(require 'command-frequency)
 (defun dss/command-freq-init ()
   (setq-default command-frequency-table-file (concat dss-ephemeral-dir "frequencies"))
-  (require 'command-frequency)
   (command-frequency-table-load)
   (command-frequency-mode 1)
   (command-frequency-autosave-mode nil))
