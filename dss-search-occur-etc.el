@@ -3,8 +3,8 @@
 (eval-after-load "isearch" '(require 'isearch+))
 
 ;; follow mode for output of grep and occur
+(require 'fm)
 (defun fm-start-off()
-  (require 'fm)
   (fm-start)
   (fm-toggle))
 (add-hook 'occur-mode-hook 'fm-start-off)
