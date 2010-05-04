@@ -1,6 +1,11 @@
 (when (fboundp 'winner-mode)
       (winner-mode 1))
 
+(require 'window-numbering)
+(window-numbering-mode 1)
+;; (setq window-numbering-assign-func
+;;       (lambda () (when (equal (buffer-name) "*Calculator*") 9)))
+
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
