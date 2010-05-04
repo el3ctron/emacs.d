@@ -11,18 +11,32 @@
                   (delete-file (concat buffer-file-name "c"))))))
 (add-hook 'emacs-lisp-mode-hook 'dss/remove-elc-on-save)
 
+
+(require 'paredit)
+(defun dss/paredit-backward-delete ()
+  (interactive)
+  (if mark-active
+      (call-interactively 'delete-region)
+    (paredit-backward-delete)))
+(define-key paredit-mode-map (kbd "DEL") 'dss/paredit-backward-delete)
+(require 'paredit)
 ;; study http://www.emacswiki.org/emacs/ParEdit
 ;; http://www.emacswiki.org/emacs/PareditCheatsheet
-;(autoload 'paredit-mode "paredit"
-;  "Minor mode for pseudo-structurally editing Lisp code." t)
-;(add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
-;(add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
-;(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
+
+(add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
+(add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
+(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
+
 
 (require 'eldoc)
 (eldoc-add-command
  'paredit-backward-delete
  'paredit-close-round)
+
+(add-hook 'emacs-lisp-mode-hook (lambda () (eldoc-mode)))
+
+(add-hook 'emacs-lisp-mode-hook (lambda () (setq hippie-expand-try-functions-list '(try-expand-dabbrev-visible try-complete-lisp-symbol try-complete-lisp-symbol-partially try-expand-dabbrev))))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -41,8 +55,7 @@
   (add-hook 'lisp-mode-hook 'sm-lambda-mode-hook)
   (add-hook 'lisp-interactive-mode-hook 'sm-lamba-mode-hook)
   (add-hook 'scheme-mode-hook 'sm-lambda-mode-hook)
-  (add-hook 'python-mode-hook 'sm-lambda-mode-hook)
-  )
+  (add-hook 'python-mode-hook 'sm-lambda-mode-hook))
 
 (defun dss/pretty-lambda-disable ()
   (interactive)
@@ -50,8 +63,7 @@
   (remove-hook 'lisp-mode-hook 'sm-lambda-mode-hook)
   (remove-hook 'lisp-interactive-mode-hook 'sm-lamba-mode-hook)
   (remove-hook 'scheme-mode-hook 'sm-lambda-mode-hook)
-  (remove-hook 'python-mode-hook 'sm-lambda-mode-hook)
-  )
+  (remove-hook 'python-mode-hook 'sm-lambda-mode-hook))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; another implementation of pretty lambda
