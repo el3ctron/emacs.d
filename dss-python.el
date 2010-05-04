@@ -19,14 +19,6 @@
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pycodecheck-init)))
 
-;; (defun dss/load-rope-completion ()
-;;   (interactive)
-;;   (require 'auto-complete-python)
-;;   (setq ropemacs-enable-autoimport nil)
-;;   (ac-ropemacs-setup)
-;;   (smex-update))
-;;
-
 ;; setup pymacs
 (autoload 'pymacs-apply "pymacs")
 (autoload 'pymacs-call "pymacs")
@@ -42,27 +34,38 @@
         (setq ropemacs-global-prefix nil))
     (pymacs-load "ropemacs" "rope-")
     (setq ropemacs-enable-autoimport nil)
+    (define-key ropemacs-local-keymap (kbd "M-/") nil)
     (setq dss-ropemacs-loaded t)))
 
 
 (defun dss/py-next-line ()
   (interactive)
   (end-of-line)
-  (py-newline-and-indent)
-  )
+  (py-newline-and-indent))
+
+(defun dss/py-insert-self ()
+  "Insert self. at the beginning of the current expression."
+  (interactive)
+  (cond ((save-excursion
+           (search-backward-regexp "[ \n\t,(-]\\|^")
+           (looking-at "[A-Za-z_]+"))
+         (save-excursion
+           (search-backward-regexp "[ \n\t,(-]\\|^")
+           (if (not (looking-at "^"))
+               (forward-char))
+           (insert "self.")))
+        ((looking-at " *$")
+         (insert "self"))
+        (t (insert "self"))))
 
 (defun dss/python-mode-hook ()
   (dss/install-whitespace-cleanup-hook)
   (turn-on-auto-fill)
   (which-function-mode t)
-  (set (make-variable-buffer-local 'beginning-of-defun-function)
-       'py-beginning-of-def-or-class)
+  (set 'beginning-of-defun-function 'py-beginning-of-def-or-class)
   (setq outline-regexp "def\\|class ")
 
   (setq py-python-command-args '("-colors" "Linux"))
-  ;(require 'eldoc)
-  ;(eldoc-mode 1)
-
   (if (and (string-match "\\.py$" (buffer-name))
            ; and isn't a py-shell tmp buffer:
            (not (string-match "python-" (buffer-name))))
@@ -71,28 +74,27 @@
           (dss/load-ecb)
           (smex-update))
         (dss/load-lineker-mode)
-        ;(flyspell-prog-mode)
         (flymake-mode t)
         (dss/ropemacs-init)
         (ropemacs-mode t)
-
-        (dss/load-rope-completion)
-        ;(ecb-rebuild-methods-buffer)
-      ))
+        (dss/load-rope-completion)))
 
   ;; custom keybindings
-  (define-key py-mode-map "\"" 'dss/electric-pair)
-  (define-key py-mode-map "\'" 'dss/electric-pair)
-  (define-key py-mode-map "(" 'dss/electric-pair);dss/electric-pair)
-  (define-key py-mode-map "[" 'dss/electric-pair)
-  (define-key py-mode-map "{" 'dss/electric-pair)
-  (define-key py-mode-map (kbd "M-RET") 'dss/py-next-line)
+  (mapc (lambda (char)
+            (progn
+              (define-key py-mode-map char 'dss/electric-pair)
+              (define-key py-shell-map char 'dss/electric-pair)
+              ))
+          '("\"" "\'" "(" "[" "{"))
 
-  (define-key py-shell-map "\"" 'dss/electric-pair)
-  (define-key py-shell-map "\'" 'dss/electric-pair)
-  (define-key py-shell-map "(" 'dss/electric-pair);dss/electric-pair)
-  (define-key py-shell-map "[" 'dss/electric-pair)
-  (define-key py-shell-map "{" 'dss/electric-pair)
+  (define-key py-mode-map (kbd "C-p") 'dss/py-insert-self)
+
+  (define-key py-mode-map (kbd "M-RET") 'dss/py-next-line)
+  (define-key py-mode-map (kbd "C-M-@") 'rope-code-assist)
+  (define-key py-mode-map (kbd "M-/") 'dss/hippie-expand)
+  (define-key py-mode-map (kbd "M-.") 'rope-goto-definition)
+
+  (define-key py-shell-map (kbd "C-M-@") 'dss/ido-ipython-complete)
 
   (define-key py-shell-map "\C-e" (lambda ()
                                     (interactive)
@@ -100,8 +102,8 @@
   (define-key py-shell-map (quote [up]) 'comint-previous-matching-input-from-input)
   (define-key py-shell-map (quote [down]) 'comint-next-matching-input-from-input)
 
-  (local-set-key "\C-ch" 'pylookup-lookup)
-  )
+  (local-set-key "\C-ch" 'pylookup-lookup))
+
 (add-hook 'python-mode-hook 'dss/python-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -110,11 +112,11 @@
 ;; ipython related
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/ipython")
 (require 'ipython)
-(setq ipython-command "ipython")
+(setq ipython-command "emacs_ipython") ; which is a shell script that handles all the virtualenv setup, etc
+
 (defun dss/start-ipy-complete ()
   (interactive)
-  (setq ac-sources '(ac-source-dss-ipy-dot ac-source-dss-ipy ac-source-filename))
-  )
+  (setq ac-sources '(ac-source-dss-ipy-dot ac-source-dss-ipy ac-source-filename)))
 (add-hook 'ipython-shell-hook 'dss/start-ipy-complete)
 (add-hook 'py-shell-hook 'dss/start-ipy-complete)
 ;;
@@ -140,7 +142,8 @@
 
 (defun dss/pylint-msgid-at-point ()
   (interactive)
-  (let ((line-no (line-number-at-pos)))
+  (let (msgid
+        (line-no (line-number-at-pos)))
     (dolist (elem flymake-err-info msgid)
       (if (eq (car elem) line-no)
             (let ((err (car (second elem))))
