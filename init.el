@@ -1,13 +1,5 @@
-(setq dss-dotfiles-dir (file-name-directory
-                        (or (buffer-file-name) load-file-name)))
-(setq dss-ephemeral-dir "~/.emacs.ephemeral/")
-(unless (file-exists-p dss-ephemeral-dir)
-  (mkdir dss-ephemeral-dir))
-(setq dss-vendor-dir (concat dss-dotfiles-dir "vendor/"))
-
-(add-to-list 'load-path dss-dotfiles-dir)
-(add-to-list 'load-path dss-vendor-dir)
-
+(add-to-list 'load-path (file-name-directory (or (buffer-file-name) load-file-name)))
+(require 'dss-paths)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; see .emacs.d/requirements.txt I install most dependencies in
 ;; /usr/share/emacs/site-lisp via gentoo's portage
