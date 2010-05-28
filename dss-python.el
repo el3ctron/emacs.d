@@ -70,9 +70,9 @@
            ; and isn't a py-shell tmp buffer:
            (not (string-match "python-" (buffer-name))))
       (progn
-        (unless dss/ecb-loaded
-          (dss/load-ecb)
-          (smex-update))
+        ;; (unless dss/ecb-loaded
+        ;;   (dss/load-ecb)
+        ;;   (smex-update))
         (dss/load-lineker-mode)
         (flymake-mode t)
         (dss/ropemacs-init)
