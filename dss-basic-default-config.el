@@ -28,6 +28,10 @@
 (setq fill-column 80)
 (setq c-basic-offset 4)
 
+;; reenable some disabled features
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
 ;; scrolling behaviour
 (setq scroll-step 1)
 (setq scroll-conservatively 50)
