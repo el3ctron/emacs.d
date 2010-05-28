@@ -67,6 +67,7 @@
 
 (setq term-bind-key-alist
    '(("C-c C-c" . term-interrupt-subjob)
+     ("C-x C-x" . term-send-raw)
      ("C-p" . previous-line)
      ("C-n" . next-line)
      ("C-s" . isearch-forward)
