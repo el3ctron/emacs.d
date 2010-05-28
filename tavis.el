@@ -6,6 +6,7 @@
 (setq calendar-standard-time-zone-name "PST")
 (setq calendar-daylight-time-zone-name "PDT")
 
+(setq sentence-end-double-space nil)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; org-mode config
 ;; see http://doc.norang.ca/org-mode.html
