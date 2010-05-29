@@ -4,7 +4,7 @@
 ;; see .emacs.d/requirements.txt I install most dependencies in
 ;; /usr/share/emacs/site-lisp via gentoo's portage
 (require 'dss-basic-default-config)
-
+(require 'dss-no-rsi)
 ;; where to store ephemeral stuff, and what to store between sessions
 (require 'dss-command-history-and-freqs)
 (require 'dss-tmp-files)
