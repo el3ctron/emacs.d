@@ -6,6 +6,43 @@
 (setq calendar-standard-time-zone-name "PST")
 (setq calendar-daylight-time-zone-name "PDT")
 
+(appt-activate 1)
+
+;; http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
+(defun dss-popup-notify (title msg &optional icon sound)
+  (interactive)
+  ;(setq sound "/usr/share/sounds/logout.wav")
+  (setq sound "/usr/share/sounds/phone.wav")
+  (when sound (shell-command
+                (concat "ssh b3 aplay " sound " 2> /dev/null")))
+  (shell-command (concat "ssh b3 \"DISPLAY=:0 notify-send "
+                         (if icon (concat "-i " icon) "")
+                         " --expire-time=10000 -u critical"
+                         " '" title "' '" msg "'"
+                         "\""))
+  (message (concat title ": " msg)))
+(setq org-show-notification-handler
+      (lambda (msg)
+        (dss-popup-notify "org-mode" msg)))
+
+(setq org-timer-done-hook
+      (lambda ()
+        (dss-popup-notify "org-mode" "timer done")))
+
+(add-hook 'org-clock-out-hook
+          (lambda ()
+            (org-timer-start)))
+
+(add-hook 'org-clock-in-hook
+          (lambda ()
+            (org-timer-stop)
+            (org-timer-start)))
+(defun dss-appt-display (min-to-app new-time msg)
+  (dss-popup-notify (format "Appointment in %s minute(s)" min-to-app)
+                    msg "/usr/share/icons/gnome/32x32/status/appointment-soon.png")
+  (appt-disp-window min-to-app new-time msg))
+(setq appt-disp-window-function (function dss-appt-display))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; org-mode config
 ;; see http://doc.norang.ca/org-mode.html
@@ -199,6 +236,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; org-agenda norang sec 15
 (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
+(add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
 (setq org-agenda-todo-ignore-with-date nil)
 (setq org-agenda-skip-deadline-if-done nil)
 (setq org-agenda-skip-scheduled-if-done nil)
