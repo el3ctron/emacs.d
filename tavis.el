@@ -7,7 +7,6 @@
 (setq calendar-daylight-time-zone-name "PDT")
 
 (setq sentence-end-double-space nil)
-(appt-activate 1)
 
 ;; http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
 (defun dss-popup-notify (title msg &optional icon sound)
@@ -44,7 +43,7 @@
   (appt-disp-window min-to-app new-time msg))
 (setq appt-disp-window-function (function dss-appt-display))
 
-
+(appt-activate 1)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; org-mode config
 ;; see http://doc.norang.ca/org-mode.html

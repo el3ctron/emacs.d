@@ -150,6 +150,7 @@
               (setq msgid (second (split-string (flymake-ler-text err)))))))))
 
 (defun dss/pylint-silence (msgid)
+  "Add a special pylint comment to silence a particular warning."
   (interactive (list (read-from-minibuffer "msgid: " (dss/pylint-msgid-at-point))))
   (save-excursion
     (comment-dwim nil)

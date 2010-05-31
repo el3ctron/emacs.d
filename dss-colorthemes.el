@@ -1,6 +1,8 @@
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/color-theme")
 
-;; note, this will look horrible in anything other than a 256 color black or transparent black terminal window.
+;; note, this will look horrible in anything other than a 256 color
+;; black or transparent black terminal window.
+
 (defun color-theme-tavis-tty ()
   (interactive)
   (require 'color-theme)
@@ -20,7 +22,6 @@
      (italic ((t (:underline t :background "red"))))
      (underline ((t (:underline t))))
      ;
-     ;:box (:line-width 1 :color "black" :style released-button) :height 0.9 :family "Arial"))
      (minibuffer-prompt ((t (:foreground "yellow"))))
      ;(modeline ((t (:background "#080808" :foreground "white"))))
      (modeline ((t (:background "#000087" :foreground "#ffffaf"))))
@@ -40,6 +41,7 @@
      (lineker-warning-face ((t (:background "#870000"))))
 
      (hl-line ((t (:background "#1a1a1a"))))
+     (col-highlight-face ((t (:background "#4a4a4a"))))
      (vline ((t (:background "#121212"))))
 
      (isearch ((t (:inherit region))))
