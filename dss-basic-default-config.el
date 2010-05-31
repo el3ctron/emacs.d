@@ -49,7 +49,9 @@
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 
-
+(defun dss/set-undo-boundary ()
+  (interactive)
+  (undo-boundary))
 
 ;; mouse and selection settings
 (add-hook 'after-init-hook (lambda ()
