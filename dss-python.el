@@ -18,6 +18,48 @@
       (list pycodechecker (list local-file))))
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pycodecheck-init)))
+(defun dss/pylint-msgid-at-point ()
+  (interactive)
+  (let (msgid
+        (line-no (line-number-at-pos)))
+    (dolist (elem flymake-err-info msgid)
+      (if (eq (car elem) line-no)
+            (let ((err (car (second elem))))
+              (setq msgid (second (split-string (flymake-ler-text err)))))))))
+
+(defun dss/pylint-silence (msgid)
+  "Add a special pylint comment to silence a particular warning."
+  (interactive (list (read-from-minibuffer "msgid: " (dss/pylint-msgid-at-point))))
+  (save-excursion
+    (comment-dwim nil)
+    (if (looking-at "pylint:")
+        (progn (end-of-line)
+               (insert ","))
+        (insert "pylint: disable-msg="))
+    (insert msgid)))
+
+(defun dss/insert-docstring ()
+  (interactive)
+  (if (not (save-excursion
+             (forward-line 1)
+             (back-to-indentation)
+             (looking-at "[\"']")))
+      (save-excursion
+        (end-of-line)
+        (open-line 1)
+        (forward-line 1)
+        (py-indent-line)
+        (insert "\"\"\"\n")
+        (py-indent-line)
+        (insert "\"\"\"")))
+  (progn
+    (forward-line 1)
+    (end-of-line)))
+
+(defun dss/insert-triple-quote ()
+  (interactive)
+  (insert "\"\"\"")
+  (save-excursion (insert " \"\"\"")))
 
 ;; setup pymacs
 (autoload 'pymacs-apply "pymacs")
@@ -139,26 +181,6 @@
 (add-to-list 'auto-mode-alist '("\\.pyx$" . cython-mode))
 (add-to-list 'auto-mode-alist '("\\.pxd$" . cython-mode))
 
-
-(defun dss/pylint-msgid-at-point ()
-  (interactive)
-  (let (msgid
-        (line-no (line-number-at-pos)))
-    (dolist (elem flymake-err-info msgid)
-      (if (eq (car elem) line-no)
-            (let ((err (car (second elem))))
-              (setq msgid (second (split-string (flymake-ler-text err)))))))))
-
-(defun dss/pylint-silence (msgid)
-  "Add a special pylint comment to silence a particular warning."
-  (interactive (list (read-from-minibuffer "msgid: " (dss/pylint-msgid-at-point))))
-  (save-excursion
-    (comment-dwim nil)
-    (if (looking-at "pylint:")
-        (progn (end-of-line)
-               (insert ","))
-        (insert "pylint: disable-msg="))
-    (insert msgid)))
 
 ;; pylookup, to look though online Python docs
 ;; (git clone git://github.com/tsgates/pylookup.git)
