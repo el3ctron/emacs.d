@@ -345,6 +345,10 @@ Emacs Lispについて若干の知識があれば誰でも簡単に情報源を�
 
 Emacsの略語機能のための情報源です。略語機能に関しては`info emacs Abbrevs`を参照してください。
 
+#### `ac-source-css-property` ####
+
+CSSプロパティのための情報源です。
+
 #### `ac-source-dictionary` ####
 
 辞書のための情報源です。辞書に関しては[辞書による補完](#)を参照してください。
@@ -380,6 +384,10 @@ Emacs Lispの関数を補完するための情報源です。`(`の直後で有�
 #### `ac-source-semantic` ####
 
 [Semantic](http://cedet.sourceforge.net/semantic.shtml)のための情報源です。C/C++でメンバー名補完として利用できます。
+
+#### `ac-source-semantic-raw` ####
+
+`ac-source-semantic`と違って、この情報源は生の名前空間でシンボルを補完するのに使います。
 
 #### `ac-source-symbols` ####
 
@@ -461,6 +469,23 @@ Tips
 
     (define-key ac-completing-map "\t" 'ac-complete)
     (define-key ac-completing-map "\r" nil)
+
+### 補完メニュー表示時のみC-n/C-pで補完候補を選択する ###
+
+次のコードを評価することでC-n/C-pで補完候補を選択できますが、これでは邪魔だと感じることがあります。
+
+    ;; 良くない設定
+    (define-key ac-completing-map "\C-n" 'ac-next)
+    (define-key ac-completing-map "\C-p" 'ac-previous)
+
+そこで補完メニュー表示時のみにC-n/C-pで補完候補を選択できるようにして、キー入力を極力奪わないようにしてみます。`ac-menu-map`は補完メニューが表示されているときに利用されるキーマップで、`ac-use-menu-map`が`t`のときに有効になります。
+
+    (setq ac-use-menu-map t)
+    ;; デフォルトで設定済み
+    (define-key ac-menu-map "\C-n" 'ac-next)
+    (define-key ac-menu-map "\C-p" 'ac-previous)
+
+詳しくは[`ac-use-menu-map`](#)および[`ac-menu-map`](#)を参照してください。
 
 ### クイックヘルプを利用しない ###
 
@@ -570,6 +595,10 @@ Tips
     (define-key ac-mode-map (kbd "C-c h") 'ac-last-quick-help)
     (define-key ac-mode-map (kbd "C-c H") 'ac-last-help)
 
+### ヘルプを綺麗に表示する ###
+
+[pos-tip.el](http://www.emacswiki.org/emacs-en/PosTip)がインストールされている場合、`auto-complete-mode`は従来のレンダリングエンジンの代わりに、`pos-tip.el`が提供するネイティブレンダリングエンジンを利用してヘルプを表示します。
+
 設定項目
 --------
 
@@ -678,6 +707,14 @@ Tips
 * 補完選択時にTABがRETの挙動に変化する
 * 補完候補が一つしかないときにTABをするとRETの挙動になる
 
+### `ac-use-menu-map` ###
+
+補完メニュー表示時に特別なキーマップ（`ac-menu-map`）を有効にするかどうかです。`t`かつ次の条件を満たしたときに`ac-menu-map`が有効になります。
+
+* `ac-auto-start`および`ac-auto-show-menu`が`nil`でなく、補完を開始してから一定時間後にメニューが表示されたとき
+* `auto-complete`コマンドでメニューが表示されたとき
+* `ac-isearch`コマンドでメニューが表示されたとき
+
 ### `ac-use-overriding-local-map` ###
 
 補完の選択などの補完中のキー入力が効かない場合に利用します。内部的には`overriding-local-map`を使いますが、効果が強力すぎて他の拡張と干渉することがあるので、極力利用しないでください。
@@ -717,6 +754,10 @@ Tips
 ### `ac-completing-map` ###
 
 補完中に使用するキーマップです。
+
+### `ac-menu-map` ###
+
+メニュー表示時に使用するキーマップです。[`ac-use-menu-map`](#)も参照してください。
 
 ### `ac-mode-map` ###
 
@@ -909,6 +950,10 @@ Bと入力してBar, Bazが補完候補として現われれば成功です。�
 | a    | 略語           |
 | d    | 辞書           |
 
+#### `summary` ####
+
+補完候補のサマリを文字列で指定します。これは補完候補を簡潔に説明するために使うべきです。
+
 #### `cache` ####
 
 [キャッシュ](#)を利用します。
@@ -924,6 +969,14 @@ Bと入力してBar, Bazが補完候補として現われれば成功です。�
 #### `selection-face` ####
 
 選択された補完候補のフェイスを指定します。[`ac-selection-face`](#)を部分的に上書きします。
+
+#### `depends` ####
+
+依存するfeature（`require`される）をリストで指定します。
+
+#### `available` ####
+
+この情報源が利用できるかを示す関数あるいは式を指定します。
 
 ### 変数一覧 ###
 

@@ -341,6 +341,10 @@ Here are defined sources in `auto-complete.el` and `auto-complete-config.el`.
 
 A source for Emacs abbreviation function. See `info emacs Abbrevs` about abbreviation function.
 
+#### `ac-source-css-property` ####
+
+A source for CSS property.
+
 #### `ac-source-dictionary` ####
 
 A source for dictionary. See [completion by dictionary](#Completion_by_Dictionary) about dictionary.
@@ -376,6 +380,10 @@ A source for completing `imenu` nodes. See `info emacs imenu` for details.
 #### `ac-source-semantic` ####
 
 A source for [Semantic](http://cedet.sourceforge.net/semantic.shtml). It can be used for completing member name for C/C++.
+
+#### `ac-source-semantic-raw` ####
+
+Unlike `ac-source-semantic`, this source is for completing symbols in a raw namespace.
 
 #### `ac-source-symbols` ####
 
@@ -457,6 +465,23 @@ As we described above, there is many behaviors in TAB. You need to use TAB and R
 
     (define-key ac-completing-map "\t" 'ac-complete)
     (define-key ac-completing-map "\r" nil)
+
+### Select candidates with C-n/C-p only when completion menu is displayed ###
+
+By evaluating the following code, you can select candidates with C-n/C-p, but it might be annoying sometimes.
+
+    ;; Bad config
+    (define-key ac-completing-map "\C-n" 'ac-next)
+    (define-key ac-completing-map "\C-p" 'ac-previous)
+
+In this case, it is better that selecting candidates is enabled only when completion menu is displayed so that the key input will not be taken as much as possible. `ac-menu-map` is a keymap for completion on completion menu which is enabled when `ac-use-menu-map` is `t`.
+
+    (setq ac-use-menu-map t)
+    ;; Default settings
+    (define-key ac-menu-map "\C-n" 'ac-next)
+    (define-key ac-menu-map "\C-p" 'ac-previous)
+
+See [`ac-use-menu-map`](#) and [`ac-menu-map`](#) for more details.
 
 ### Not to use quick help ###
 
@@ -566,6 +591,10 @@ You may bind keys to these command like:
     (define-key ac-mode-map (kbd "C-c h") 'ac-last-quick-help)
     (define-key ac-mode-map (kbd "C-c H") 'ac-last-help)
 
+### Show help beautifully ###
+
+If [pos-tip.el](http://www.emacswiki.org/emacs-en/PosTip) is installed, `auto-complete-mode` uses its native rendering engine for displaying quick help instead of legacy one.
+
 Configuration
 -------------
 
@@ -674,6 +703,14 @@ Specify how distinguish case. `t` means always ignoring case. `nil` means never 
 * After selecting candidates, TAB will behave as RET
 * TAB will behave as RET only on candidate remains
 
+### `ac-use-menu-map` ###
+
+Specify a special keymap (`ac-menu-map`) should be enabled when completion menu is displayed. `ac-menu-map` will be enabled when it is `t` and satisfy one of the following conditions:
+
+* `ac-auto-start` and `ac-auto-show-menu` are not `nil`, and completion menu is displayed after starting completion
+* Completion menu is displayed by `auto-complete` command
+* Completion menu is displayed by `ac-isearch` command
+
 ### `ac-use-overriding-local-map` ###
 
 Use only when operations is not affected. Internally it uses `overriding-local-map`, which is too powerful to use with keeping orthogonality. So don't use as much as possible.
@@ -712,11 +749,15 @@ Specify sources as a list of [source](#Source). This is a buffer local variable.
 
 ### `ac-completing-map` ###
 
-Key map on completing.
+Keymap for completion.
+
+### `ac-menu-map` ###
+
+Keymap for completion on completion menu. See also [`ac-use-menu-map`](#).
 
 ### `ac-mode-map` ###
 
-Key map for `auto-complete-mode` enabled buffers.
+Keymap for `auto-complete-mode` enabled buffers.
 
 Extend
 ------
@@ -904,6 +945,10 @@ Specify a symbol of candidate meaning in one character string. The symbol will b
 | a      | Abbreviation     |
 | d      | Dictionary       |
 
+#### `summary` ####
+
+Specify a summary of candidate in string. It should be used for summarizing the candidate in short string.
+
 #### `cache` ####
 
 Use [cache](#).
@@ -919,6 +964,14 @@ Specify a face of candidate. It overrides [`ac-candidate-face`](#) partially.
 #### `selection-face` ####
 
 Specify a face of selection. It overrides [`ac-selection-face`](#) partially.
+
+#### `depends` ####
+
+Specify a list of features (which are `require`d) that the source is depending.
+
+#### `available` ####
+
+Specify a function or an expression that describe the source is available or not.
 
 ### Variables ###
 
