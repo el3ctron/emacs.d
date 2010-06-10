@@ -1,3 +1,5 @@
+(require 'browse-kill-ring)
+
 (setq x-select-enable-clipboard t)
 
 ;; Ideas and code stolen from

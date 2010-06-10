@@ -1,3 +1,80 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun dss/display-syntax (syntax-type)
+  (eq syntax-type (syntax-ppss-context (syntax-ppss))))
+
+(defun dss/in-syntax-p (syntax-type)
+  "This only answers if you're in a comment or string at the moment."
+  (eq syntax-type (syntax-ppss-context (syntax-ppss))))
+
+(defun dss/in-string-p ()
+  (dss/in-syntax-p 'string))
+
+(defun dss/in-comment-p ()
+  (dss/in-syntax-p 'comment))
+
+(defun dss/blank-line-p ()
+  "Return non-nil iff current line is blank."
+  (save-excursion
+    (beginning-of-line)
+    (looking-at "\\s-*$")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun dss/beginning-of-string ()
+  "Go to beginning of string around point.
+Do nothing if not in string."
+  ;; from loveshack's python-beginning-of-string
+  (interactive)
+  (let ((state (syntax-ppss)))
+    (when (eq 'string (syntax-ppss-context state))
+      (goto-char (nth 8 state)))))
+
+(defun dss/end-of-string ()
+  (interactive)
+  (if (dss/in-string-p)
+      (progn
+        (dss/beginning-of-string)
+        (forward-sexp))))
+
+(defun dss/mark-string ()
+  (interactive)
+  (if (dss/in-string-p)
+      (progn
+        (dss/beginning-of-string)
+        (mark-sexp))))
+
+(defun dss/forward-string (&optional backward)
+  (interactive)
+  (if (dss/in-string-p)
+      (dss/end-of-string))
+  (while (not (dss/in-string-p))
+    (if backward
+        (backward-char)
+      (forward-char))))
+
+(defun dss/backward-string ()
+  (interactive)
+  (if (dss/in-string-p)
+      (dss/beginning-of-string))
+  (dss/forward-string t)
+  (dss/beginning-of-string)
+  (forward-char))
+
+;@@TR: I should add some similar functions for working with comments etc.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun dss/electric-pair ()
+  "If at end of line, insert character pair without surrounding spaces.
+   Otherwise, just insert the typed character."
+  (interactive)
+  ;(if (eolp) (let (parens-require-spaces) (insert-pair))
+  ;  (self-insert-command 1)))
+  (if (or (dss/in-string-p)
+          (dss/in-comment-p))
+      (self-insert-command 1)
+    (let (parens-require-spaces)
+      (insert-pair))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'imenu)
 (defun ido-imenu ()
   "Update the imenu index and then use ido to select a symbol to navigate to.

@@ -111,6 +111,8 @@
 (define-key f2-map "=" 'dvc-status)
 (define-key f2-map "-" 'dvc-diff)
 
+(define-key f2-map "r" 'recursive-edit)
+
 
 ;; f4-map
 

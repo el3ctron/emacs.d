@@ -16,6 +16,17 @@
   (show-ws-highlight-tabs)
   (hl-line-mode 1))
 
+(defun dss/del-last-space (&optional replacement)
+  (interactive)
+  (let ((replacement (or replacement "")))
+    (save-excursion
+      (search-backward-regexp "\\([^ ]\\)\\( +\\)")
+      (replace-match replacement nil nil nil 2))))
+
+(defun dss/less-space ()
+  (interactive)
+  (dss/del-last-space " "))
+
 (defun dss/whitespace-cleanup ()
   "Trim all trailing whitespace in the current buffer, and untabify."
   (interactive)

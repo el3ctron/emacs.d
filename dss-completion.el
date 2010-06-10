@@ -29,7 +29,6 @@
   )
 
 
-
 ;;; http://stackoverflow.com/questions/905338/can-i-use-ido-completing-read-instead-of-completing-read-everywhere
 (defvar ido-enable-replace-completing-read t
   "If t, use ido-completing-read instead of completing-read if possible.
@@ -55,6 +54,16 @@ advice like this:
                                allcomp
                                nil require-match initial-input hist def))
         ad-do-it))) " ")
+
+;; (defadvice where-is
+;;   (around where-is-completing-read-only activate)
+;;   (let (ido-enable-replace-completing-read) ad-do-it))
+
+(defun dss/where-is ()
+  "wrapper around where-is that doesn't use ido for completion"
+  (interactive)
+  (let (ido-enable-replace-completing-read)
+     (call-interactively 'where-is)))
 
 ;; also see dss/load-rope-completion in dss-python.el
 
@@ -211,30 +220,8 @@ in the current *Python* session."
     (requires . 0)
     (symbol . "f")))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun dss/in-string-p ()
-  (eq 'string (syntax-ppss-context (syntax-ppss))))
 
-(defun dss/beginning-of-string ()
-  "Go to beginning of string around point.
-Do nothing if not in string."
-  ;; from loveshack's python-beginning-of-string
-  (interactive)
-  (let ((state (syntax-ppss)))
-    (when (eq 'string (syntax-ppss-context state))
-      (goto-char (nth 8 state)))))
-
-(defun dss/electric-pair ()
-  "If at end of line, insert character pair without surrounding spaces.
-   Otherwise, just insert the typed character."
-  (interactive)
-  ;(if (eolp) (let (parens-require-spaces) (insert-pair))
-  ;  (self-insert-command 1)))
-  (if (dss/in-string-p)
-      (self-insert-command 1)
-    (let (parens-require-spaces)
-      (insert-pair))))
-
+(require 'dss-codenav-helpers)
 (defun dss/ac-electric-pair ()
   (interactive)
   (ac-complete)

@@ -12,8 +12,10 @@
 (require 'dss-elpa-support)
 
 ;; global stuff
+(require 'dss-basic-editing)
 (require 'dss-whitespace-and-linelen)
 (require 'dss-buffer-and-window-handling)
+(require 'dss-codenav-helpers)
 (require 'dss-completion)
 (require 'dss-search-occur-etc)
 (require 'dss-bookmarks-registers)
@@ -35,7 +37,6 @@
 (require 'dss-clojure)
 
 ;; other support funcs and minor modes
-(require 'dss-codenav-helpers)
 (require 'dss-keybindings)
 (require 'dss-colorthemes)
 (require 'dss-browser-integration)

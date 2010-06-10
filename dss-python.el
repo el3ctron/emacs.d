@@ -38,7 +38,42 @@
         (insert "pylint: disable-msg="))
     (insert msgid)))
 
-(defun dss/insert-docstring ()
+(defun dss/out-sexp (&optional level forward syntax)
+  "Skip out of any nested brackets.
+ Skip forward if FORWARD is non-nil, else backward.
+ If SYNTAX is non-nil it is the state returned by `syntax-ppss' at point.
+ Return non-nil if and only if skipping was done."
+  (interactive)
+  (if (dss/in-string-p)
+      (dss/beginning-of-string))
+  (progn
+    (let* ((depth (syntax-ppss-depth (or syntax (syntax-ppss))))
+          (level (or level depth))
+          (forward (if forward -1 1)))
+      (unless (zerop depth)
+        (if (> depth 0)
+            ;; Skip forward out of nested brackets.
+            (condition-case ()            ; beware invalid syntax
+                (progn (backward-up-list (* forward level)) t)
+              (error nil))
+          ;; Invalid syntax (too many closed brackets).
+          ;; Skip out of as many as possible.
+          (let (done)
+            (while (condition-case ()
+                       (progn (backward-up-list forward)
+                              (setq done t))
+                     (error nil)))
+            done))))))
+
+(defun dss/out-one-sexp (&optional forward)
+  (interactive)
+  (dss/out-sexp 1 forward))
+
+(defun dss/out-one-sexp-forward ()
+  (interactive)
+  (dss/out-sexp 1 1))
+
+(defun dss/py-insert-docstring ()
   (interactive)
   (if (not (save-excursion
              (forward-line 1)
@@ -56,10 +91,76 @@
     (forward-line 1)
     (end-of-line)))
 
-(defun dss/insert-triple-quote ()
+(defun dss/py-insert-triple-quote ()
   (interactive)
   (insert "\"\"\"")
   (save-excursion (insert " \"\"\"")))
+
+(defun dss/py-fix-indent (top bottom)
+  (interactive "r")
+  (apply-macro-to-region-lines top bottom (kbd "TAB")))
+
+(defun dss/py-fix-last-utterance ()
+  "Downcase the previous word and remove any leading whitespace.
+This is useful with Dragon NaturallySpeaking."
+  (interactive)
+  (save-excursion
+    (backward-word)
+    (set-mark (point))
+    (call-interactively 'py-forward-into-nomenclature)
+    (call-interactively 'downcase-region)
+    (setq mark-active nil)
+    (backward-word)
+    (delete-horizontal-space t)))
+
+(defun dss/py-dot-dictate (words)
+  (interactive "s")
+  (progn
+    (if (looking-at-p "\\.")
+        (forward-char))
+    (delete-horizontal-space t)
+    (if (save-excursion
+          (backward-char)
+          (not (looking-at-p "\\.")))
+        (insert "."))
+    (insert (mapconcat 'identity (split-string words) "_"))
+    (dss/py-fix-last-utterance)
+    (delete-horizontal-space t)))
+
+(defun dss/py-decorate-function (&optional decorator-name)
+  (interactive)
+  (if (not (looking-at "@"))
+      (progn
+        (py-beginning-of-def-or-class)
+        (while (not (save-excursion
+                      (forward-line -2)
+                      (beginning-of-line-text)
+                      (looking-at-p "$")))
+          (save-excursion
+            (forward-line -1)
+            (end-of-line)
+            (open-line 1)))
+        (forward-line -1)
+        (py-indent-line)
+        (beginning-of-line-text)
+        (if (not (looking-at "@"))
+            (progn
+              (insert "@")
+              (if decorator-name
+                  (insert decorator-name)))))))
+
+(defun dss/py-make-classmethod ()
+  (interactive)
+  (dss/py-decorate-function "classmethod"))
+
+(defun dss/py-comment-line-p ()
+  "Return non-nil iff current line has only a comment.
+This is python-comment-line-p from Dave Love's python.el"
+  (save-excursion
+    (end-of-line)
+    (when (eq 'comment (syntax-ppss-context (syntax-ppss)))
+      (back-to-indentation)
+      (looking-at (rx (or (syntax comment-start) line-end))))))
 
 ;; setup pymacs
 (autoload 'pymacs-apply "pymacs")
