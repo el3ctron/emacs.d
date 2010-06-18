@@ -45,7 +45,8 @@
              (define-key term-mode-map (kbd "M-DEL")
                'dss/term-backward-kill-word)
              (define-key term-mode-map (kbd "M-g")
-               'dss/term-toggle-mode)))
+               'dss/term-toggle-mode)
+             (linum-mode -1)))
 
 (defun dss/term-yank ()
   (interactive)

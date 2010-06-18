@@ -218,6 +218,7 @@ This is python-comment-line-p from Dave Love's python.el"
         ;;   (smex-update))
         (dss/load-lineker-mode)
         (flymake-mode t)
+        (linum-mode t)
         (dss/ropemacs-init)
         (ropemacs-mode t)
         (dss/load-rope-completion)))
@@ -253,15 +254,19 @@ This is python-comment-line-p from Dave Love's python.el"
 ;; python-mode helpers
 
 ;; ipython related
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/ipython")
 (require 'ipython)
 (setq ipython-command "emacs_ipython") ; which is a shell script that handles all the virtualenv setup, etc
 
 (defun dss/start-ipy-complete ()
   (interactive)
   (setq ac-sources '(ac-source-dss-ipy-dot ac-source-dss-ipy ac-source-filename)))
+
 (add-hook 'ipython-shell-hook 'dss/start-ipy-complete)
 (add-hook 'py-shell-hook 'dss/start-ipy-complete)
+
+(add-hook 'ipython-shell-hook '(lambda () (linum-mode -1)))
+(add-hook 'py-shell-hook '(lambda () (linum-mode -1)))
+
 ;;
 
 (autoload 'rst "rst")

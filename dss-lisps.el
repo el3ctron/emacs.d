@@ -23,10 +23,13 @@
 ;; study http://www.emacswiki.org/emacs/ParEdit
 ;; http://www.emacswiki.org/emacs/PareditCheatsheet
 
-(add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
-(add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
-(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
+(defun dss/lisp-modes-hook ()
+  (linum-mode t)
+  (paredit-mode +1))
 
+(add-hook 'emacs-lisp-mode-hook 'dss/lisp-modes-hook)
+(add-hook 'lisp-mode-hook 'dss/lisp-modes-hook)
+(add-hook 'lisp-interaction-mode-hook 'dss/lisp-modes-hook)
 
 (require 'eldoc)
 (eldoc-add-command
