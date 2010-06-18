@@ -5,6 +5,8 @@
 (setq abbrev-file-name (concat dss-ephemeral-dir "abbrev_defs"))
 (if (file-exists-p abbrev-file-name)
     (read-abbrev-file abbrev-file-name t))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ido
 (require 'ido)
@@ -65,8 +67,12 @@ advice like this:
   (let (ido-enable-replace-completing-read)
      (call-interactively 'where-is)))
 
-;; also see dss/load-rope-completion in dss-python.el
 
+;http://www.rlazo.org/blog/entry/2008/sep/13/insert-a-path-into-the-current-buffer/
+(defun dss/insert-path (file)
+ "insert file"
+ (interactive "FPath: ")
+ (insert (expand-file-name file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; dabbrev and hippie-expand
@@ -77,7 +83,6 @@ advice like this:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; auto-complete mode
 
-;; new version of auto-complete.el
 (add-to-list 'load-path (concat dss-vendor-dir "auto-complete"))
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories (concat dss-dotfiles-dir "ac-dict"))
@@ -88,7 +93,16 @@ advice like this:
 (setq ac-candidate-limit 25)
 (ac-config-default)
 
+(require 'dss-codenav-helpers)
+(defun dss/ac-electric-pair ()
+  (interactive)
+  (ac-complete)
+  (dss/electric-pair))
+(define-key ac-completing-map "(" 'dss/ac-electric-pair)
+;;; this seems to be little bit buggy with the most recent version of auto-complete.el ...
 
+
+;;;
 (defvar dss-ropemacs-completions-cache nil)
 (defun dss/rope-candidates (prefix)
   (with-no-warnings
@@ -120,6 +134,7 @@ advice like this:
  (prefix . file)
  (limit)))
 
+;; also see dss/ropemacs-init in dss-python.el
 (defun dss/load-rope-completion()
   (interactive)
   (setq ac-sources (list
@@ -133,7 +148,6 @@ advice like this:
                     ;;ac-source-dictionary
                     )))
 
-
 (defun dss/unload-rope-completion()
   (interactive)
   (setq ac-sources (list
@@ -144,20 +158,28 @@ advice like this:
                     ac-source-dictionary
                     )))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; partially working support for using auto complete in ipython buffers
 (defun dss-ipython-completion-candidate (&optional use-ido)
-  "Try to complete the python symbol before point. Only knows about the stuff
-in the current *Python* session."
+  "This is a hacked version of ipython-complete from ipython.el,
+    which can be used with either autocomplete-mode or ido.
+
+    It mostly works but there are a few bugs that need resolving...
+
+(defun dss/start-ipy-complete ()
+  (interactive)
+  (setq ac-sources '(ac-source-dss-ipy-dot
+                     ac-source-dss-ipy
+                     ac-source-filename)))
+(add-hook 'ipython-shell-hook 'dss/start-ipy-complete)
+(add-hook 'py-shell-hook 'dss/start-ipy-complete)
+
+"
   (let* ((ugly-return nil)
          (sep ";")
          (python-process (or (get-buffer-process (current-buffer))
                                         ;XXX hack for .py buffers
                              (get-process py-which-bufname)))
-         ;; XXX currently we go backwards to find the beginning of an
-         ;; expression part; a more powerful approach in the future might be
-         ;; to let ipython have the complete line, so that context can be used
-         ;; to do things like filename completion etc.
-
          (beg (save-excursion (skip-chars-backward "a-z0-9A-Z_." (point-at-bol))
                                (point)))
          (end (point))
@@ -219,21 +241,6 @@ in the current *Python* session."
     (prefix . c-dot)
     (requires . 0)
     (symbol . "f")))
-
-
-(require 'dss-codenav-helpers)
-(defun dss/ac-electric-pair ()
-  (interactive)
-  (ac-complete)
-  (dss/electric-pair))
-(define-key ac-completing-map "(" 'dss/ac-electric-pair)
-
-
-;http://www.rlazo.org/blog/entry/2008/sep/13/insert-a-path-into-the-current-buffer/
-(defun dss/insert-path (file)
- "insert file"
- (interactive "FPath: ")
- (insert (expand-file-name file)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-completion)
