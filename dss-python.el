@@ -1,4 +1,6 @@
 ;; python-mode
+(require 'dss-codenav-helpers)
+
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/python-mode")
 (autoload 'python-mode "python-mode" "PY" t)
 
@@ -38,40 +40,6 @@
         (insert "pylint: disable-msg="))
     (insert msgid)))
 
-(defun dss/out-sexp (&optional level forward syntax)
-  "Skip out of any nested brackets.
- Skip forward if FORWARD is non-nil, else backward.
- If SYNTAX is non-nil it is the state returned by `syntax-ppss' at point.
- Return non-nil if and only if skipping was done."
-  (interactive)
-  (if (dss/in-string-p)
-      (dss/beginning-of-string))
-  (progn
-    (let* ((depth (syntax-ppss-depth (or syntax (syntax-ppss))))
-          (level (or level depth))
-          (forward (if forward -1 1)))
-      (unless (zerop depth)
-        (if (> depth 0)
-            ;; Skip forward out of nested brackets.
-            (condition-case ()            ; beware invalid syntax
-                (progn (backward-up-list (* forward level)) t)
-              (error nil))
-          ;; Invalid syntax (too many closed brackets).
-          ;; Skip out of as many as possible.
-          (let (done)
-            (while (condition-case ()
-                       (progn (backward-up-list forward)
-                              (setq done t))
-                     (error nil)))
-            done))))))
-
-(defun dss/out-one-sexp (&optional forward)
-  (interactive)
-  (dss/out-sexp 1 forward))
-
-(defun dss/out-one-sexp-forward ()
-  (interactive)
-  (dss/out-sexp 1 1))
 
 (defun dss/py-insert-docstring ()
   (interactive)
