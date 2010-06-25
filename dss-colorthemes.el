@@ -111,7 +111,13 @@
      (ediff-fine-diff-A ((t (:background "#5f005f"))))
      (ediff-fine-diff-B ((t (:background "#0000d7"))))
      (ediff-fine-diff-C ((t (:background "#0000d7"))))
+
+     (highlight-changes ((t (:foreground nil :background "#382f2f"))))
+     (highlight-changes-delete ((t (:foreground nil :background "#916868"))))
+
      (bookmarkp-local-file-without-region ((t (:foreground "white"))))
+
+
      ))
   (smex-update))
 
