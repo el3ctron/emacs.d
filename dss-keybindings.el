@@ -50,7 +50,11 @@
 (define-key global-map "\e\eOB" 'forward-paragraph)
 (define-key global-map "\e\e[B" 'forward-paragraph)
 (define-key global-map "\eOb" 'forward-paragraph)
-(define-key global-map "\eOc" 'forward-word)
+
+(require 'misc)
+
+(define-key global-map "\eOc" 'forward-to-word)
+(define-key global-map (kbd "M-f") 'forward-to-word)
 (define-key global-map "\eOd" 'backward-word)
 
 (define-key global-map "\e[A" 'previous-line)
