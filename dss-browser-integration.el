@@ -20,17 +20,72 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 (require 'json)
 (defun moz-connect()
   (interactive)
-  (global-set-key "\C-x\C-g" (lambda ()
-                        (interactive)
-                        (save-buffer)
-                        (comint-send-string (inferior-moz-process) "this.BrowserReload()\n"))))
+  (global-set-key "\C-x\C-g"
+                  (lambda ()
+                    (interactive)
+                    (save-buffer)
+                    (dss/moz-eval-expression "this.BrowserReload()\n"))))
+
+(defun dss/moz-eval-expression (exp)
+  "Send expression to Moz."
+  (interactive "sJSEval: ")
+  (comint-send-string (inferior-moz-process) exp))
 
 (defun moz-reload ()
   "Reload the url in the current tab"
   (interactive)
-  (comint-send-string (inferior-moz-process)
-    (concat "this.BrowserReload()\n")))
+  (dss/moz-eval-expression "this.BrowserReload()\n"))
 
+(defun moz-find-next ()
+  (interactive)
+  (dss/moz-eval-expression "gBrowser.webBrowserFind.findNext()\n"))
+(defun moz-find-next ()
+  (interactive)
+  (dss/moz-eval-expression "gBrowser.webBrowserFind.findNext()\n"))
+;;;
+
+(defun dss/moz-new-tab ()
+  (interactive)
+  (dss/moz-eval-expression "gBrowser.selectedTab = gBrowser.addTab()\n"))
+
+(defun dss/moz-duplicate-tab ()
+  (interactive)
+  (dss/moz-eval-expression "gBrowser.duplicateTab(gBrowser.mCurrentTab)\n"))
+
+(defun dss/moz-close-tab ()
+  (interactive)
+  (dss/moz-eval-expression "gBrowser.removeCurrentTab()\n"))
+
+(defun dss/moz-back ()
+  (interactive)
+  (dss/moz-eval-expression "this.BrowserBack()\n"))
+
+(defun dss/moz-forward ()
+  (interactive)
+  (dss/moz-eval-expression "this.BrowserForward()\n"))
+
+(defun dss/moz-next-tab ()
+  (interactive)
+  (dss/moz-eval-expression "
+var tabbrowser = window.getBrowser();
+var _lastTab = tabbrowser.selectedTab;
+tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos+1];
+"))
+
+(defun dss/moz-previous-tab ()
+  (interactive)
+  (dss/moz-eval-expression "
+var tabbrowser = window.getBrowser();
+var _lastTab = tabbrowser.selectedTab;
+tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos-1];
+"))
+
+(defun dss/moz-select-tab (n)
+  (interactive "nTab: ")
+  (dss/moz-eval-expression
+   (format "window.getBrowser().selectedTab = window.getBrowser().mTabs[%d];\n" (- n 1))))
+
+;;; window.getBrowser().mTab[i]
 (defun moz-update (&rest ignored)
   "Update the remote mozrepl instance"
   (interactive)
