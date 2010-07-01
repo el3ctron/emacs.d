@@ -1,6 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Yegge's js2-mode with better indentation support
 
+(require 'dss-codenav-helpers)
+
+(add-to-list 'load-path (concat dss-vendor-dir "js2-mode"))
+
 (autoload 'js2-mode "js2-mode" nil t)
 
 (defun dss/js2-indent-function ()
@@ -35,37 +39,13 @@
       (indent-line-to indentation)
       (when (> offset 0) (forward-char offset)))))
 
-(defun dss/indent-sexp ()
-  "http://mihai.bazon.net/projects/editing-javascript-with-emacs-js2-mode
-  can be used from any coding major mode"
-  (interactive)
-  (save-restriction
-    (save-excursion
-      (widen)
-      (let* ((inhibit-point-motion-hooks t)
-             (parse-status (syntax-ppss (point)))
-             (beg (nth 1 parse-status))
-             (end-marker (make-marker))
-             (end (progn (goto-char beg) (forward-list) (point)))
-             (ovl (make-overlay beg end)))
-        (set-marker end-marker end)
-        (overlay-put ovl 'face 'highlight)
-        (goto-char beg)
-        (while (< (point) (marker-position end-marker))
-          ;; don't reindent blank lines so we don't set the "buffer
-          ;; modified" property for nothing
-          (beginning-of-line)
-          (unless (looking-at "\\s-*$")
-            (indent-according-to-mode))
-          (forward-line))
-        (run-with-timer 0.5 nil (lambda(ovl)
-                                  (delete-overlay ovl)) ovl)))))
+
 (defun dss/js2-mode-hook ()
   (require 'espresso)
   (setq espresso-indent-level 4
         indent-tabs-mode nil
         c-basic-offset 4)
-  (c-toggle-auto-state 0)
+  (c-toggle-auto-newline 0)
   (c-toggle-hungry-state 1)
   (set (make-local-variable 'indent-line-function) 'dss/js2-indent-function)
   (define-key js2-mode-map [(meta control "|")] 'cperl-lineup)
@@ -85,6 +65,7 @@
 
 (add-hook 'js2-mode-hook 'dss/js2-mode-hook)
 (add-hook 'js2-mode-hook 'dss/install-whitespace-cleanup-hook)
+(add-hook 'js2-mode-hook '(lambda () (linum-mode t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; alternately espresso-mode instead of js2-mode

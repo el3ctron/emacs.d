@@ -106,6 +106,32 @@ Do nothing if not in string."
   (interactive)
   (dss/out-sexp 1 1))
 
+(defun dss/indent-sexp ()
+  "http://mihai.bazon.net/projects/editing-javascript-with-emacs-js2-mode
+  can be used from any coding major mode"
+  (interactive)
+  (save-restriction
+    (save-excursion
+      (widen)
+      (let* ((inhibit-point-motion-hooks t)
+             (parse-status (syntax-ppss (point)))
+             (beg (nth 1 parse-status))
+             (end-marker (make-marker))
+             (end (progn (goto-char beg) (forward-list) (point)))
+             (ovl (make-overlay beg end)))
+        (set-marker end-marker end)
+        (overlay-put ovl 'face 'highlight)
+        (goto-char beg)
+        (while (< (point) (marker-position end-marker))
+          ;; don't reindent blank lines so we don't set the "buffer
+          ;; modified" property for nothing
+          (beginning-of-line)
+          (unless (looking-at "\\s-*$")
+            (indent-according-to-mode))
+          (forward-line))
+        (run-with-timer 0.5 nil (lambda(ovl)
+                                  (delete-overlay ovl)) ovl)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun dss/electric-pair ()
   "If at end of line, insert character pair without surrounding spaces.
@@ -234,6 +260,11 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
   (interactive)
   (dss/column-marker-1 -1)
   (hl-line-mode t))
+
+(defun dss/local-line-jump (n)
+  (interactive "nLine: ")
+  ;(message (format "%d" (+ n (* (/ (line-number-at-pos) 100) 100))))
+  (goto-line (+ n (* (/ (line-number-at-pos) 100) 100))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-codenav-helpers)
