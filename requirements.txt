@@ -28,8 +28,9 @@ ess http://ess.r-project.org/ (app-emacs/ess)
 haskell-mode http://projects.haskell.org/haskellmode-emacs/ (app-emacs/haskell-mode)
 
 # dss-javascript.el
-js2-mode http://code.google.com/p/js2-mode/
-espresso http://www.nongnu.org/espresso/ (vendors/)
+js2-mode http://github.com/mooz/js2-mode (vendors/) 
+     fork of http://code.google.com/p/js2-mode/ 
+espresso http://www.nongnu.org/espresso/ 
 
 # dss-lisps
 paredit http://mumble.net/~campbell/emacs/paredit.el (app-emacs/paredit)
