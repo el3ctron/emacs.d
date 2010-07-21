@@ -25,9 +25,10 @@
 (defun dss/tty-x-clipboard-init ()
   (interactive)
   (unless window-system
+    (unless (getenv "DISPLAY")
+      (setenv "DISPLAY" ":0"))
     (setq interprogram-cut-function 'dss-xsel-cut-function)
-    (setq interprogram-paste-function 'dss-xsel-paste-function)
-    ))
+    (setq interprogram-paste-function 'dss-xsel-paste-function)))
 
 (defun dss/tty-x-clipboard-disable ()
   (interactive)
