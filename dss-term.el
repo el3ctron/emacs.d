@@ -11,8 +11,7 @@
     (set-buffer (setq tmp-buffer (get-buffer-create "*multi-term-launcher*")))
     (setq default-directory dir)
     (multi-term)
-    (kill-buffer tmp-buffer)
-    ))
+    (kill-buffer tmp-buffer)))
 
 (defun dss/term-toggle-mode ()
   "Toggle between term-char-mode and term-line-mode."
@@ -65,6 +64,35 @@
 ;  (if (term-in-line-mode)
 ;      (isearch-forward)
 ;    (term-send-forward-search-history)))
+
+
+;;; derived from http://www.enigmacurry.com/2008/12/26/emacs-ansi-term-tricks/
+(defun dss/term-setup-tramp ()
+  "Setup ansi-term/tramp remote directory tracking"
+  (interactive)
+  (term-send-raw-string "
+# Emacs ansi-term/tramp remote directory tracking
+if [ $TERM = eterm-color ]; then
+    function eterm-set-cwd {
+        $@
+        echo -e \"\\033AnSiTc\" $(pwd)
+    }
+
+    # set hostname, user, and cwd
+    function eterm-reset {
+        echo -e \"\\033AnSiTu\" ${TRAMP_USERNAME-$(whoami)}
+        echo -e \"\\033AnSiTc\" $(pwd)
+        echo -e \"\\033AnSiTh\" ${TRAMP_HOSTNAME-$(hostname)}
+    }
+
+    for temp in cd pushd popd; do
+        alias $temp=\"eterm-set-cwd $temp\"
+    done
+
+    # set hostname, user, and cwd now
+    eterm-reset
+fi
+"))
 
 (setq term-bind-key-alist
    '(("C-c C-c" . term-interrupt-subjob)
