@@ -72,6 +72,18 @@ var _lastTab = tabbrowser.selectedTab;
 tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos+1];
 "))
 
+(defun dss/moz-print-tabs ()
+  (interactive)
+  (dss/moz-eval-expression "
+var tabbrowser = window.getBrowser();
+for (var i=0, tab; tab = tabbrowser.mTabs[i]; i++) {
+   repl.print('Tab '+i);
+   repl.print(tab.linkedBrowser.contentDocument.title);
+   repl.print(tab.linkedBrowser.contentDocument.documentURI);
+   repl.print('---\\n');
+}
+"))
+
 (defun dss/moz-previous-tab ()
   (interactive)
   (dss/moz-eval-expression "
