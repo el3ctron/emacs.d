@@ -59,6 +59,8 @@
 
 (define-key global-map "\e[A" 'previous-line)
 (define-key global-map "\e[B" 'next-line)
+(define-key global-map "\e[C" 'forward-char)
+(define-key global-map "\e[D" 'backward-char)
 
 (defun up-slightly () (interactive) (scroll-up 5))
 (defun down-slightly () (interactive) (scroll-down 5))
