@@ -30,11 +30,12 @@
               (filename . "code/active/dss.hg/"))
             ("Dentalle"
               (filename . "code/active/dentalle.hg/"))
-            ("Programming" ;; prog stuff not already in MyProjectX
+            ("Programming" ;; prog stuff not already in above groups
               (or
                 (mode . c-mode)
                 (mode . perl-mode)
                 (mode . python-mode)
+                (mode . cython-mode)
                 (mode . emacs-lisp-mode)
                 ;; etc
                 ))
@@ -46,6 +47,7 @@
 ; this didn't work when I first tried it
 (add-hook 'ibuffer-mode-hook
   (lambda ()
+    (linum-mode 1)
     (ibuffer-switch-to-saved-filter-groups "default")))
 
 
