@@ -10,7 +10,7 @@
 (add-hook 'occur-mode-hook 'fm-start-off)
 ;(add-hook 'ibuffer-mode-hooks 'fm-start-off)
 (add-hook 'ibuffer-occur-mode-hooks 'fm-start-off)
-(add-hook 'apropos-mode-hook 'fm-start-off)
+
 
 ;;; isearch-forward-at-point
 ;; from http://platypope.org/blog/2007/8/5/a-compendium-of-awesomeness
