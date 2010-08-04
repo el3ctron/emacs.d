@@ -23,13 +23,17 @@
   ido-case-fold  t
   ido-enable-last-directory-history t ; remember last used dirs
   ido-max-work-file-list      50   ; remember many
-  ido-use-filename-at-point t
+  ido-use-filename-at-point nil
   ido-use-url-at-point nil
   ;ido-max-prospects 8              ; don't spam my minibuffer
   ;ido-confirm-unique-completion t ; wait for RET, even with unique completion
-  ido-save-directory-list-file (concat dss-ephemeral-dir "ido.last")
-  )
+  ido-save-directory-list-file (concat dss-ephemeral-dir "ido.last"))
 
+(defun dss/ido-find-file-at-point ()
+  (interactive)
+  (let ((ido-use-filename-at-point t)
+        (ido-use-url-at-point t))
+     (call-interactively 'ido-find-file)))
 
 ;;; http://stackoverflow.com/questions/905338/can-i-use-ido-completing-read-instead-of-completing-read-everywhere
 (defvar ido-enable-replace-completing-read t
@@ -91,14 +95,47 @@ advice like this:
 (setq ac-menu-height 20)
 (setq ac-use-comphist nil)
 (setq ac-candidate-limit 25)
+(setq ac-use-quick-help nil)
 (ac-config-default)
 
 (require 'dss-codenav-helpers)
+
+(defun ac-complete-no-fallback ()
+  "a hacked version of ac-complete with fallback disabled.
+  For some reason this is very sensitive to the function name
+  prefix 'ac-'."
+  (interactive)
+  (let* ((candidate (ac-selected-candidate))
+         (action (popup-item-property candidate 'action))
+         (fallback nil))
+    (when candidate
+      (unless (ac-expand-string candidate)
+        (setq fallback nil)) ;
+      ;; Remember to show help later
+      (when (and ac-point candidate)
+        (unless ac-last-completion
+          (setq ac-last-completion (cons (make-marker) nil)))
+        (set-marker (car ac-last-completion) ac-point ac-buffer)
+        (setcdr ac-last-completion candidate)))
+    (ac-abort)
+    (cond
+     (action
+      (funcall action))
+     (fallback
+      (ac-fallback-command)))
+    candidate))
+
 (defun dss/ac-electric-pair ()
   (interactive)
-  (ac-complete)
+  (ac-complete-no-fallback)
   (dss/electric-pair))
+
 (define-key ac-completing-map "(" 'dss/ac-electric-pair)
+(define-key ac-completing-map "[" 'dss/ac-electric-pair)
+(define-key ac-completing-map "\r" 'ac-complete-no-fallback)
+
+
+
 ;;; this seems to be little bit buggy with the most recent version of auto-complete.el ...
 
 
