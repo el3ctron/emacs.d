@@ -17,6 +17,11 @@
   (interactive "r")
   (dss/quote-region start end "'"))
 
+(defun dss/yank-and-indent ()
+  (interactive)
+  (yank)
+  (call-interactively 'indent-region))
+
 (require 'misc)      ; forward-to-word & backward-to-word
 
 (require 'visible-mark)
