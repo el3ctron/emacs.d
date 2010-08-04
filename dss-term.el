@@ -6,12 +6,16 @@
 (setq multi-term-program "/bin/bash")
 (require 'multi-term)
 
-(defun dss/cd_term (dir)
-  (let (tmp-buffer)
+(defun dss/cd-multi-term (dir &optional command)
+  (let (tmp-buffer new-buffer)
+    ;; with-temp-buffer gets in the way here
     (set-buffer (setq tmp-buffer (get-buffer-create "*multi-term-launcher*")))
     (setq default-directory dir)
-    (multi-term)
-    (kill-buffer tmp-buffer)))
+    (setq new-buffer (multi-term))
+    (kill-buffer tmp-buffer)
+    (if command
+        (term-send-raw-string command))
+    new-buffer))
 
 (defun dss/term-toggle-mode ()
   "Toggle between term-char-mode and term-line-mode."
@@ -97,8 +101,8 @@ fi
 (setq term-bind-key-alist
    '(("C-c C-c" . term-interrupt-subjob)
      ("C-x C-x" . term-send-raw)
-     ("C-p" . previous-line)
-     ("C-n" . next-line)
+     ;("C-p" . term-send-raw);previous-line)
+     ;("C-n" . term-send-raw);next-line)
      ("C-s" . isearch-forward)
      ("C-r" . dss/term-reverse-search)
      ("C-m" . term-send-raw)
