@@ -32,9 +32,9 @@
      ;(scroll-bar ((t (:background "#121212"))))
      ;(tool-bar ((t (:background "#121212" ))))
      ;(fringe ((t (:background "#121212"))))
-     (region ((t (:background "#0000af" ))))
+     (region ((t (:background "#0000d7" ))))  ;#0000af
      (secondary-selection ((t (:background "#0000ff"))))
-     (show-paren-match-face ((t (:background "#0000af"))))
+     (show-paren-match-face ((t (:background "#000087"))));#303030
      (show-paren-mismatch-face ((t (:background "magenta" :foreground "white"))))
      (flymake-errline ((t (:background "#870000"))))
      (flymake-warnline ((t (:background "#444444"))))
