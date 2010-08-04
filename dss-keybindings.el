@@ -51,16 +51,20 @@
 (define-key global-map "\e\e[B" 'forward-paragraph)
 (define-key global-map "\eOb" 'forward-paragraph)
 
+(define-key global-map "\eOc" (kbd "M-f"))
 (require 'misc)
-
-(define-key global-map "\eOc" 'forward-to-word)
 (define-key global-map (kbd "M-f") 'forward-to-word)
 (define-key global-map "\eOd" 'backward-word)
 
-(define-key global-map "\e[A" 'previous-line)
-(define-key global-map "\e[B" 'next-line)
-(define-key global-map "\e[C" 'forward-char)
-(define-key global-map "\e[D" 'backward-char)
+;;
+(define-key global-map "\e[A" (kbd "<up>"))
+(define-key global-map "\e[B" (kbd "<down>"))
+(define-key global-map "\e[C" (kbd "<right>"))
+(define-key global-map "\e[D" (kbd "<left>"))
+(define-key ido-common-completion-map "\e[A" 'previous-history-element)
+(define-key ido-common-completion-map "\e[B" 'next-history-element)
+(define-key ido-common-completion-map "\e[C" 'ido-next-match)
+(define-key ido-common-completion-map "\e[D" 'ido-prev-match)
 
 (defun up-slightly () (interactive) (scroll-up 5))
 (defun down-slightly () (interactive) (scroll-down 5))
@@ -85,7 +89,7 @@
 
 (global-unset-key "\C-x\C-c")
 (global-set-key "\C-x\C-c" 'dss/confirm-exit-emacs)
-(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-x\C-m" 'execute-extended-command) ;for when I don't want to use smex
 (global-set-key "\C-x\C-b" 'ibuffer)
 
 (add-hook 'comint-mode-hook
