@@ -11,7 +11,21 @@
 (setq-default save-place t)
 
 (require 'recentf)
+(recentf-mode 1)
 (setq recentf-max-saved-items 100)
+(setq recentf-max-menu-items 60)
+(defun dss/ido-choose-from-recentf ()
+  ;;from http://www.xsteve.at/prg/emacs/power-user-tips.html
+  "Use ido to select a recently opened file from the `recentf-list'"
+  (interactive)
+  (let ((home (expand-file-name (getenv "HOME"))))
+    (find-file
+     (ido-completing-read "Recentf open: "
+                          (mapcar (lambda (path)
+                                    (replace-regexp-in-string home "~" path))
+                                  recentf-list)
+                          nil t))))
+
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/session")
 (require 'session)
