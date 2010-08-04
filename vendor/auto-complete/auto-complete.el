@@ -163,9 +163,9 @@
   '(emacs-lisp-mode
     lisp-interaction-mode
     c-mode cc-mode c++-mode
-    java-mode clojure-mode scala-mode
+    java-mode malabar-mode clojure-mode scala-mode
     scheme-mode
-    ocaml-mode tuareg-mode
+    ocaml-mode tuareg-mode haskell-mode
     perl-mode cperl-mode python-mode ruby-mode
     ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode
     makefile-mode sh-mode fortran-mode f90-mode ada-mode
@@ -470,8 +470,9 @@ If there is no common part, this will be nil.")
                 (loop for p from 0 below (length string)
                       ;; sigmoid function
                       with a = 5
+                      with b = (/ 700.0 a) ; bounds for avoiding range error in `exp'
                       with d = (/ 6.0 a)
-                      for x = (- d (abs (- prefix p)))
+                      for x = (max (- b) (min b (- d (abs (- prefix p)))))
                       for r = (/ 1.0 (1+ (exp (* (- a) x))))
                       do
                       (incf score (* (aref stat p) r))))
@@ -845,7 +846,7 @@ You can not use it in source definition like (prefix . `NAME')."
                 (setq point nil))
             (if point
                 (setq prefix-def prefix))))
-        
+
         if (equal prefix prefix-def) do (push source sources)
 
         finally return
@@ -1328,7 +1329,7 @@ that have been made before in this function."
       (ac-complete)
     (when (and (ac-inline-live-p)
                ac-common-part)
-      (ac-inline-hide) 
+      (ac-inline-hide)
       (ac-expand-string ac-common-part (eq last-command this-command))
       (setq ac-common-part nil)
       t)))
