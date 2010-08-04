@@ -29,7 +29,40 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 (defun dss/moz-eval-expression (exp)
   "Send expression to Moz."
   (interactive "sJSEval: ")
-  (comint-send-string (inferior-moz-process) exp))
+  ;(comint-send-string (inferior-moz-process) exp)
+  (dss/moz-send-string exp))
+
+(defun dss/moz-send-string (str)
+  (interactive "sJSEval: ")
+  (let ((proc (inferior-moz-process)))
+    (progn
+      (comint-send-string proc
+                          (concat moz-repl-name ".pushenv('printPrompt', 'inputMode'); "
+                                  moz-repl-name ".setenv('printPrompt', false); "
+                                  moz-repl-name ".setenv('inputMode', 'multiline'); "
+                                  "undefined; \n"))
+      ;; Give the previous line a chance to be evaluated on its own.  If
+      ;; it gets concatenated to the following ones, we are doomed.
+      (sleep-for 0 1)
+      (comint-send-string proc str)
+      (comint-send-string proc "\n--end-remote-input\n")
+      (comint-send-string proc
+                          (concat moz-repl-name ".popenv('inputMode', 'printPrompt'); "
+                                  "undefined; \n"))
+      (comint-send-string proc "\n--end-remote-input\n"))))
+
+(defun dss/moz-eval-expression-capture (str)
+  (interactive "sJSEval: ")
+  (let* ((read-buffer "")
+         (proc (inferior-moz-process))
+         (comint-filt (process-filter proc)))
+    (set-process-filter proc (lambda (proc string)
+                               (setf read-buffer (concat read-buffer string))))
+    (dss/moz-send-string str)
+    (sleep-for 0 100)
+    ;; (while (not (string-match "^repl>" read-buffer)) (accept-process-output proc))
+    (set-process-filter proc comint-filt)
+    (mapconcat 'identity (butlast (split-string read-buffer "\n") 3) "\n")))
 
 (defun moz-reload ()
   "Reload the url in the current tab"
@@ -39,14 +72,17 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 (defun moz-find-next ()
   (interactive)
   (dss/moz-eval-expression "gBrowser.webBrowserFind.findNext()\n"))
-(defun moz-find-next ()
-  (interactive)
-  (dss/moz-eval-expression "gBrowser.webBrowserFind.findNext()\n"))
+
 ;;;
 
 (defun dss/moz-new-tab ()
   (interactive)
   (dss/moz-eval-expression "gBrowser.selectedTab = gBrowser.addTab()\n"))
+
+(defun dss/moz-new-tab-url (url)
+  (interactive "sURL:")
+  (dss/moz-eval-expression
+   (format "gBrowser.selectedTab = gBrowser.addTab('%s')\n" url)))
 
 (defun dss/moz-duplicate-tab ()
   (interactive)
@@ -74,7 +110,7 @@ tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos+1];
 
 (defun dss/moz-print-tabs ()
   (interactive)
-  (dss/moz-eval-expression "
+  (dss/moz-eval-expression-capture "
 var tabbrowser = window.getBrowser();
 for (var i=0, tab; tab = tabbrowser.mTabs[i]; i++) {
    repl.print('Tab '+i);
@@ -83,6 +119,12 @@ for (var i=0, tab; tab = tabbrowser.mTabs[i]; i++) {
    repl.print('---\\n');
 }
 "))
+
+(defun dss/moz-get-url ()
+  (interactive)
+  (let ((url (dss/moz-eval-expression-capture "repl.print(content.location.href)")))
+    (kill-new url)
+    url))
 
 (defun dss/moz-previous-tab ()
   (interactive)
@@ -96,6 +138,11 @@ tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos-1];
   (interactive "nTab: ")
   (dss/moz-eval-expression
    (format "window.getBrowser().selectedTab = window.getBrowser().mTabs[%d];\n" (- n 1))))
+
+(defun dss/moz-select-window (n)
+  (interactive "nWindow: ")
+  (dss/moz-eval-expression
+   (format "repl.enter(repl.getWindows()[%d]);\n" (- n 1))))
 
 ;;; window.getBrowser().mTab[i]
 (defun moz-update (&rest ignored)
@@ -121,6 +168,33 @@ tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos-1];
 ;    * C-M-x: send the current function (as recognized by c-mark-function) to MozRepl
 ;    * C-c C-c: send the current function to MozRepl and switch to the interaction buffer
 ;    * C-c C-r: send the current region to MozRepl
+
+;; function getWindows() {
+;;     var windowEnum = Cc['@mozilla.org/appshell/window-mediator;1']
+;;         .getService(Ci.nsIWindowMediator).getEnumerator('');
+;;     var windows = [];
+;;     while(windowEnum.hasMoreElements())
+;;         windows.push(windowEnum.getNext());
+
+;;     return windows;
+;; }
+
+;;; http://wiki.github.com/bard/mozrepl/command-simple-dom-grabber
+;; function grab() {
+;;     var document = this._workContext.document;
+;;     if(!document)
+;;         throw new Error('No document around.');
+;;     var result = {};
+;;     var grabber = function(event) {
+;;         result.event = event;
+;;         event.stopPropagation();
+;;         document.removeEventListener('click', grabber, true);
+;;     };
+;;     document.addEventListener('click', grabber, true);
+;;     return result;
+;; }
+
+
 
 ; http://cpansearch.perl.org/src/ZIGOROU/MozRepl-Plugin-LinkTools-0.01/lib/MozRepl/Plugin/OpenNewTab.pm
 ; function (url, selected) {
