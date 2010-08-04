@@ -25,6 +25,7 @@
 
 (defun dss/lisp-modes-hook ()
   (linum-mode t)
+  (local-set-key (kbd "RET") 'newline-and-indent)
   (paredit-mode +1))
 
 (add-hook 'emacs-lisp-mode-hook 'dss/lisp-modes-hook)
@@ -38,7 +39,14 @@
 
 (add-hook 'emacs-lisp-mode-hook (lambda () (eldoc-mode)))
 
-(add-hook 'emacs-lisp-mode-hook (lambda () (setq hippie-expand-try-functions-list '(try-expand-dabbrev-visible try-complete-lisp-symbol try-complete-lisp-symbol-partially try-expand-dabbrev))))
+(add-hook
+ 'emacs-lisp-mode-hook
+ (lambda ()
+   (setq hippie-expand-try-functions-list
+    '(try-expand-dabbrev-visible
+      try-complete-lisp-symbol
+      try-complete-lisp-symbol-partially
+      try-expand-dabbrev))))
 
 
 
