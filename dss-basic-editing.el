@@ -1,3 +1,6 @@
+(require 'filladapt)
+(setq-default filladapt-mode t)
+
 (defun dss/cap-sentence ()
   (interactive)
   (save-excursion
