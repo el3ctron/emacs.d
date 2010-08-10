@@ -240,10 +240,12 @@ This is python-comment-line-p from Dave Love's python.el"
 (autoload 'rst "rst")
 (add-to-list 'auto-mode-alist '("\\.rst$" . rst-mode))
 ;;
-(autoload 'doctest-mode "doctest-mode" "Editing mode for Python Doctest examples." t)
-(autoload 'doctest-register-mmm-classes "doctest-mode")
-(add-to-list 'auto-mode-alist '("\\.doctest$" . doctest-mode))
-(doctest-register-mmm-classes t t)
+
+;; (autoload 'doctest-mode "doctest-mode" "Editing mode for Python Doctest examples." t)
+;; (autoload 'doctest-register-mmm-classes "doctest-mode")
+;; (add-to-list 'auto-mode-alist '("\\.doctest$" . doctest-mode))
+;; (doctest-register-mmm-classes t t)
+
 ; # @@TR: eldoc
 
 ;; cheetah .tmpl files
