@@ -32,7 +32,7 @@
      ;(scroll-bar ((t (:background "#121212"))))
      ;(tool-bar ((t (:background "#121212" ))))
      ;(fringe ((t (:background "#121212"))))
-     (region ((t (:background "#0000d7" ))))  ;#0000af
+     (region ((t (:background "#0000af" )))) ;#0000d7
      (secondary-selection ((t (:background "#0000ff"))))
      (show-paren-match-face ((t (:background "#000087"))));#303030
      (show-paren-mismatch-face ((t (:background "magenta" :foreground "white"))))
