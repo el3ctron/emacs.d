@@ -131,6 +131,32 @@ Do nothing if not in string."
           (forward-line))
         (run-with-timer 0.5 nil (lambda(ovl)
                                   (delete-overlay ovl)) ovl)))))
+(defun dss/indent-defun ()
+  (interactive)
+  (save-excursion
+    (dss/out-sexp)
+    (forward-char)
+    (dss/indent-sexp)))
+
+(defun dss/copy-defun-name ()
+  (interactive)
+  (save-excursion
+    (dss/out-sexp)
+    (forward-to-word 2)
+    (k2-copy-whole-sexp)))
+
+(defun dss/goto-defun-args ()
+  (interactive)
+  (dss/out-sexp)
+  (forward-to-word 2)
+  (search-forward "("))
+
+(defun dss/fix-sexp-whitespace ()
+  (interactive)
+  (save-excursion
+    (dss/out-sexp 1)
+    (forward-char)
+    (fixup-whitespace)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun dss/electric-pair ()
