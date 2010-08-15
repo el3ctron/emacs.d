@@ -36,7 +36,7 @@
 (defun dss/term-backward-kill-word ()
   (interactive)
   (if (term-in-line-mode)
-      (backward-kill-word)
+      (backward-kill-word 1)
     (term-send-backward-kill-word)))
 
 (add-hook 'term-mode-hook
