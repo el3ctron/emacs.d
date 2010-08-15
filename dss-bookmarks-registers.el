@@ -28,6 +28,11 @@
 (add-hook 'find-file-hooks 'bm-buffer-restore)
 (add-hook 'kill-buffer-hook 'bm-buffer-save)
 
+(defadvice bm-show-mode
+  (around bm-show-mode-with-linum activate)
+  ad-do-it
+  (linum-mode))
+
 ;; Saving the repository to file when on exit.
 ;; kill-buffer-hook is not called when emacs is killed, so we
 ;; must save all bookmarks first.
