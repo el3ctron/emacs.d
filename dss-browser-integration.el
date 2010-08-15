@@ -1,4 +1,4 @@
-(defun view-url ()
+(defun dss/open-url ()
   "Open a new buffer containing the contents of URL.
 http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.el"
   (interactive)
@@ -18,13 +18,40 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 
 (require 'moz)
 (require 'json)
-(defun moz-connect()
+(add-hook 'js2-mode-hook (lambda (moz-minor-mode 1)))
+;    * C-c C-s: open a MozRepl interaction buffer and switch to it
+;    * C-c C-l: save the current buffer and load it in MozRepl
+;    * C-M-x: send the current function (as recognized by c-mark-function) to MozRepl
+;    * C-c C-c: send the current function to MozRepl and switch to the interaction buffer
+;    * C-c C-r: send the current region to MozRepl
+
+
+;; (defun dss/moz-connect()
+;;   (interactive)
+;;   (global-set-key "\C-x\C-g"
+;;                   (lambda ()
+;;                     (interactive)
+;;                     (save-buffer)
+;;                     (dss/moz-eval-expression "this.BrowserReload()\n"))))
+(defun dss/moz-connect-mac ()
   (interactive)
-  (global-set-key "\C-x\C-g"
-                  (lambda ()
-                    (interactive)
-                    (save-buffer)
-                    (dss/moz-eval-expression "this.BrowserReload()\n"))))
+  (setq moz-repl-host "tavismac")
+  (dss/moz-restart-repl))
+
+(defun dss/moz-connect-localhost ()
+  (interactive)
+  (setq moz-repl-host "localhost")
+  (dss/moz-restart-repl))
+
+(defun dss/moz-connect-b3 ()
+  (interactive)
+  (setq moz-repl-host "b3")
+  (dss/moz-restart-repl))
+
+(defun dss/moz-restart-repl ()
+  (interactive)
+  (kill-buffer inferior-moz-buffer)
+  (inferior-moz-process))
 
 (defun dss/moz-eval-expression (exp)
   "Send expression to Moz."
@@ -59,19 +86,27 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
     (set-process-filter proc (lambda (proc string)
                                (setf read-buffer (concat read-buffer string))))
     (dss/moz-send-string str)
-    (sleep-for 0 100)
+    (accept-process-output (inferior-moz-process) 0.75)
     ;; (while (not (string-match "^repl>" read-buffer)) (accept-process-output proc))
     (set-process-filter proc comint-filt)
     (mapconcat 'identity (butlast (split-string read-buffer "\n") 3) "\n")))
 
-(defun moz-reload ()
+(defun dss/moz-get-expression-value (expr &optional save-as-kill)
+  (let ((value (dss/moz-eval-expression-capture
+                (concat "repl.print(" expr ")"))))
+    (if save-as-kill
+        (kill-new value))
+    value))
+
+
+(defun dss/moz-reload ()
   "Reload the url in the current tab"
   (interactive)
   (dss/moz-eval-expression "this.BrowserReload()\n"))
 
-(defun moz-find-next ()
-  (interactive)
-  (dss/moz-eval-expression "gBrowser.webBrowserFind.findNext()\n"))
+;; (defun moz-find-next ()
+;;   (interactive)
+;;   (dss/moz-eval-expression "gBrowser.webBrowserFind.findNext()\n"))
 
 ;;;
 
@@ -83,6 +118,14 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
   (interactive "sURL:")
   (dss/moz-eval-expression
    (format "gBrowser.selectedTab = gBrowser.addTab('%s')\n" url)))
+
+(defun dss/browse-url-firefox-new-tab (url &optional new-window)
+  "Open URL in a new tab in Mozilla."
+  (interactive (browse-url-interactive-arg "URL: "))
+  (dss/moz-new-tab-url url)
+  (if (not (eq moz-repl-host "tavismac"))
+      (dss/x-display-focus-firefox)))
+(setq browse-url-browser-function 'dss/browse-url-firefox-new-tab)
 
 (defun dss/moz-duplicate-tab ()
   (interactive)
@@ -122,9 +165,17 @@ for (var i=0, tab; tab = tabbrowser.mTabs[i]; i++) {
 
 (defun dss/moz-get-url ()
   (interactive)
-  (let ((url (dss/moz-eval-expression-capture "repl.print(content.location.href)")))
-    (kill-new url)
-    url))
+  (dss/moz-get-expression-value "content.location.href" t))
+
+(defun dss/moz-get-html ()
+  (interactive)
+  (dss/moz-get-expression-value
+   "content.document.documentElement.innerHTML" t))
+
+(defun dss/moz-get-title ()
+  (interactive)
+  (dss/moz-get-expression-value
+   "content.document.title" t))
 
 (defun dss/moz-previous-tab ()
   (interactive)
@@ -145,29 +196,55 @@ tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos-1];
    (format "repl.enter(repl.getWindows()[%d]);\n" (- n 1))))
 
 ;;; window.getBrowser().mTab[i]
-(defun moz-update (&rest ignored)
+(defun dss/moz-update (&rest ignored)
   "Update the remote mozrepl instance"
   (interactive)
   (comint-send-string (inferior-moz-process)
     (concat "content.document.body.innerHTML="
              (json-encode (buffer-string)) ";")))
 
-(defun moz-enable-auto-reload ()
+(defun dss/moz-enable-auto-reload ()
   "Automatically reload the remote mozrepl when this buffer changes"
   (interactive)
   (add-hook 'after-save-hook 'moz-reload t t))
 
-(defun moz-disable-auto-reload ()
+(defun dss/moz-disable-auto-reload ()
   "Disable automatic mozrepl updates"
   (interactive)
   (remove-hook 'after-save-hook 'moz-reload t))
 
-(add-hook 'js2-mode-hook (lambda (moz-minor-mode 1)))
-;    * C-c C-s: open a MozRepl interaction buffer and switch to it
-;    * C-c C-l: save the current buffer and load it in MozRepl
-;    * C-M-x: send the current function (as recognized by c-mark-function) to MozRepl
-;    * C-c C-c: send the current function to MozRepl and switch to the interaction buffer
-;    * C-c C-r: send the current region to MozRepl
+
+;; (defvar emacspeak-moz-js-directory
+;;   (expand-file-name "js" emacspeak-directory)
+;;   "Directory where we keep js files.")
+
+;; (defun emacspeak-moz-load-js-files (directory)
+;;   "Load all .js files from specified directory."
+;;   (declare (special moz-repl-name))
+;;   (comint-send-string
+;;    (inferior-moz-process)
+;;    (mapconcat
+;;     #'(lambda (file)
+;;         (format "%s.load('file://localhost%s')"
+;;                 moz-repl-name file))
+;;     (directory-files directory  'full "js$")
+;;     ";")))
+
+;; (defun emacspeak-moz-init ()
+;;   "Load emacspeak.js file, and initialize context."
+;;   (declare (special moz-repl-name
+;;                     emacspeak-directory emacspeak-moz-js-directory))
+;;   (comint-send-string
+;;    (inferior-moz-process)
+;;    (format
+;;     "%s.load('file://localhost%s') \;
+;; %s.emacspeak = new Emacspeak('%s')\;
+;; %s.emacspeak.init()\;"
+;;     moz-repl-name (expand-file-name "emacspeak.js" emacspeak-moz-js-directory)
+;;     moz-repl-name emacspeak-directory
+;;     moz-repl-name)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;; function getWindows() {
 ;;     var windowEnum = Cc['@mozilla.org/appshell/window-mediator;1']
@@ -298,6 +375,8 @@ tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos-1];
 ;
 
 ;; http://www.rlazo.org/blog/entry/2008/sep/13/do-you-use-google-to-find-definitions/
+
+
 (require 'mm-url)
 (defun dss/google-define-word-or-phrase (query)
   (interactive "sInsert word or phrase to search: ")
@@ -317,6 +396,7 @@ tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos-1];
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-w3m")
 (setq w3m-icon-directory "/usr/share/emacs/etc/emacs-w3m")
 (require 'w3m-load)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-browser-integration)
