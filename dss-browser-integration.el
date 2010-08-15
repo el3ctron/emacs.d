@@ -18,7 +18,7 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 
 (require 'moz)
 (require 'json)
-(add-hook 'js2-mode-hook (lambda (moz-minor-mode 1)))
+(add-hook 'js2-mode-hook (lambda () (moz-minor-mode 1)))
 ;    * C-c C-s: open a MozRepl interaction buffer and switch to it
 ;    * C-c C-l: save the current buffer and load it in MozRepl
 ;    * C-M-x: send the current function (as recognized by c-mark-function) to MozRepl
