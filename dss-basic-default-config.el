@@ -42,12 +42,11 @@
 (delete-selection-mode 1)
 (setq kill-whole-line t) ; if at the beg of line C-k includes the newline chars
 
-(setq show-paren-style (quote expression))
+(setq show-paren-style (quote parenthesis))
 (show-paren-mode t)
 
-(setq default-major-mode 'text-mode)
+(set-default major-mode 'text-mode)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
-
 
 (defun dss/set-undo-boundary ()
   (interactive)
@@ -55,9 +54,7 @@
 
 ;; mouse and selection settings
 (add-hook 'after-init-hook (lambda ()
-                             (require 'xt-mouse)
-                             (xterm-mouse-mode)))
-(setq x-select-enable-clipboard t)
+                             (xterm-mouse-mode 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-basic-default-config)
