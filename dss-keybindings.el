@@ -61,6 +61,13 @@
 (define-key global-map "\e[B" (kbd "<down>"))
 (define-key global-map "\e[C" (kbd "<right>"))
 (define-key global-map "\e[D" (kbd "<left>"))
+
+(define-key ac-completing-map "\e[A" 'ac-previous)
+(define-key ac-completing-map "\e[B" 'ac-next)
+
+(define-key ac-completing-map "\eOa" 'ac-quick-help-scroll-up)
+(define-key ac-completing-map "\eOb" 'ac-quick-help-scroll-down)
+
 (define-key ido-common-completion-map "\e[A" 'previous-history-element)
 (define-key ido-common-completion-map "\e[B" 'next-history-element)
 (define-key ido-common-completion-map "\e[C" 'ido-next-match)
