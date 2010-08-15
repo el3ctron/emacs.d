@@ -7,13 +7,13 @@
 ;; http://shreevatsa.wordpress.com/2006/10/22/emacs-copypaste-and-x/
 ;; http://www.mail-archive.com/help-gnu-emacs@gnu.org/msg03577.html
 
-(defun dss-xsel-cut-function (text &optional push)
+(defun dss/xsel-cut-function (text &optional push)
   ;; Insert text to temp-buffer, and "send" content to xsel stdin
   (with-temp-buffer
     (insert text)
     (call-process-region (point-min) (point-max) "xsel" nil 0 nil "--input" "-p" "--clipboard")))
 
-(defun dss-xsel-paste-function()
+(defun dss/xsel-paste-function()
   ;; Find out what is current selection by xsel. If it is different
   ;; from the top of the kill-ring (car kill-ring), then return
   ;; it. Else, nil is returned, so whatever is in the top of the
@@ -22,19 +22,40 @@
     (unless (string= (car kill-ring) xsel-output)
       xsel-output)))
 
+(defun dss/file-to-string (file)
+  "There must be a built-in that does this..."
+  (when (file-readable-p file)
+    (with-temp-buffer
+      (insert-file-contents file)
+      (buffer-string))))
+
+(defun dss/x-display-use-b3 ()
+  (interactive)
+  (shell-command "use_b3_display")
+  (dss/x-display-sync))
+
+(defun dss/x-display-use-local ()
+  (interactive)
+  (shell-command "use_local_display")
+  (dss/x-display-sync))
+
+(defun dss/x-display-sync ()
+  (interactive)
+  (setenv "DISPLAY"
+          (or (dss/file-to-string "~/.last-display") ":0")))
+
 (defun dss/tty-x-clipboard-init ()
   (interactive)
   (unless window-system
     (unless (getenv "DISPLAY")
-      (setenv "DISPLAY" ":0"))
-    (setq interprogram-cut-function 'dss-xsel-cut-function)
-    (setq interprogram-paste-function 'dss-xsel-paste-function)))
+      (dss/x-display-sync))
+    (setq interprogram-cut-function 'dss/xsel-cut-function)
+    (setq interprogram-paste-function 'dss/xsel-paste-function)))
 
 (defun dss/tty-x-clipboard-disable ()
   (interactive)
   (setq interprogram-cut-function nil)
-  (setq interprogram-paste-function nil)
-  )
+  (setq interprogram-paste-function nil))
 
 
 ;; also see http://stackoverflow.com/questions/994563/integrate-readlines-kill-ring-and-the-x11-clipboard
