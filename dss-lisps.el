@@ -1,5 +1,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; elisp
+(defun dss/goto-match-paren (arg)
+  "Go to the matching parenthesis if on parenthesis. Else go to the
+   opening parenthesis one level up.
+
+  Copied from: http://www.emacswiki.org/emacs/ParenthesisMatching"
+  (interactive "p")
+  (cond ((looking-at "\\s\(") (forward-list 1))
+        (t
+         (backward-char 1)
+         (cond ((looking-at "\\s\)")
+                (forward-char 1) (backward-list 1))
+               (t
+                (while (not (looking-at "\\s("))
+                  (backward-char 1)
+                  (cond ((looking-at "\\s\)")
+                         (forward-char 1)
+                         (backward-list 1)
+                         (backward-char 1)))))))))
+
 
 (defun dss/remove-elc-on-save ()
   "If you're saving an elisp file, likely the .elc is no longer valid.
