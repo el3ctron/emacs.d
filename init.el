@@ -31,7 +31,7 @@
 (require 'dss-javascript)
 (require 'dss-ess) ; emacs-speaks-statistics for R-lang support
 (require 'dss-lisps)
-(require 'dss-haskell)
+;(require 'dss-haskell)
 (require 'dss-nxml)
 (require 'dss-lua)
 (require 'dss-clojure)
