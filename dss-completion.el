@@ -71,6 +71,17 @@ advice like this:
   (let (ido-enable-replace-completing-read)
      (call-interactively 'where-is)))
 
+(defun dss/ido-search-file (dir pattern ex-pattern)
+  (let* ((file-list
+          (split-string
+           (shell-command-to-string
+            (concat
+             "DIR=" dir ";"
+             "find $DIR -type f -regex '" pattern "'"
+             " -not -regex '" ex-pattern "' "
+             "| sed -e's#'$DIR'##'"))))
+         (choice (ido-completing-read "Which file: " file-list)))
+    (find-file (concat dir choice))))
 
 ;http://www.rlazo.org/blog/entry/2008/sep/13/insert-a-path-into-the-current-buffer/
 (defun dss/insert-path (file)
