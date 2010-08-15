@@ -25,7 +25,8 @@ cedet http://cedet.sourceforge.net/ (via app-emacs/ecb)
 ess http://ess.r-project.org/ (app-emacs/ess)
 
 # dss-haskell
-haskell-mode http://projects.haskell.org/haskellmode-emacs/ (app-emacs/haskell-mode)
+haskell-mode http://projects.haskell.org/haskellmode-emacs/ (vendors/)
+  (copied in from app-emacs/haskell-mode)
 
 # dss-javascript.el
 js2-mode http://github.com/mooz/js2-mode (vendors/) 
@@ -55,7 +56,8 @@ rst (app-emacs/rst)
 pylookup (vendors/)
 flymake-cursor http://paste.lisp.org/display/60617,1/raw (vendors/)
 auto-complete-python http://www.cx4a.org/pub/auto-complete-python.el (vendors/)
-pymacs http://pymacs.progiciels-bpi.ca/ (app-emacs/pymacs)
+
+pymacs http://pymacs.progiciels-bpi.ca/ (installed via python)
 ropemacs (installed via python)
 
 # dss-search-occur-etc.el
@@ -73,5 +75,5 @@ lineker http://www.helsinki.fi/~sjpaavol/programs/lineker.el (vendors/)
 show-wspace http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el (vendors/)
 col-highlight http://www.emacswiki.org/cgi-bin/wiki/col-highlight.el (vendors/)
 
-# dss-buffer-and-window-handling
+# dss-buffer-and-window-handling (vendors/)
 window-numbering-mode http://nschum.de/src/emacs/window-numbering-mode/
