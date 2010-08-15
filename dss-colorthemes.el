@@ -3,7 +3,7 @@
 ;; note, this will look horrible in anything other than a 256 color
 ;; black or transparent black terminal window.
 
-(defun color-theme-tavis-tty ()
+(defun dss/color-theme-dark-tty ()
   (interactive)
   (require 'color-theme)
   (color-theme-initialize)
@@ -32,9 +32,10 @@
      ;(scroll-bar ((t (:background "#121212"))))
      ;(tool-bar ((t (:background "#121212" ))))
      ;(fringe ((t (:background "#121212"))))
-     (region ((t (:background "#0000af" )))) ;#0000d7
+     (region ((t (:background "#000087" )))) ;#0000d7 ;#0000af
      (secondary-selection ((t (:background "#0000ff"))))
-     (show-paren-match-face ((t (:background "#000087"))));#303030
+     ;(show-paren-match-face ((t (:background "#000087"))));#303030
+     (show-paren-match-face ((t (:background "cyan"))));#303030
      (show-paren-mismatch-face ((t (:background "magenta" :foreground "white"))))
      (flymake-errline ((t (:background "#870000"))))
      (flymake-warnline ((t (:background "#444444"))))
@@ -128,9 +129,10 @@
             (select-frame frame)
             (if window-system
                 ();(color-theme-vim-colors)
-              (color-theme-tavis-tty))))
-(add-hook 'after-init-hook (lambda ()
-                             (unless window-system
-                               (color-theme-tavis-tty))))
+              (dss/color-theme-dark-tty))))
+(add-hook 'after-init-hook
+          (lambda ()
+            (unless window-system
+              (dss/color-theme-dark-tty))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-colorthemes)
