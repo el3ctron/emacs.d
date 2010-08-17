@@ -30,6 +30,19 @@
 (require 'visible-mark)
 (global-visible-mark-mode t)
 
+(defun dss/goto-line (line)
+  "A simplified, single buffer version of the standard command
+  that work even if the buffer is narrowed"
+  (interactive "nLine:")
+  ;; Leave mark at previous position
+  (or (region-active-p) (push-mark))
+  ;; Move to the specified line number in that buffer.
+  (save-restriction
+    (goto-char (point-min))
+    (if (eq selective-display t)
+        (re-search-forward "[\n\C-m]" nil 'end (1- line))
+      (forward-line (1- line)))))
+
 (require 'goto-last-change)             ;there is another version of this library called goto-chg.el
 
 ;; see
