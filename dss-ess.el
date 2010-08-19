@@ -4,6 +4,6 @@
 (if (file-exists-p "/usr/share/emacs/etc/ess")
     (condition-case nil
         (require 'ess-site)
-      (message ("Error while loading ess"))))
+      (message "Error while loading ess")))
 
 (provide 'dss-ess)

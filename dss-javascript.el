@@ -1,11 +1,12 @@
+(require 'dss-paths)
+(require 'cc-vars)
+(require 'dss-codenav-helpers)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Yegge's js2-mode with better indentation support
 
-(require 'dss-codenav-helpers)
-
 (add-to-list 'load-path (concat dss-vendor-dir "js2-mode"))
-
-(autoload 'js2-mode "js2-mode" nil t)
+(require 'js2-mode)
 
 (defun dss/js2-indent-function ()
   "This is just a copy of http://mihai.bazon.net/projects/editing-javascript-with-emacs-js2-mode"

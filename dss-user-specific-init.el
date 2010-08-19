@@ -1,7 +1,7 @@
 ;;; idea from http://github.com/technomancy/emacs-starter-kit/blob/master/init.el
-(setq dss-system-specific-config (concat dss-dotfiles-dir system-name ".el")
-      dss-user-specific-config (concat dss-dotfiles-dir user-login-name ".el")
-      dss-user-specific-dir (concat dss-dotfiles-dir user-login-name "/"))
+(defvar dss-system-specific-config (concat dss-dotfiles-dir system-name ".el"))
+(defvar dss-user-specific-config (concat dss-dotfiles-dir user-login-name ".el"))
+(defvar dss-user-specific-dir (concat dss-dotfiles-dir user-login-name "/"))
 (add-to-list 'load-path dss-user-specific-dir)
 
 (if (file-exists-p dss-system-specific-config) (load dss-system-specific-config))

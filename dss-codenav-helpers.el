@@ -1,3 +1,5 @@
+(require 'dss-basic-editing)
+(require 'k2-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun dss/display-syntax (syntax-type)
   (eq syntax-type (syntax-ppss-context (syntax-ppss))))
@@ -248,6 +250,7 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
 ;;             (goto-char position) (goto-char (overlay-start position))))))
 
 
+(require 'column-marker)
 (defvar  dss/major-column-face 'dss/major-column-face
   "major column grid marker")
 (defface dss/major-column-face '((t (:background "#484848")))
@@ -290,7 +293,7 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
 (defun dss/local-line-jump (n)
   (interactive "nLine: ")
   ;(message (format "%d" (+ n (* (/ (line-number-at-pos) 100) 100))))
-  (goto-line (+ n (* (/ (line-number-at-pos) 100) 100))))
+  (dss/goto-line (+ n (* (/ (line-number-at-pos) 100) 100))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-codenav-helpers)

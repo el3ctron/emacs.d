@@ -1,3 +1,11 @@
+(require 'moz)
+(require 'json)
+(require 'thingatpt)
+(require 'browse-url)
+
+(eval-when-compile
+   (require 'cl))
+
 (defun dss/open-url ()
   "Open a new buffer containing the contents of URL.
 http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.el"
@@ -16,8 +24,6 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 ;   extensions.mozrepl.autoStart;true
 ;   extensions.mozrepl.initUrl;file://localhost/home/tavis/tr_toolchain/mozrepl/custom.js
 
-(require 'moz)
-(require 'json)
 (add-hook 'js2-mode-hook (lambda () (moz-minor-mode 1)))
 ;    * C-c C-s: open a MozRepl interaction buffer and switch to it
 ;    * C-c C-l: save the current buffer and load it in MozRepl
@@ -50,6 +56,7 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 
 (defun dss/moz-restart-repl ()
   (interactive)
+  (delete-process inferior-moz-buffer)
   (kill-buffer inferior-moz-buffer)
   (inferior-moz-process))
 
@@ -119,12 +126,14 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
   (dss/moz-eval-expression
    (format "gBrowser.selectedTab = gBrowser.addTab('%s')\n" url)))
 
+(defvar dss-browse-url-hook nil
+  "Hook run on after each call of browser-url.")
+
 (defun dss/browse-url-firefox-new-tab (url &optional new-window)
   "Open URL in a new tab in Mozilla."
   (interactive (browse-url-interactive-arg "URL: "))
   (dss/moz-new-tab-url url)
-  (if (not (eq moz-repl-host "tavismac"))
-      (dss/x-display-focus-firefox)))
+  (run-hooks 'dss-browse-url-hook))
 (setq browse-url-browser-function 'dss/browse-url-firefox-new-tab)
 
 (defun dss/moz-duplicate-tab ()

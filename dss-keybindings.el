@@ -1,15 +1,22 @@
+(require 'auto-complete)
+(require 'ido)
+(require 'comint)
+(require 'org)
+(require 'fm)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; additional custom keymaps, populated below
-(setq f2-map (make-sparse-keymap))
-(setq f4-map (make-sparse-keymap))
-(setq f6-map (make-sparse-keymap))
-(setq f7-map (make-sparse-keymap))
+(defvar f2-map (make-sparse-keymap))
+(defvar f4-map (make-sparse-keymap))
+(defvar f6-map (make-sparse-keymap))
+(defvar f7-map (make-sparse-keymap))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; global map
-(global-set-key (kbd "M-X") 'smex-update-and-run)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-s") 'ido-goto-symbol)
+(define-key global-map (kbd "M-X") 'smex-update-and-run)
+(define-key global-map (kbd "M-x") 'smex)
+(define-key global-map (kbd "M-s") 'ido-goto-symbol)
+(define-key global-map (kbd "M-]") 'dss/goto-match-paren)
 
 (defun dss/hippie-expand ()
   (interactive)
@@ -62,6 +69,9 @@
 (define-key global-map "\e[C" (kbd "<right>"))
 (define-key global-map "\e[D" (kbd "<left>"))
 
+(define-key paredit-mode-map (kbd "C-<right>") 'forward-word)
+(define-key paredit-mode-map (kbd "C-<left>") 'backward-word)
+
 (define-key ac-completing-map "\e[A" 'ac-previous)
 (define-key ac-completing-map "\e[B" 'ac-next)
 
@@ -78,6 +88,7 @@
 (define-key global-map [mouse-4] 'down-slightly)
 (define-key global-map [mouse-6] 'down-slightly)
 (define-key global-map [mouse-5] 'up-slightly)
+
 
 
 ;http://www.emacsblog.org/2007/02/27/quick-tip-add-occur-to-isearch/

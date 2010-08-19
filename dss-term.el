@@ -1,30 +1,44 @@
+(require 'multi-term)
+(require 'comint)
+
 (setq shell-command-switch "-lc")
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 ;; multi-term
 (autoload 'multi-term "multi-term")
 (setq multi-term-program "/bin/bash")
-(require 'multi-term)
-
-(defun dss/cd-multi-term (dir &optional command)
-  (let (tmp-buffer new-buffer)
+(defun dss/cd-multi-term (dir &optional command switch)
+  (let (tmp-buffer term-buffer)
     ;; with-temp-buffer gets in the way here
     (set-buffer (setq tmp-buffer (get-buffer-create "*multi-term-launcher*")))
+
     (setq default-directory dir)
-    (setq new-buffer (multi-term))
+
+    ;;(setq term-buffer (multi-term))
+    (setq term-buffer (multi-term-get-buffer current-prefix-arg))
+    (set-buffer term-buffer)
+    (multi-term-internal)
+
     (kill-buffer tmp-buffer)
+
     (if command
         (term-send-raw-string command))
-    new-buffer))
+    (unless (and (not (eq switch nil))
+                 (< switch 0))
+        (switch-to-buffer term-buffer))
+    term-buffer))
 
 (defun dss/term-toggle-mode ()
   "Toggle between term-char-mode and term-line-mode."
   (interactive)
   (if (term-in-line-mode)
-      (progn
-        (term-char-mode)
-        (term-send-raw-string "\C-e"))
+      (dss/term-char-mode)
     (term-line-mode)))
+
+(defun dss/term-char-mode ()
+  (interactive)
+  (term-char-mode)
+  (comint-goto-process-mark))
 
 (defun dss/term-dabbrev ()
   (interactive)

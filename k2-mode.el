@@ -143,23 +143,23 @@
     ;;
 
     ;; set prefix keys for C-x-C-[char] shortcuts  --- see below
-    (setq prefix-kp-multiply-map (make-keymap))
+    (defvar prefix-kp-multiply-map (make-keymap))
     (define-key k2-mode-map [kp-multiply] prefix-kp-multiply-map)
     (define-key k2-mode-map [f9] prefix-kp-multiply-map)
 
     ;; set prefix keys for M-C-[char] shortcuts   --- see below
-    (setq prefix-kp-subtract-map (make-keymap))
+    (defvar prefix-kp-subtract-map (make-keymap))
     (define-key k2-mode-map [kp-subtract] prefix-kp-subtract-map)
     (define-key k2-mode-map [f11] prefix-kp-subtract-map)
 
-    (setq prefix-kp-add-map (make-keymap))
+    (defvar prefix-kp-add-map (make-keymap))
     (define-key k2-mode-map [kp-add] prefix-kp-add-map)
 
-    (setq prefix-kp-divide-map (make-keymap))
+    (defvar prefix-kp-divide-map (make-keymap))
     (define-key k2-mode-map [kp-divide] prefix-kp-divide-map)
 
 
-    (setq prefix-s-kp-divide-map (make-keymap))
+    (defvar prefix-s-kp-divide-map (make-keymap))
     (define-key k2-mode-map [s-kp-divide] prefix-s-kp-divide-map)
 
 

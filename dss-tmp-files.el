@@ -1,3 +1,4 @@
+(require 'dss-paths)
 (defvar user-temporary-file-directory (concat dss-ephemeral-dir "tmp/"))
 (make-directory user-temporary-file-directory t)
 (setq backup-by-copying t)

@@ -1,14 +1,17 @@
 ;; python-mode
+(require 'dss-paths)
 (require 'dss-codenav-helpers)
-
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/python-mode")
-(autoload 'python-mode "python-mode" "PY" t)
+(require 'python-mode)
+(require 'flymake)
 
-
+;;; see http://pedrokroger.net/blog/2010/07/configuring-emacs-as-a-python-ide-2/
+;;; for a good overview of another very complete setup
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 
-(setq pycodechecker "dss_pycheck") ; this is a wrapper around pep8.py, pyflakes and pylint
+(defvar dss-pycodechecker "dss_pycheck") ; this is a wrapper around pep8.py, pyflakes and pylint
+
 (when (load "flymake" t)
   (load-library "flymake-cursor")
   (defun flymake-pycodecheck-init ()
@@ -17,9 +20,10 @@
            (local-file (file-relative-name
                         temp-file
                         (file-name-directory buffer-file-name))))
-      (list pycodechecker (list local-file))))
+      (list dss-pycodechecker (list local-file))))
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pycodecheck-init)))
+
 (defun dss/pylint-msgid-at-point ()
   (interactive)
   (let (msgid
@@ -225,6 +229,8 @@ This is python-comment-line-p from Dave Love's python.el"
 (require 'ipython)
 (setq ipython-command "emacs_ipython") ; which is a shell script that handles all the virtualenv setup, etc
 
+(require 'auto-complete)
+
 (defun dss/start-ipy-complete ()
   (interactive)
   (setq ac-sources '(ac-source-dss-ipy-dot ac-source-dss-ipy ac-source-filename)))
@@ -260,12 +266,13 @@ This is python-comment-line-p from Dave Love's python.el"
 
 ;; pylookup, to look though online Python docs
 ;; (git clone git://github.com/tsgates/pylookup.git)
-(setq dss-pylookup-dir (concat dss-vendor-dir "pylookup/"))
-(setq pylookup-program (concat dss-pylookup-dir "pylookup.py"))
-(setq pylookup-db-file (concat dss-pylookup-dir "pylookup.db"))
+(defvar dss-pylookup-dir (concat dss-vendor-dir "pylookup/"))
+(setq-default pylookup-program (concat dss-pylookup-dir "pylookup.py"))
+(setq-default pylookup-db-file (concat dss-pylookup-dir "pylookup.db"))
 
-(load-file (concat dss-pylookup-dir "pylookup.el"))
-(eval-when-compile (require 'pylookup))
+;(load-file (concat dss-pylookup-dir "pylookup.el"))
+(add-to-list 'load-path dss-pylookup-dir)
+(require 'pylookup)
 (autoload 'pylookup-lookup "pylookup"
   "Lookup SEARCH-TERM in the Python HTML indexes." t)
 (autoload 'pylookup-update "pylookup"

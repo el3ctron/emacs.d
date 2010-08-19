@@ -1,3 +1,6 @@
+(require 'paren)
+(require 'cc-vars)
+
 (fset 'yes-or-no-p 'y-or-n-p) ; less typing
 
 ;; encoding
@@ -47,10 +50,6 @@
 
 (set-default major-mode 'text-mode)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
-
-(defun dss/set-undo-boundary ()
-  (interactive)
-  (undo-boundary))
 
 ;; mouse and selection settings
 (add-hook 'after-init-hook (lambda ()

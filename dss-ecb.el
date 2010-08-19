@@ -1,4 +1,4 @@
-(setq dss/ecb-loaded nil)
+(defvar dss/ecb-loaded nil)
 (defun dss/load-ecb ()
   (interactive)
   (load "/usr/share/emacs/site-lisp/cedet/common/cedet")

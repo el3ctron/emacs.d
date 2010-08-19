@@ -1,3 +1,5 @@
+(require 'comint)
+(require 'dss-paths)
 (eval-when-compile (require 'cl))
 
 (setq-default abbrev-mode t)
@@ -208,6 +210,7 @@ advice like this:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; partially working support for using auto complete in ipython buffers
+(require 'ipython)
 (defun dss-ipython-completion-candidate (&optional use-ido)
   "This is a hacked version of ipython-complete from ipython.el,
     which can be used with either autocomplete-mode or ido.

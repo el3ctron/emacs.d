@@ -1,6 +1,10 @@
 (require 'filladapt)
 (setq-default filladapt-mode t)
 
+(defun dss/set-undo-boundary ()
+  (interactive)
+  (undo-boundary))
+
 (defun dss/cap-sentence ()
   (interactive)
   (save-excursion
@@ -50,6 +54,7 @@
 ;; http://www.bloomington.in.us/~brutt/marker-visit.el
 
 ;;; http://emacs-fu.blogspot.com/2009/05/tracking-changes.html
+(require 'hilit-chg)
 (setq highlight-changes-visibility-initial-state nil)
 (global-highlight-changes-mode t)
 ;; (global-set-key (kbd "<f6>")      'highlight-changes-visible-mode) ;; changes

@@ -54,3 +54,4 @@
 (require 'smex)
 (setq smex-save-file (concat dss-ephemeral-dir "smex.save"))
 (smex-initialize)
+(put 'narrow-to-region 'disabled nil)

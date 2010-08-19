@@ -1,4 +1,5 @@
 (require 'browse-kill-ring)
+(require 'dss-elisp-funcs) ; dss/file-to-string
 
 (setq x-select-enable-clipboard t)
 
@@ -22,23 +23,6 @@
     (unless (string= (car kill-ring) xsel-output)
       xsel-output)))
 
-(defun dss/file-to-string (file)
-  "There must be a built-in that does this..."
-  (when (file-readable-p file)
-    (with-temp-buffer
-      (insert-file-contents file)
-      (buffer-string))))
-
-(defun dss/x-display-use-b3 ()
-  (interactive)
-  (shell-command "use_b3_display")
-  (dss/x-display-sync))
-
-(defun dss/x-display-use-local ()
-  (interactive)
-  (shell-command "use_local_display")
-  (dss/x-display-sync))
-
 (defun dss/x-display-sync ()
   (interactive)
   (setenv "DISPLAY"
@@ -56,7 +40,6 @@
   (interactive)
   (setq interprogram-cut-function nil)
   (setq interprogram-paste-function nil))
-
 
 ;; also see http://stackoverflow.com/questions/994563/integrate-readlines-kill-ring-and-the-x11-clipboard
 ;; http://bbs.archlinux.org/viewtopic.php?id=80226

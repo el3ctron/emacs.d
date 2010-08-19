@@ -1,7 +1,10 @@
+(require 'dss-paths)
+(require 'ediff)
+(require 'ediff-vers)
+(require 'vc)
+
 (defun vc-ediff ()
   (interactive)
-  (require 'ediff)
-  (require 'vc)
   (vc-buffer-sync)
   (ediff-load-version-control)
   (setq ediff-split-window-function 'split-window-horizontally)
