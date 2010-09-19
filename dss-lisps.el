@@ -1,5 +1,44 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; elisp
+(require 'paredit)
+(require 'eldoc)
+(require 'dss-codenav-helpers)
+
+(eldoc-add-command
+ 'paredit-backward-delete
+ 'paredit-close-round)
+
+(defvar dss-lisp-modes-hook nil)
+
+(defun dss/lisp-modes-init ()
+  (linum-mode t)
+  (paredit-mode +1)
+  (dss/highlight-watchwords)
+  (run-hooks 'dss-lisp-modes-hook))
+
+;;  idea from esk-paren-face in emacs starter Kit
+(defface dss-paren-face
+   '((((class color))
+      ;; 9e9e9e or a8a8a8 are also good
+      (:foreground "#b2b2b2")))
+   "Face used to dim parentheses."
+   :group 'dss-faces)
+
+(defface dss-end-paren-face
+   '((((class color))
+      (:foreground "#9e9e9e")))
+   "Face used to dim parentheses."
+   :group 'dss-faces)
+
+;; this form also from emacs starter kit
+(dolist (x '(scheme emacs-lisp lisp lisp-interaction clojure))
+  (font-lock-add-keywords
+     (intern (concat (symbol-name x) "-mode"))
+     '(("(" . 'dss-paren-face)      ;("(\\|)" . 'dss-paren-face)
+       (")" . 'dss-end-paren-face)
+       ))
+  (add-hook
+   (intern (concat (symbol-name x) "-mode-hook")) 'dss/lisp-modes-init))
+
+
 (defun dss/goto-match-paren (arg)
   "Go to the matching parenthesis if on parenthesis. Else go to the
    opening parenthesis one level up.
@@ -20,6 +59,16 @@
                          (backward-char 1)))))))))
 
 
+(defun dss/paredit-backward-delete ()
+  (interactive)
+  (if mark-active
+      (call-interactively 'delete-region)
+    (paredit-backward-delete)))
+
+(define-key paredit-mode-map (kbd "DEL") 'dss/paredit-backward-delete)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; elisp
 (defun dss/remove-elc-on-save ()
   "If you're saving an elisp file, likely the .elc is no longer valid.
   Comes from the emacs starter kit"
@@ -28,46 +77,17 @@
             (lambda ()
               (if (file-exists-p (concat buffer-file-name "c"))
                   (delete-file (concat buffer-file-name "c"))))))
-(add-hook 'emacs-lisp-mode-hook 'dss/remove-elc-on-save)
-
-
-(require 'paredit)
-(defun dss/paredit-backward-delete ()
-  (interactive)
-  (if mark-active
-      (call-interactively 'delete-region)
-    (paredit-backward-delete)))
-(define-key paredit-mode-map (kbd "DEL") 'dss/paredit-backward-delete)
-(require 'paredit)
-;; study http://www.emacswiki.org/emacs/ParEdit
-;; http://www.emacswiki.org/emacs/PareditCheatsheet
-
-(defun dss/lisp-modes-hook ()
-  (linum-mode t)
-  (local-set-key (kbd "RET") 'newline-and-indent)
-  (paredit-mode +1))
-
-(add-hook 'emacs-lisp-mode-hook 'dss/lisp-modes-hook)
-(add-hook 'lisp-mode-hook 'dss/lisp-modes-hook)
-(add-hook 'lisp-interaction-mode-hook 'dss/lisp-modes-hook)
-
-(require 'eldoc)
-(eldoc-add-command
- 'paredit-backward-delete
- 'paredit-close-round)
-
-(add-hook 'emacs-lisp-mode-hook (lambda () (eldoc-mode)))
 
 (add-hook
  'emacs-lisp-mode-hook
  (lambda ()
+   (dss/remove-elc-on-save)
+   (eldoc-mode)
    (setq hippie-expand-try-functions-list
     '(try-expand-dabbrev-visible
       try-complete-lisp-symbol
       try-complete-lisp-symbol-partially
       try-expand-dabbrev))))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; real lisp hackers use the lambda character
@@ -81,79 +101,13 @@
 
 (defun dss/pretty-lambda-enable ()
   (interactive)
-  (add-hook 'emacs-lisp-mode-hook 'sm-lambda-mode-hook)
-  (add-hook 'lisp-mode-hook 'sm-lambda-mode-hook)
-  (add-hook 'lisp-interactive-mode-hook 'sm-lamba-mode-hook)
-  (add-hook 'scheme-mode-hook 'sm-lambda-mode-hook)
+  (add-hook 'dss-lisp-modes-hook 'sm-lambda-mode-hook)
   (add-hook 'python-mode-hook 'sm-lambda-mode-hook))
 
 (defun dss/pretty-lambda-disable ()
   (interactive)
-  (remove-hook 'emacs-lisp-mode-hook 'sm-lambda-mode-hook)
-  (remove-hook 'lisp-mode-hook 'sm-lambda-mode-hook)
-  (remove-hook 'lisp-interactive-mode-hook 'sm-lamba-mode-hook)
-  (remove-hook 'scheme-mode-hook 'sm-lambda-mode-hook)
+  (remove-hook 'dss-lisp-modes-hook 'sm-lambda-mode-hook)
   (remove-hook 'python-mode-hook 'sm-lambda-mode-hook))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; another implementation of pretty lambda
-;;(defun sm-lambda-mode-hook ()
-;;  (substitute-patterns-with-unicode (list (cons "\\(lambda\\)" 'lambda))))
-;;
-;;(defun unicode-symbol (name)
-;;   "Translate a symbolic name for a Unicode character -- e.g., LEFT-ARROW
-;; or GREATER-THAN into an actual Unicode character code. "
-;;   (decode-char 'ucs (case name
-;;                       ('left-arrow 8592)
-;;                       ('up-arrow 8593)
-;;                       ('right-arrow 8594)
-;;                       ('down-arrow 8595)
-;;                       ('double-vertical-bar #X2551)
-;;                       ('equal #X003d)
-;;                       ('not-equal #X2260)
-;;                       ('identical #X2261)
-;;                       ('not-identical #X2262)
-;;                       ('less-than #X003c)
-;;                       ('greater-than #X003e)
-;;                               ('less-than-or-equal-to #X2264)
-;;                               ('greater-than-or-equal-to #X2265)
-;;                       ('logical-and #X2227)
-;;                       ('logical-or #X2228)
-;;                       ('logical-neg #X00AC)
-;;                       ('nil #X2205)
-;;                       ('horizontal-ellipsis #X2026)
-;;                       ('double-exclamation #X203C)
-;;                       ('prime #X2032)
-;;                       ('double-prime #X2033)
-;;                       ('for-all #X2200)
-;;                       ('there-exists #X2203)
-;;                       ('element-of #X2208)
-;;                       ('square-root #X221A)
-;;                       ('squared #X00B2)
-;;                       ('cubed #X00B3)
-;;                       ('lambda #X03BB)
-;;                       ('alpha #X03B1)
-;;                       ('beta #X03B2)
-;;                       ('gamma #X03B3)
-;;                       ('delta #X03B4))))
-;;
-;;(defun substitute-patterns-with-unicode (patterns)
-;;   "Call SUBSTITUTE-PATTERN-WITH-UNICODE repeatedly."
-;;   (mapcar #'(lambda (x)
-;;               (substitute-pattern-with-unicode (car x)
-;;                                                (cdr x)))
-;;           patterns))
-;;
-;;(defun substitute-pattern-with-unicode (pattern symbol)
-;;  "Add a font lock hook to replace the matched part of PATTERN with the
-;;     Unicode symbol SYMBOL looked up with UNICODE-SYMBOL."
-;;  (interactive)
-;;  (font-lock-add-keywords
-;;   nil `((,pattern
-;;          (0 (progn (compose-region (match-beginning 1) (match-end 1)
-;;                                    ,(unicode-symbol symbol)
-;;                                    'decompose-region)
-;;                    nil))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-lisps)
