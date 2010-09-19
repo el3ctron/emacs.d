@@ -121,6 +121,14 @@
             (define-key comint-mode-map [(control p)]
               'comint-previous-input)
             ))
+
+
+(define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
+(define-key lisp-mode-shared-map (kbd "C-c l") "lambda")
+(define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
+(define-key lisp-mode-shared-map (kbd "M-TAB") 'lisp-complete-symbol)
+(define-key lisp-mode-shared-map (kbd "C-c v") 'eval-buffer)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; additional custom maps, defined and hooked into global-map above
 
