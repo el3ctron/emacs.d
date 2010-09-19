@@ -193,6 +193,7 @@ This is python-comment-line-p from Dave Love's python.el"
         (linum-mode t)
         (dss/ropemacs-init)
         (ropemacs-mode t)
+        (dss/highlight-watchwords)
         (dss/load-rope-completion)))
 
   ;; custom keybindings
@@ -226,8 +227,12 @@ This is python-comment-line-p from Dave Love's python.el"
 ;; python-mode helpers
 
 ;; ipython related
+(set-default 'ipython-command "emacs_ipython") ; which is a shell script that handles all the virtualenv setup, etc
 (require 'ipython)
-(setq ipython-command "emacs_ipython") ; which is a shell script that handles all the virtualenv setup, etc
+
+(defun dss/reset-ipython-command ()
+  (interactive)
+  (setq py-which-shell ipython-command))
 
 (require 'auto-complete)
 
