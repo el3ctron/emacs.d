@@ -56,8 +56,10 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 
 (defun dss/moz-restart-repl ()
   (interactive)
-  (delete-process inferior-moz-buffer)
-  (kill-buffer inferior-moz-buffer)
+  (if inferior-moz-buffer
+      (progn
+        (delete-process inferior-moz-buffer)
+        (kill-buffer inferior-moz-buffer)))
   (inferior-moz-process))
 
 (defun dss/moz-eval-expression (exp)
