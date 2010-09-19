@@ -295,5 +295,13 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
   ;(message (format "%d" (+ n (* (/ (line-number-at-pos) 100) 100))))
   (dss/goto-line (+ n (* (/ (line-number-at-pos) 100) 100))))
 
+(defun dss/highlight-watchwords ()
+  ;; http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.el
+  (interactive)
+  ;; (font-lock-add-keywords
+  ;;  nil '(("\\<\\(FIX\\|TODO\\|FIXME\\|HACK\\|@@TR\\|REFACTOR\\)*:"
+  ;;         1 font-lock-warning-face t)))
+  (highlight-regexp "\\<\\(FIXME\\|FIX\\|TODO\\|HACK\\|TR\\|REFACTOR\\):?" 'font-lock-warning-face))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-codenav-helpers)
