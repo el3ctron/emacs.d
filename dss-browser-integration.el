@@ -113,6 +113,29 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
   (interactive)
   (dss/moz-eval-expression "this.BrowserReload()\n"))
 
+(defun dss/moz-reload-delayed ()
+  "Reload the url in the current tab"
+  (interactive)
+  (run-at-time "2 sec" nil 'dss/moz-reload))
+
+;;; window.getBrowser().mTab[i]
+(defun dss/moz-update (&rest ignored)
+  "Update the remote mozrepl instance"
+  (interactive)
+  (comint-send-string (inferior-moz-process)
+    (concat "content.document.body.innerHTML="
+             (json-encode (buffer-string)) ";")))
+
+(defun dss/moz-enable-auto-reload ()
+  "Automatically reload the remote mozrepl when this buffer changes"
+  (interactive)
+  (add-hook 'after-save-hook 'dss/moz-reload-delayed t t))
+
+(defun dss/moz-disable-auto-reload ()
+  "Disable automatic mozrepl updates"
+  (interactive)
+  (remove-hook 'after-save-hook 'dss/moz-reload-delayed t))
+
 ;; (defun moz-find-next ()
 ;;   (interactive)
 ;;   (dss/moz-eval-expression "gBrowser.webBrowserFind.findNext()\n"))
@@ -205,24 +228,6 @@ tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos-1];
   (interactive "nWindow: ")
   (dss/moz-eval-expression
    (format "repl.enter(repl.getWindows()[%d]);\n" (- n 1))))
-
-;;; window.getBrowser().mTab[i]
-(defun dss/moz-update (&rest ignored)
-  "Update the remote mozrepl instance"
-  (interactive)
-  (comint-send-string (inferior-moz-process)
-    (concat "content.document.body.innerHTML="
-             (json-encode (buffer-string)) ";")))
-
-(defun dss/moz-enable-auto-reload ()
-  "Automatically reload the remote mozrepl when this buffer changes"
-  (interactive)
-  (add-hook 'after-save-hook 'moz-reload t t))
-
-(defun dss/moz-disable-auto-reload ()
-  "Disable automatic mozrepl updates"
-  (interactive)
-  (remove-hook 'after-save-hook 'moz-reload t))
 
 
 ;; (defvar emacspeak-moz-js-directory
