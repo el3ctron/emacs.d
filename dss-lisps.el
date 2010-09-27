@@ -89,6 +89,15 @@
       try-complete-lisp-symbol-partially
       try-expand-dabbrev))))
 
+(defun dss/find-function-at-point ()
+  "Find directly the function at point in the current window."
+  (interactive)
+  (let ((symb (function-called-at-point)))
+    (when symb
+      (find-function symb))))
+
+(define-key emacs-lisp-mode-map (kbd "M-.") 'dss/find-function-at-point)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; real lisp hackers use the lambda character
 ;; courtesy of stefan monnier on c.l.l
