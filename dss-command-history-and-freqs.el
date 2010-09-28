@@ -14,6 +14,9 @@
 (recentf-mode 1)
 (setq recentf-max-saved-items 100)
 (setq recentf-max-menu-items 60)
+(add-hook 'recentf-dialog-mode-hook
+          (lambda ()
+            (linum-mode +1)))
 (defun dss/ido-choose-from-recentf ()
   ;;from http://www.xsteve.at/prg/emacs/power-user-tips.html
   "Use ido to select a recently opened file from the `recentf-list'"
