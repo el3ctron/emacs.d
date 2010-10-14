@@ -17,8 +17,14 @@
 ;;; http://www.nongnu.org/bm/
 ;;; http://emacsblog.org/2007/03/22/bookmark-mania/
 (require 'bm)
-
+(setq bm-repository-file (concat dss-ephemeral-dir "bm-repository"))
 (setq bm-restore-repository-on-load t)
+(defun dss/bm-after-save-hook ()
+  (bm-buffer-save-all)
+  ;; (bm-repository-save)
+  )
+(add-hook 'after-save-hook 'dss/bm-after-save-hook)
+
 ;; (global-set-key (kbd "<M-f2>") 'bm-toggle)
 ;; (global-set-key (kbd "<f2>")   'bm-next)
 ;; (global-set-key (kbd "<S-f2>") 'bm-previous)
