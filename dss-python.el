@@ -101,25 +101,33 @@ This is useful with Dragon NaturallySpeaking."
 
 (defun dss/py-decorate-function (&optional decorator-name)
   (interactive)
-  (if (not (looking-at "@"))
+  (beginning-of-line-text)
+  (if (not (or (looking-at "def\\|class")
+               (looking-at "@")))
       (progn
         (py-beginning-of-def-or-class)
+        (beginning-of-line-text)))
+  (if (not (save-excursion
+             (forward-line -1)
+             (beginning-of-line-text)
+             (looking-at-p "@")))
+      (progn
+        ;;  make room for it:
         (while (not (save-excursion
-                      (forward-line -2)
+                      (forward-line -1)
                       (beginning-of-line-text)
                       (looking-at-p "$")))
           (save-excursion
             (forward-line -1)
             (end-of-line)
             (open-line 1)))
-        (forward-line -1)
-        (py-indent-line)
-        (beginning-of-line-text)
-        (if (not (looking-at "@"))
-            (progn
-              (insert "@")
-              (if decorator-name
-                  (insert decorator-name)))))))
+        (insert "@")
+        (open-line 1)
+        (if decorator-name
+            (insert decorator-name))
+        (save-excursion
+          (forward-line 1)
+          (py-indent-line)))))
 
 (defun dss/py-make-classmethod ()
   (interactive)
