@@ -156,7 +156,7 @@
 (define-key f4-map "n" 'org-insert-heading-respect-content)
 (define-key f4-map "s" 'org-insert-subheading)
 (define-key f4-map "t" 'org-insert-todo-heading-respect-content)
-(define-key f4-map "m" 'multi-term)
+(define-key f4-map "m" 'dss/multi-term)
 
 (define-key f4-map "r" 'org-remember)
 
@@ -201,6 +201,14 @@
 (define-key f4-map " " 'fixup-whitespace)
 (define-key f4-map "*" 'eval-region)
 (define-key f4-map "x" 'xterm-mouse-mode)
+
+(define-key f4-map "/" 'dss/goto-match-paren)
+(define-key f4-map ";" 'dss/out-one-sexp)
+(define-key f4-map "0" 'dss/out-sexp)
+(define-key f4-map "8" 'goto-last-change)
+(define-key f4-map "6" 'dss/backward-string)
+(define-key f4-map "7" 'dss/forward-string)
+
 
 ;; f6-map
 
