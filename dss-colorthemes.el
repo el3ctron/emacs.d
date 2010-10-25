@@ -3,14 +3,16 @@
 ;; note, this will look horrible in anything other than a 256 color
 ;; black or transparent black terminal window.
 
+(defvar dss-modeline-background-color "#000087")
+
 (defun dss/flash-modeline ()
   (interactive)
-  (let ((orig-background (face-background 'modeline)))
-      (set-face-background 'modeline "red")
-      (run-with-timer 3 nil
-                      'set-face-background
-                      'modeline
-                      orig-background)))
+  (set-face-background 'modeline "red")
+  (set-face-background 'modeline "#5f0000")
+  (run-with-timer 3 nil
+                  'set-face-background
+                  'modeline
+                  dss-modeline-background-color))
 
 (defun dss/color-theme-dark-tty ()
   (interactive)
