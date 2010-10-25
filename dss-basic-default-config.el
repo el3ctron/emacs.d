@@ -50,6 +50,8 @@
 
 (set-default major-mode 'text-mode)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'text-mode-hook (lambda ()
+                            (linum-mode 1)))
 
 ;; mouse and selection settings
 (add-hook 'after-init-hook (lambda ()
