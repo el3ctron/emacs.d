@@ -47,4 +47,9 @@
 ;; #autocutsel -fork &
 ;; #autocutsel -selection PRIMARY -fork &
 
+
+
+;; http://snarfed.org/emacs_keybindings_in_gnu_screens_copy-scrollback_mode
+;; http://stackoverflow.com/questions/994563/integrate-readlines-kill-ring-and-the-x11-clipboard
+
 (provide 'dss-clipboard-integration)
