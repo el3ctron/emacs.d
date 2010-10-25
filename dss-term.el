@@ -28,6 +28,36 @@
         (switch-to-buffer term-buffer))
     term-buffer))
 
+(defun dss/remote-term (host &optional command)
+  (interactive)
+  (let (term-buffer
+        (index 1)
+        term-name)
+    (while (buffer-live-p
+            (get-buffer (format "*%s<%s>*" host index)))
+      (setq index (1+ index)))
+    (setq term-name (format "%s<%s>" host index))
+    (setq term-buffer
+          (make-term term-name "/usr/bin/ssh" nil host))
+    (set-buffer term-buffer)
+    ;; Internal handle for `multi-term' buffer.
+    (multi-term-internal)
+    ;; Switch buffer
+    (switch-to-buffer term-buffer)
+    (dss/term-setup-tramp)
+    (if command
+        (term-send-raw-string command))))
+
+(defun dss/multi-term ()
+  (interactive)
+  (if (string-match-p "^/scp:" default-directory)
+      (let ((host (second (split-string default-directory ":")))
+            (dir (third (split-string default-directory ":"))))
+        (dss/remote-term
+         host
+         (concat "cd " dir "; clear\n")))
+    (multi-term)))
+
 (defun dss/term-toggle-mode ()
   "Toggle between term-char-mode and term-line-mode."
   (interactive)
