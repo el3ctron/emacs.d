@@ -10,11 +10,11 @@
 (setq save-place-file (concat dss-ephemeral-dir "saveplace"))
 (setq-default save-place t)
 
+(setq recentf-save-file (concat dss-ephemeral-dir "recentf"))
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-saved-items 100)
 (setq recentf-max-menu-items 60)
-(setq recentf-save-file (concat dss-ephemeral-dir "recentf"))
 (add-hook 'recentf-dialog-mode-hook
           (lambda ()
             (recentf-save-list)
