@@ -10,7 +10,8 @@
 (add-hook 'occur-mode-hook 'fm-start-off)
 ;(add-hook 'ibuffer-mode-hooks 'fm-start-off)
 (add-hook 'ibuffer-occur-mode-hooks 'fm-start-off)
-
+(add-hook 'occur-mode-hook (lambda () (linum-mode 1)))
+(add-hook 'grep-mode-hook (lambda () (linum-mode 1)))
 
 ;;; isearch-forward-at-point
 ;; from http://platypope.org/blog/2007/8/5/a-compendium-of-awesomeness
