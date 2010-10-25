@@ -3,6 +3,8 @@
 (require 'org-install)
 (require 'remember)
 (org-remember-insinuate)
-;; user specific org-mode stuff is loaded after this
+(add-hook 'org-mode-hook (lambda () (linum-mode -1)))
+(add-hook 'org-agenda-mode-hook (lambda () (linum-mode 1)))
+;; much more user specific org-mode stuff is loaded after this in another file
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-org-mode)
