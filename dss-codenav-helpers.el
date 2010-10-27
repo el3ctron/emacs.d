@@ -147,6 +147,15 @@ Do nothing if not in string."
     (forward-to-word 2)
     (k2-copy-whole-sexp)))
 
+(defun dss/eval-defun ()
+  "The built-in eval-defun doesn't choose the top level forms I would expect expect"
+  (interactive)
+  (save-excursion
+    (dss/out-sexp nil t)
+    (eval-last-sexp nil)))
+;; (message "%S" (preceding-sexp))
+
+
 (defun dss/goto-defun-args ()
   (interactive)
   (dss/out-sexp)
@@ -292,8 +301,10 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
 
 (defun dss/local-line-jump (n)
   (interactive "nLine: ")
-  ;(message (format "%d" (+ n (* (/ (line-number-at-pos) 100) 100))))
-  (dss/goto-line (+ n (* (/ (line-number-at-pos) 100) 100)))
+                                        ;(message (format "%d" (+ n (* (/ (line-number-at-pos) 100) 100))))
+  (if (> n 100)
+      (goto-line n)
+    (dss/goto-line (+ n (* (/ (line-number-at-pos) 100) 100))))
   (back-to-indentation))
 
 (defun dss/local-line-jump-search (n txt)
