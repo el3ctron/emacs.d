@@ -51,7 +51,4 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; smex must be loaded last as it creates a cache of available commands
-(require 'smex)
-(setq smex-save-file (concat dss-ephemeral-dir "smex.save"))
-(smex-initialize)
-(put 'narrow-to-region 'disabled nil)
+(require 'dss-smex)

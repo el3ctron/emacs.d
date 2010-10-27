@@ -34,6 +34,7 @@
 ;; reenable some disabled features
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
 ;; scrolling behaviour
 (setq scroll-step 1)
@@ -50,8 +51,16 @@
 
 (set-default major-mode 'text-mode)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'text-mode-hook (lambda ()
-                            (linum-mode 1)))
+(mapc (lambda (m)
+        (add-hook m (lambda () (linum-mode 1))))
+      '(text-mode-hook
+        help-mode-hook
+        diff-mode-hook
+        grep-mode-hook
+        occur-mode-hook
+        ))
+
+(add-to-list 'auto-mode-alist '("pico\\.[0-9]*$" . text-mode))
 
 ;; mouse and selection settings
 (add-hook 'after-init-hook (lambda ()

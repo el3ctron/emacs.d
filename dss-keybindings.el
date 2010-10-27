@@ -36,6 +36,9 @@
 (global-set-key (kbd "C-x r b") 'dss/bookmark-jump)
 (global-set-key (kbd "C-x r v") 'list-register)
 
+(define-key help-map "." 'find-function)
+(define-key help-map "," 'find-variable)
+
 (define-key global-map [(f2)] f2-map)
 (define-key global-map "\eOQ" f2-map)
 (define-key global-map [(f3)] 'other-window)

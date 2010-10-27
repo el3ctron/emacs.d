@@ -3,6 +3,9 @@
 (require 'ediff-vers)
 (require 'vc)
 
+(setq dvc-tips-enabled nil)
+(setq vc-follow-symlinks t)
+
 (defun vc-ediff ()
   (interactive)
   (vc-buffer-sync)

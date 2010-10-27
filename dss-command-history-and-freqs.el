@@ -13,11 +13,12 @@
 (setq recentf-save-file (concat dss-ephemeral-dir "recentf"))
 (require 'recentf)
 (recentf-mode 1)
-(setq recentf-max-saved-items 100)
+(setq recentf-max-saved-items 150)
 (setq recentf-max-menu-items 60)
+(run-with-timer 20 (* 10 60) (lambda () (recentf-save-list)))
+;(add-hook 'find-file-hook (lambda () (recentf-save-list)))
 (add-hook 'recentf-dialog-mode-hook
           (lambda ()
-            (recentf-save-list)
             (linum-mode +1)))
 
 (defun dss/ido-choose-from-recentf ()

@@ -1,5 +1,8 @@
+(require 'dss-paths)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bookmarks & registers
+(setq bookmarkp-bmenu-state-file (concat dss-ephemeral-dir "bmk-bmenu-state.el"))
 (require 'bookmark+)
 (defun dss/bookmark-jump (bookmark)
   (interactive
