@@ -12,6 +12,7 @@
 
 (require 'show-wspace)
 (defun dss/show-ws ()
+  (interactive)
   (setq show-trailing-whitespace t)
   (show-ws-highlight-tabs)
   (hl-line-mode 1))
