@@ -28,25 +28,26 @@
      (default ((t (nil))))
      (default ((t (:foreground "white"))))
      (bold ((t (:bold t))))
-     ;(bold-italic ((t (:underline t :foreground "white"))))
+     ;;(bold-italic ((t (:underline t :foreground "white"))))
      (highlight ((t (:background "blue" :foreground "yellow"))))
      (italic ((t (:underline t :background "red"))))
      (underline ((t (:underline t))))
-     ;
+     ;;
      (minibuffer-prompt ((t (:foreground "yellow"))))
-     ;(modeline ((t (:background "#080808" :foreground "white"))))
+     ;;(modeline ((t (:background "#080808" :foreground "white"))))
      (modeline ((t (:background "#000087" :foreground "#ffffaf"))))
-     ;(modeline-inactive ((t (:background "#161616" :foreground "#5f5f5f"))))
-     (modeline-inactive ((t (:background "#161616" :foreground "white"))))
+     ;;(modeline-inactive ((t (:background "#161616" :foreground "#5f5f5f"))))
+     ;;(modeline-inactive ((t (:background "#161616" :foreground "white"))))
+     (modeline-inactive ((t (:background "#262626" :foreground "white"))))
      (modeline-mousable-minor-mode ((t (:background "black" :foreground "white"))))
      (modeline-mousable ((t (:background "black" :foreground "white"))))
-     ;(scroll-bar ((t (:background "#121212"))))
-     ;(tool-bar ((t (:background "#121212" ))))
-     ;(fringe ((t (:background "#121212"))))
-     (region ((t (:background "#000087" )))) ;#0000d7 ;#0000af
+     ;;(scroll-bar ((t (:background "#121212"))))
+     ;;(tool-bar ((t (:background "#121212" ))))
+     ;;(fringe ((t (:background "#121212"))))
+     (region ((t (:background "#000087" )))) ;;#0000d7 ;;#0000af
      (secondary-selection ((t (:background "#0000ff"))))
-     ;(show-paren-match-face ((t (:background "#000087"))));#303030
-     (show-paren-match-face ((t (:background "cyan"))));#303030
+     ;;(show-paren-match-face ((t (:background "#000087"))));;#303030
+     (show-paren-match-face ((t (:background "cyan"))));;#303030
      (show-paren-mismatch-face ((t (:background "magenta" :foreground "white"))))
      (flymake-errline ((t (:background "#870000"))))
      (flymake-warnline ((t (:background "#444444"))))
