@@ -55,10 +55,15 @@
         (add-hook m (lambda () (linum-mode 1))))
       '(text-mode-hook
         help-mode-hook
+        apropos-mode-hook
         diff-mode-hook
         grep-mode-hook
         occur-mode-hook
-        ))
+        conf-mode-hook
+        bookmark-bmenu-mode-hook
+        c-mode-hook
+        sh-mode-hook
+        java-mode-hook))
 
 (add-to-list 'auto-mode-alist '("pico\\.[0-9]*$" . text-mode))
 
