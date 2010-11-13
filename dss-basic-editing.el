@@ -1,6 +1,6 @@
 (require 'filladapt)
 (setq-default filladapt-mode t)
-
+(setq visible-bell nil)
 (defun dss/set-undo-boundary ()
   (interactive)
   (undo-boundary))
@@ -33,6 +33,9 @@
 
 (require 'visible-mark)
 (global-visible-mark-mode t)
+
+(require 'undo-tree)
+(global-undo-tree-mode)
 
 (defun dss/goto-line (line)
   "A simplified, single buffer version of the standard command
