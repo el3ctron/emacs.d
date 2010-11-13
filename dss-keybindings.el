@@ -7,9 +7,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; additional custom keymaps, populated below
 (defvar f2-map (make-sparse-keymap))
+;(defvar f3-map (make-sparse-keymap))
 (defvar f4-map (make-sparse-keymap))
 (defvar f6-map (make-sparse-keymap))
 (defvar f7-map (make-sparse-keymap))
+(defvar f8-map (make-sparse-keymap))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; global map
@@ -41,13 +43,16 @@
 
 (define-key global-map [(f2)] f2-map)
 (define-key global-map "\eOQ" f2-map)
-(define-key global-map [(f3)] 'other-window)
-(define-key global-map "\eOR" 'other-window)
+
+(define-key global-map [(f3)] 'dss/smex)
+(define-key global-map "\eOR" 'dss/smex)
+
 (define-key global-map [(f4)] f4-map)
 (define-key global-map "\eOS" f4-map)
 (define-key global-map [(f5)] 'undo)
 (define-key global-map [(f6)] f6-map)
 (define-key global-map [(f7)] f7-map)
+(define-key global-map [(f8)] f8-map)
 
 (define-key global-map [(alt insert)] 'yank-pop)
 (define-key global-map "\e[4~" 'end-of-line)
@@ -155,62 +160,37 @@
 
 ;; f4-map
 
-;; @@TR: add bindings for org node promote, demote
-(define-key f4-map "n" 'org-insert-heading-respect-content)
-(define-key f4-map "s" 'org-insert-subheading)
-(define-key f4-map "t" 'org-insert-todo-heading-respect-content)
-(define-key f4-map "m" 'dss/multi-term)
-
-(define-key f4-map "r" 'org-remember)
-
-(define-key f4-map "i" 'org-clock-in)
-(define-key f4-map "o" 'org-clock-out)
-(define-key f4-map "d" (lambda ()
-                          "C-u C-u C-c C-x C-i -> org-clock-mark-default-task"
-                          (interactive)
-                          (org-clock-in '(16))))
-(define-key f4-map "." 'org-time-stamp)
-
-(define-key f4-map "c" 'org-clock-cancel)
-
-;(define-key f4-map "_" 'org-clock-select-task)
-(define-key f4-map "_" (lambda ()
-                          "C-u C-c C-x C-i -> org-clock-select-task"
-                          (interactive)
-                          (org-clock-in '(4))))
-
-(define-key f4-map "-" 'org-clock-goto)
-(define-key f4-map "'" (lambda ()
-                          "C-u C-c C-x C-i -> org-clock-goto via org-clock-select-task"
-                          (interactive)
-                          (org-clock-goto '(4))))
-
-(define-key f4-map "g" (lambda ()
-                          "org-goto using refile ui"
-                          (interactive)
-                          (org-refile '(4))))
-
-;; (define-key f4-map "l" (lambda ()
-;;                           "org-goto last refile location"
-;;                           (interactive)
-;;                           (org-refile '(16))))
-
-(define-key f4-map "l" 'list-bookmarks)
-
-(define-key f4-map "b" 'dss/bookmark-jump)
-
-(define-key f4-map "a" 'auto-complete-mode)
-(define-key f4-map "=" 'dss/toggle-current-window-dedication)
 (define-key f4-map " " 'fixup-whitespace)
-(define-key f4-map "*" 'eval-region)
-(define-key f4-map "x" 'xterm-mouse-mode)
+(defun dss/eval-region-or-last-sexp ()
+  (interactive)
+  (if mark-active
+      (call-interactively 'eval-region)
+    (call-interactively 'eval-last-sexp)))
 
-(define-key f4-map "/" 'dss/goto-match-paren)
-(define-key f4-map ";" 'dss/out-one-sexp)
+(define-key f4-map "s" 'dss/eval-region-or-last-sexp)
+(define-key f4-map "d" 'dss/eval-defun)
+
 (define-key f4-map "0" 'dss/out-sexp)
-(define-key f4-map "8" 'goto-last-change)
+(define-key f4-map "8" 'dss/out-one-sexp)
+
+(define-key f4-map [(f4)] 'kill-ring-save)
+(define-key f4-map "i" 'yank)
+(define-key f4-map "u" 'undo)
+
+(define-key f4-map "y" 'dss/mark-string)
+(define-key f4-map "m" 'mark-sexp)
+
+(define-key f4-map "'" (kbd "\""))
+
+;;(define-key f4-map "n" 'dss/goto-match-paren)
+
+(define-key f4-map ";" 'goto-last-change)
+
 (define-key f4-map "6" 'dss/backward-string)
 (define-key f4-map "7" 'dss/forward-string)
+
+(define-key f4-map "/" 'dss/goto-match-paren)
+(define-key f4-map "]" 'dss/smex)
 
 
 ;; f6-map
@@ -247,6 +227,13 @@
 (require 'k2-mode) ; my old keymap extension package
 (k2-mode) ; start k2-mode by default
 
+(define-key f7-map "l" 'list-bookmarks)
+(define-key f7-map "g" 'dss/bookmark-jump)
+(define-key f7-map "b" 'ido-switch-buffer)
+
+(define-key f7-map "a" 'auto-complete-mode)
+(define-key f7-map "=" 'dss/toggle-current-window-dedication)
+
 ;(define-key f7-map "1" 'k2-kill-whole-sexp)
 ;(define-key f7-map "2" 'k2-copy-whole-sexp)
 ;(define-key f7-map "3" 'mark-sexp)
@@ -254,26 +241,67 @@
 (define-key f7-map "," 'k2-copy-whole-paragraph)
 (define-key f7-map "." 'mark-paragraph)
 
-(define-key f7-map "a" 'k2-kill-whole-line)
-(define-key f7-map "o" 'k2-copy-whole-line)
-(define-key f7-map "e" 'k2-mark-whole-line)
+;; (define-key f7-map "a" 'k2-kill-whole-line)
+;; (define-key f7-map "o" 'k2-copy-whole-line)
+;; (define-key f7-map "e" 'k2-mark-whole-line)
 
-(define-key f7-map ";" 'k2-kill-whole-sentence)
-(define-key f7-map "q" 'k2-copy-whole-sentence)
-(define-key f7-map "j" 'k2-mark-whole-sentence)
+;; (define-key f7-map ";" 'k2-kill-whole-sentence)
+;; (define-key f7-map "q" 'k2-copy-whole-sentence)
+;; (define-key f7-map "j" 'k2-mark-whole-sentence)
 
-(define-key f7-map "7" 'kill-region)
-(define-key f7-map "8" 'kill-ring-save)
-(define-key f7-map "9" 'set-mark-command)
 (define-key f7-map "0" 'k2-toggle-mark)
 
-(define-key f7-map "g" 'k2-kill-whole-defun)
-(define-key f7-map "c" 'k2-copy-whole-defun)
-(define-key f7-map "r" 'mark-defun)
+;; (define-key f7-map "g" 'k2-kill-whole-defun)
+;; (define-key f7-map "c" 'k2-copy-whole-defun)
+;; (define-key f7-map "r" 'mark-defun)
 
-(define-key f7-map "h" 'k2-kill-whole-word)
-(define-key f7-map "t" 'k2-copy-whole-word)
-(define-key f7-map "n" 'mark-word)
+;; (define-key f7-map "h" 'k2-kill-whole-word)
+;; (define-key f7-map "t" 'k2-copy-whole-word)
+;; (define-key f7-map "n" 'mark-word)
+
+
+
+;; f8 map for org-mode
+;; @@TR: add bindings for org node promote, demote
+(define-key f8-map "n" 'org-insert-heading-respect-content)
+(define-key f8-map "s" 'org-insert-subheading)
+(define-key f8-map "t" 'org-insert-todo-heading-respect-content)
+(define-key f8-map "m" 'dss/multi-term)
+
+(define-key f8-map "r" 'org-remember)
+
+(define-key f8-map "i" 'org-clock-in)
+(define-key f8-map "o" 'org-clock-out)
+(define-key f8-map "d" (lambda ()
+                          "C-u C-u C-c C-x C-i -> org-clock-mark-default-task"
+                          (interactive)
+                          (org-clock-in '(16))))
+(define-key f8-map "." 'org-time-stamp)
+
+(define-key f8-map "c" 'org-clock-cancel)
+
+;(define-key f8-map "_" 'org-clock-select-task)
+(define-key f8-map "_" (lambda ()
+                          "C-u C-c C-x C-i -> org-clock-select-task"
+                          (interactive)
+                          (org-clock-in '(4))))
+
+(define-key f8-map "-" 'org-clock-goto)
+(define-key f8-map "'" (lambda ()
+                          "C-u C-c C-x C-i -> org-clock-goto via org-clock-select-task"
+                          (interactive)
+                          (org-clock-goto '(4))))
+
+(define-key f8-map "g" (lambda ()
+                          "org-goto using refile ui"
+                          (interactive)
+                          (org-refile '(4))))
+
+;; (define-key f8-map "l" (lambda ()
+;;                           "org-goto last refile location"
+;;                           (interactive)
+;;                           (org-refile '(16))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-keybindings)
