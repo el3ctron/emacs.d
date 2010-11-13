@@ -41,15 +41,17 @@
   (setq interprogram-cut-function nil)
   (setq interprogram-paste-function nil))
 
-;; also see http://stackoverflow.com/questions/994563/integrate-readlines-kill-ring-and-the-x11-clipboard
+
 ;; http://bbs.archlinux.org/viewtopic.php?id=80226
 ;; and run the following
 ;; #autocutsel -fork &
 ;; #autocutsel -selection PRIMARY -fork &
 
+;; also see http://stackoverflow.com/questions/994563/integrate-readlines-kill-ring-and-the-x11-clipboard
+;; which I have configured my .bashrc file
+
 
 
 ;; http://snarfed.org/emacs_keybindings_in_gnu_screens_copy-scrollback_mode
-;; http://stackoverflow.com/questions/994563/integrate-readlines-kill-ring-and-the-x11-clipboard
 
 (provide 'dss-clipboard-integration)
