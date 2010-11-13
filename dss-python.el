@@ -234,6 +234,10 @@ This is python-comment-line-p from Dave Love's python.el"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; python-mode helpers
 
+;; ;@@TR: study this stuff for better remote proc control
+;; http://wingolog.org/archives/2006/01/02/slime
+;; http://hillview.1on.de/archives/122-python-mode-vs.-slime.html
+
 ;; ipython related
 (set-default 'ipython-command "emacs_ipython") ; which is a shell script that handles all the virtualenv setup, etc
 (require 'ipython)
