@@ -51,7 +51,7 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 
 (defun dss/moz-connect-b3 ()
   (interactive)
-  (setq moz-repl-host "b3")
+  (setq moz-repl-host "vb3")
   (dss/moz-restart-repl))
 
 (defun dss/moz-restart-repl ()
@@ -61,6 +61,7 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
       (progn
         (delete-process inferior-moz-buffer)
         (kill-buffer inferior-moz-buffer)))
+  (set-process-query-on-exit-flag (inferior-moz-process) nil)
   (inferior-moz-process))
 
 (defun dss/moz-eval-expression (exp)
