@@ -52,7 +52,15 @@ Do nothing if not in string."
   (if (dss/in-string-p)
       (progn
         (dss/beginning-of-string)
-        (mark-sexp))))
+        ;; (mark-sexp) ; vs
+        (forward-char)
+        (push-mark nil nil t)
+
+
+        (dss/end-of-string)
+        (backward-char)
+        ;;
+        )))
 
 (defun dss/forward-string (&optional backward)
   (interactive)
@@ -100,6 +108,7 @@ Do nothing if not in string."
                      (error nil)))
             done))))))
 
+;; (bounds-of-thing-at-point 'sexp)
 (defun dss/out-one-sexp (&optional forward)
   (interactive)
   (dss/out-sexp 1 forward))
@@ -107,6 +116,19 @@ Do nothing if not in string."
 (defun dss/out-one-sexp-forward ()
   (interactive)
   (dss/out-sexp 1 1))
+
+(defun dss/flash-region (beg end)
+  (interactive "r")
+  (let ((ovl (make-overlay beg end))
+        (was-mark-active mark-active)
+        (hl-line-mode-on hl-line-mode))
+    (setq mark-active nil)
+    (overlay-put ovl 'face 'highlight)
+    (run-with-timer 0.5 nil
+                    (lambda(ovl was-mark-active)
+                      (delete-overlay ovl)
+                      (setq mark-active was-mark-active))
+                    ovl was-mark-active)))
 
 (defun dss/indent-sexp ()
   "http://mihai.bazon.net/projects/editing-javascript-with-emacs-js2-mode
@@ -119,10 +141,9 @@ Do nothing if not in string."
              (parse-status (syntax-ppss (point)))
              (beg (nth 1 parse-status))
              (end-marker (make-marker))
-             (end (progn (goto-char beg) (forward-list) (point)))
-             (ovl (make-overlay beg end)))
+             (end (progn (goto-char beg) (forward-list) (point))))
+        (dss/flash-region beg end)
         (set-marker end-marker end)
-        (overlay-put ovl 'face 'highlight)
         (goto-char beg)
         (while (< (point) (marker-position end-marker))
           ;; don't reindent blank lines so we don't set the "buffer
@@ -130,9 +151,9 @@ Do nothing if not in string."
           (beginning-of-line)
           (unless (looking-at "\\s-*$")
             (indent-according-to-mode))
-          (forward-line))
-        (run-with-timer 0.5 nil (lambda(ovl)
-                                  (delete-overlay ovl)) ovl)))))
+          (forward-line))))))
+
+
 (defun dss/indent-defun ()
   (interactive)
   (save-excursion
@@ -150,6 +171,7 @@ Do nothing if not in string."
 (defun dss/eval-defun ()
   "The built-in eval-defun doesn't choose the top level forms I would expect expect"
   (interactive)
+  (dss/indent-defun)
   (save-excursion
     (dss/out-sexp nil t)
     (eval-last-sexp nil)))
