@@ -15,7 +15,7 @@
 (recentf-mode 1)
 (setq recentf-max-saved-items 150)
 (setq recentf-max-menu-items 60)
-(run-with-timer 20 (* 10 60) (lambda () (recentf-save-list)))
+(run-with-timer (* 5 60) (* 20 60) (lambda () (recentf-save-list)))
 ;(add-hook 'find-file-hook (lambda () (recentf-save-list)))
 (add-hook 'recentf-dialog-mode-hook
           (lambda ()
