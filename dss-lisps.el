@@ -1,5 +1,10 @@
+(require 'diminish)
 (require 'paredit)
 (require 'eldoc)
+(diminish 'eldoc-mode "")
+(diminish 'paredit-mode "PE")
+
+
 (require 'dss-codenav-helpers)
 
 (eldoc-add-command
@@ -77,17 +82,16 @@
             (lambda ()
               (if (file-exists-p (concat buffer-file-name "c"))
                   (delete-file (concat buffer-file-name "c"))))))
-
-(add-hook
- 'emacs-lisp-mode-hook
- (lambda ()
-   (dss/remove-elc-on-save)
-   (eldoc-mode)
-   (setq hippie-expand-try-functions-list
-    '(try-expand-dabbrev-visible
-      try-complete-lisp-symbol
-      try-complete-lisp-symbol-partially
-      try-expand-dabbrev))))
+(defun dss/elisp-mode-hook ()
+  (dss/remove-elc-on-save)
+  (eldoc-mode 1)
+  (setq mode-name "EL:")
+  (setq hippie-expand-try-functions-list
+        '(try-expand-dabbrev-visible
+          try-complete-lisp-symbol
+          try-complete-lisp-symbol-partially
+          try-expand-dabbrev)))
+(add-hook 'emacs-lisp-mode-hook 'dss/elisp-mode-hook)
 
 (defun dss/find-function-at-point ()
   "Find directly the function at point in the current window."
