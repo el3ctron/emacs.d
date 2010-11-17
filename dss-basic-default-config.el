@@ -21,8 +21,9 @@
 
 ;; modeline settings
 (column-number-mode 1)
+
 (setq display-time-day-and-date t)
-(display-time-mode 1)
+(display-time-mode -1)
 
 ;; tabs and column defs
 (setq-default indent-tabs-mode nil) ; no fucking tabs!
