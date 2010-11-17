@@ -1,5 +1,9 @@
+(require 'diminish)
 (require 'filladapt)
 (setq-default filladapt-mode t)
+(diminish 'filladapt-mode "")
+(diminish 'abbrev-mode "Ab.")
+
 (setq visible-bell nil)
 (defun dss/set-undo-boundary ()
   (interactive)
@@ -14,11 +18,11 @@
 (defun dss/quote-region (start end &optional c)
   (interactive "r")
   (let ((c (or c "\"")))
-  (save-excursion
-    (goto-char start)
-    (insert c)
-    (goto-char (+ 1 end))
-    (insert c))))
+    (save-excursion
+      (goto-char start)
+      (insert c)
+      (goto-char (+ 1 end))
+      (insert c))))
 
 (defun dss/single-quote-region (start end)
   (interactive "r")
@@ -36,6 +40,7 @@
 
 (require 'undo-tree)
 (global-undo-tree-mode)
+(diminish 'undo-tree-mode "")
 
 (defun dss/goto-line (line)
   "A simplified, single buffer version of the standard command
