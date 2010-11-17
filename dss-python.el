@@ -187,7 +187,7 @@ This is python-comment-line-p from Dave Love's python.el"
   (which-function-mode t)
   (set 'beginning-of-defun-function 'py-beginning-of-def-or-class)
   (setq outline-regexp "def\\|class ")
-
+  (setq mode-name "PY:")
   (setq py-python-command-args '("-colors" "Linux"))
   (if (and (string-match "\\.py$" (buffer-name))
            ; and isn't a py-shell tmp buffer:
