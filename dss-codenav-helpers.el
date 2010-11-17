@@ -321,13 +321,16 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
   (dss/column-marker-1 -1)
   (hl-line-mode t))
 
+(defun dss/line-jump (n)
+  (interactive "nLine: ")
+  (dss/goto-line n)
+  (back-to-indentation))
+
 (defun dss/local-line-jump (n)
   (interactive "nLine: ")
-                                        ;(message (format "%d" (+ n (* (/ (line-number-at-pos) 100) 100))))
   (if (> n 100)
-      (goto-line n)
-    (dss/goto-line (+ n (* (/ (line-number-at-pos) 100) 100))))
-  (back-to-indentation))
+      (dss/line-jump n)
+    (dss/line-jump (+ n (* (/ (line-number-at-pos) 100) 100)))))
 
 (defun dss/local-line-jump-search (n txt)
   (interactive "nLine: \nsText:")
