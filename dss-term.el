@@ -7,7 +7,7 @@
 ;; multi-term
 (autoload 'multi-term "multi-term")
 (setq multi-term-program "/bin/bash")
-(defun dss/cd-multi-term (dir &optional command switch)
+(defun dss/cd-multi-term (dir &optional command switch buffer-name)
   (let (tmp-buffer term-buffer)
     ;; with-temp-buffer gets in the way here
     (set-buffer (setq tmp-buffer (get-buffer-create "*multi-term-launcher*")))
@@ -20,12 +20,14 @@
     (multi-term-internal)
 
     (kill-buffer tmp-buffer)
+    (if buffer-name
+        (rename-buffer buffer-name))
 
     (if command
         (term-send-raw-string command))
     (unless (and (not (eq switch nil))
                  (< switch 0))
-        (switch-to-buffer term-buffer))
+      (switch-to-buffer term-buffer))
     term-buffer))
 
 (defun dss/remote-term (host &optional command)
