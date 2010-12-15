@@ -24,7 +24,13 @@
   ;; (scion-flycheck-on-save 1)
   (linum-mode 1)
   (dss/install-whitespace-cleanup-hook)
-  (dss/load-lineker-mode))
+  (dss/load-lineker-mode)
+  (mapc (lambda (char)
+            (progn
+              (define-key haskell-mode-map char 'dss/electric-pair)
+              (define-key inferior-haskell-mode-map char 'dss/electric-pair)
+              ))
+          '("\"" "(" "[" "{")))
 
 (add-hook 'haskell-mode-hook 'dss/haskell-hook)
 
