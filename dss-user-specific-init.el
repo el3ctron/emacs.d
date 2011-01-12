@@ -1,5 +1,6 @@
 ;;; idea from http://github.com/technomancy/emacs-starter-kit/blob/master/init.el
-(defvar dss-system-specific-config (concat dss-dotfiles-dir system-name ".el"))
+(setq dss-hostname (car (split-string system-name "\\.")))
+(defvar dss-system-specific-config (concat dss-dotfiles-dir dss-hostname ".el"))
 (defvar dss-user-specific-config (concat dss-dotfiles-dir user-login-name ".el"))
 (defvar dss-user-specific-dir (concat dss-dotfiles-dir user-login-name "/"))
 (add-to-list 'load-path dss-user-specific-dir)
