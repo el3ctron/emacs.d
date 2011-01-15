@@ -23,32 +23,36 @@
 ;; http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
 (defun dss-popup-notify (title msg &optional icon sound)
   (interactive)
-  ;(setq sound "/usr/share/sounds/logout.wav")
+                                        ;(setq sound "/usr/share/sounds/logout.wav")
   (setq sound "/usr/share/sounds/phone.wav")
   (when sound (shell-command
-                (concat "ssh b3 aplay " sound " 2> /dev/null")))
+               (concat "ssh b3 aplay " sound " 2> /dev/null")))
   (shell-command (concat "ssh b3 \"DISPLAY=:0 notify-send "
                          (if icon (concat "-i " icon) "")
                          " --expire-time=10000 -u critical"
                          " '" title "' '" msg "'"
                          "\""))
+  (shell-command (concat
+                  "echo '" title "' | prowl_tavis.sh -1 'Emacs notification'"))
   (message (concat title ": " msg)))
 (setq org-show-notification-handler
       (lambda (msg)
         (dss-popup-notify "org-mode" msg)))
 
-(setq org-timer-done-hook
-      (lambda ()
-        (dss-popup-notify "org-mode" "timer done")))
+(defun dss/org-clock-in-hook ()
+  (org-timer-set-timer '(16)))
 
-(add-hook 'org-clock-out-hook
-          (lambda ()
-            (org-timer-start)))
+(defun dss/org-clock-out-hook ()
+  (org-timer-set-timer 5))
 
-(add-hook 'org-clock-in-hook
-          (lambda ()
-            (org-timer-stop)
-            (org-timer-start)))
+(defun dss/org-timer-done-hook ()
+  (dss-popup-notify "org-mode" "timer done"))
+
+(add-hook 'org-clock-in-hook 'dss/org-clock-in-hook)
+(add-hook 'org-clock-out-hook 'dss/org-clock-out-hook)
+(setq org-timer-default-timer 25)
+(setq org-timer-done-hook 'dss/org-timer-done-hook)
+
 (defun dss-appt-display (min-to-app new-time msg)
   (dss-popup-notify (format "Appointment in %s minute(s)" min-to-app)
                     msg "/usr/share/icons/gnome/32x32/status/appointment-soon.png")
