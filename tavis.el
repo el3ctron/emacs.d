@@ -71,6 +71,7 @@
 (setq org-clock-persist-file (concat org-directory "/.org-clock-save.el"))
 (setq org-icalendar-include-todo t)
 
+(setq org-src-fontify-natively t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; tasks and states (norang sec 3)
 (setq org-todo-keywords (quote (
