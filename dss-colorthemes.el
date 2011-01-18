@@ -97,6 +97,8 @@
      (org-column-title ((t (:background "#00005f" :underline t :weight bold))))
      (org-table ((t (:foreground "#005fff"))))
 
+     (org-meta-line ((t (:foreground "#767676"))))
+
      (outline-2 ((t (:foreground "#5fffff"))))
      (outline-3 ((t (:foreground "#00afaf"))))
      (outline-4 ((t (:foreground "#0087ff"))))
