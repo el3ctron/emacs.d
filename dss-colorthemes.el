@@ -137,6 +137,22 @@
   (smex-update))
 
 
+(defun dss/color-theme-slides ()
+  (interactive)
+  (dss/color-theme-dark-tty)
+  (let ((color-theme-is-cumulative t))
+                                        ;(color-theme-beige-eshell)
+    (color-theme-install
+     '(dss/color-theme-slides
+       ((background-mode . dark)
+        (foreground-color . "white"))
+       (org-meta-line ((t (:foreground "#080808")))); 1c1c1c
+       (org-code ((t (:foreground "blue"))))
+       (visible-mark-face ((t (:background nil))))
+       (header-line ((t (:background "black" :foreground "black"))))
+       (fringe ((t (:background nil :foreground "black"))))
+       ))))
+
 (add-hook 'after-make-frame-functions
           (lambda (frame)
             (set-variable 'color-theme-is-global nil)
