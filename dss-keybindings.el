@@ -173,7 +173,8 @@
 (define-key f4-map "0" 'dss/out-sexp)
 (define-key f4-map "8" 'dss/out-one-sexp)
 
-(define-key f4-map [(f4)] 'kill-ring-save)
+(define-key f4-map [(f4)] (kbd "TAB"))
+;(define-key f4-map [(f4)] 'kill-ring-save)
 (define-key f4-map "i" 'yank)
 (define-key f4-map "u" 'undo)
 
