@@ -39,14 +39,21 @@
       (lambda (msg)
         (dss-popup-notify "org-mode" msg)))
 
+(setq dss-org-timer-message "timer done")
+(defun dss/org-set-timer-message (message)
+  (interactive "sMessage:")
+  (setq dss-org-timer-message message))
+
 (defun dss/org-clock-in-hook ()
+  (dss/org-set-timer-message "take a break")
   (org-timer-set-timer '(16)))
 
 (defun dss/org-clock-out-hook ()
+  (dss/org-set-timer-message "get back to work")
   (org-timer-set-timer 5))
 
 (defun dss/org-timer-done-hook ()
-  (dss-popup-notify "org-mode" "timer done"))
+  (dss-popup-notify "org-mode" dss-org-timer-message))
 
 (add-hook 'org-clock-in-hook 'dss/org-clock-in-hook)
 (add-hook 'org-clock-out-hook 'dss/org-clock-out-hook)
