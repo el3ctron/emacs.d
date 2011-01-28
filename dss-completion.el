@@ -31,6 +31,15 @@
   ;ido-confirm-unique-completion t ; wait for RET, even with unique completion
   ido-save-directory-list-file (concat dss-ephemeral-dir "ido.last"))
 
+(defun dss/minibuffer-setup-hook ()
+  ;; interactive the future I'll change this so it looks to see if
+  ;; linum-mode is active in any of this frame's windows. if the mini
+  ;; buffer lines are not truncated, and linum-mode is active the line
+  ;; numbers interactive the margin flicker annoyingly
+  (setq truncate-lines t))
+
+(add-hook 'minibuffer-setup-hook 'dss/minibuffer-setup-hook)
+
 (defun dss/ido-find-file-at-point ()
   (interactive)
   (let ((ido-use-filename-at-point t)
