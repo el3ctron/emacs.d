@@ -35,7 +35,9 @@
   ;; interactive the future I'll change this so it looks to see if
   ;; linum-mode is active in any of this frame's windows. if the mini
   ;; buffer lines are not truncated, and linum-mode is active the line
-  ;; numbers interactive the margin flicker annoyingly
+  ;; numbers interactive the margin flicker annoyingly.
+  ;; http://stackoverflow.com/questions/1775898/emacs-disable-line-truncation-in-minibuffer-only
+
   (setq truncate-lines t))
 
 (add-hook 'minibuffer-setup-hook 'dss/minibuffer-setup-hook)
