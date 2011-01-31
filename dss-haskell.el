@@ -6,16 +6,16 @@
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
 (add-to-list 'load-path "/home/tavis/.cabal/share/scion-current/emacs")
-(require 'scion)
-
-(add-to-list 'load-path "/home/tavis/.cabal/share/ghc-mod-current")
-(require 'ghc)
-
-(add-to-list 'load-path "/home/tavis/.cabal/share/hlint-current")
-(require 'hs-lint)
-
+(require 'scion nil t)
+(setq scion-completing-read-function 'ido-completing-read)
 ;; if ./cabal/bin is not in your $PATH
 (setq scion-program "~/.cabal/bin/scion-server")
+
+(add-to-list 'load-path "/home/tavis/.cabal/share/ghc-mod-current")
+(require 'ghc nil t)
+
+(add-to-list 'load-path "/home/tavis/.cabal/share/hlint-current")
+(require 'hs-lint nil t)
 
 ;;; see http://www.emacswiki.org/cgi-bin/wiki/FlymakeHaskell
 
@@ -34,12 +34,12 @@
   (mapc (lambda (char)
           (progn
             (define-key haskell-mode-map char 'dss/haskell-electric-pair)
-            (define-key inferior-haskell-mode-map char 'dss/haskell-electric-pair)
+            ;; (define-key inferior-haskell-mode-map char 'dss/haskell-electric-pair)
             ))
         '("\"" "(" "[" "{")))
 
-(add-hook 'haskell-mode-hook 'dss/haskell-hook)
+;inferior-haskell-mode-map
 
-(setq scion-completing-read-function 'ido-completing-read)
+(add-hook 'haskell-mode-hook 'dss/haskell-hook)
 
 (provide 'dss-haskell)
