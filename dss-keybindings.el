@@ -115,8 +115,13 @@
 
 (global-unset-key "\C-x\C-c")
 (global-set-key "\C-x\C-c" 'dss/confirm-exit-emacs)
-(global-set-key "\C-x\C-m" 'execute-extended-command) ;for when I don't want to use smex
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+                      ;for when I don't want to use smex
 (global-set-key "\C-x\C-b" 'ibuffer)
+
+;comint-previous-matching-input-from-input
+  ;; (define-key py-shell-map (quote [up]) 'comint-previous-matching-input-from-input)
+  ;; (define-key py-shell-map (quote [down]) 'comint-next-matching-input-from-input)
 
 (add-hook 'comint-mode-hook
           (lambda ()
