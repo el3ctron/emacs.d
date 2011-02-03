@@ -24,6 +24,8 @@
 (defun dss-popup-notify (title msg &optional icon sound)
   (interactive)
                                         ;(setq sound "/usr/share/sounds/logout.wav")
+  ;; I should make the following shell commands asynchronous to avoid
+  ;; freezing Emacs while they run
   (setq sound "/usr/share/sounds/phone.wav")
   (when sound (shell-command
                (concat "ssh b3 aplay " sound " 2> /dev/null")))
@@ -35,6 +37,7 @@
   (shell-command (concat
                   "echo '" title "' | prowl_tavis.sh -1 'Emacs notification'"))
   (message (concat title ": " msg)))
+
 (setq org-show-notification-handler
       (lambda (msg)
         (dss-popup-notify "org-mode" msg)))
@@ -49,6 +52,7 @@
   (org-timer-set-timer '(16)))
 
 (defun dss/org-clock-out-hook ()
+  (org-timer-cancel-timer)
   (dss/org-set-timer-message "get back to work")
   (org-timer-set-timer 5))
 
