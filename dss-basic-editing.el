@@ -42,6 +42,15 @@
 (global-undo-tree-mode)
 (diminish 'undo-tree-mode "")
 
+(defun dss/clone-line ()
+  (interactive)
+  (beginning-of-line)
+  (k2-copy-whole-line)
+  (open-next-line)
+  (forward-line)
+  (yank)
+  (back-to-indentation))
+
 (defun dss/goto-line (line)
   "A simplified, single buffer version of the standard command
   that work even if the buffer is narrowed"
