@@ -174,7 +174,11 @@ Do nothing if not in string."
   (dss/indent-defun)
   (save-excursion
     (dss/out-sexp nil t)
-    (eval-last-sexp nil)))
+    (cond ((or (equal major-mode 'clojure-mode)
+               (equal major-mode 'slime-repl-mode))
+           (slime-eval-last-expression))
+          (t (eval-last-sexp nil)))
+    ))
 ;; (message "%S" (preceding-sexp))
 
 
