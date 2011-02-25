@@ -190,7 +190,7 @@ This is python-comment-line-p from Dave Love's python.el"
   (setq mode-name "PY:")
   (setq py-python-command-args '("-colors" "Linux"))
   (if (and (string-match "\\.py$" (buffer-name))
-           ; and isn't a py-shell tmp buffer:
+                                        ; and isn't a py-shell tmp buffer:
            (not (string-match "python-" (buffer-name))))
       (progn
         ;; (unless dss/ecb-loaded
@@ -206,20 +206,22 @@ This is python-comment-line-p from Dave Love's python.el"
 
   ;; custom keybindings
   (mapc (lambda (char)
-            (progn
-              (define-key py-mode-map char 'dss/electric-pair)
-              (define-key py-shell-map char 'dss/electric-pair)
-              ))
-          '("\"" "\'" "(" "[" "{"))
+          (progn
+            (define-key py-mode-map char 'dss/electric-pair)
+            (define-key py-shell-map char 'dss/electric-pair)
+            ))
+        '("\"" "\'" "(" "[" "{"))
 
   (define-key py-mode-map (kbd "C-p") 'dss/py-insert-self)
 
   (define-key py-mode-map (kbd "M-RET") 'dss/py-next-line)
-  (define-key py-mode-map (kbd "C-M-@") 'rope-code-assist)
+  (define-key py-mode-map (kbd "C-M-@") 'mark-sexp)
+  ;; rope-code-assist
   (define-key py-mode-map (kbd "M-/") 'dss/hippie-expand)
   (define-key py-mode-map (kbd "M-.") 'rope-goto-definition)
 
-  (define-key py-shell-map (kbd "C-M-@") 'dss/ido-ipython-complete)
+  ;;(define-key py-shell-map (kbd "C-M-@") 'dss/ido-ipython-complete)
+  (define-key py-shell-map (kbd "C-M-@") 'mark-sexp)
 
   (define-key py-shell-map "\C-e" (lambda ()
                                     (interactive)
