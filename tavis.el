@@ -61,8 +61,17 @@
 
 (add-hook 'org-clock-in-hook 'dss/org-clock-in-hook)
 (add-hook 'org-clock-out-hook 'dss/org-clock-out-hook)
-(setq org-timer-default-timer 25)
 (setq org-timer-done-hook 'dss/org-timer-done-hook)
+
+(setq org-timer-default-timer 25)
+
+(defun dss/org-set-default-timer (time)
+  (interactive "nDefault: ")
+  (setq org-timer-default-timer time))
+
+
+
+
 
 (defun dss-appt-display (min-to-app new-time msg)
   (dss-popup-notify (format "Appointment in %s minute(s)" min-to-app)
@@ -196,9 +205,9 @@
 ;(setq org-refile-targets (quote ((org-agenda-files . (:maxlevel . 5)) (nil :maxlevel . 5))))
 ;(setq org-refile-targets `((org-agenda-files . (:maxlevel . 2)) (nil :maxlevel . 2)))
 
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 3)) (nil . (:maxlevel . 3))))
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 2)) (nil . (:maxlevel . 2))))
 (setq org-refile-use-outline-path 'file)
-(setq org-outline-path-complete-in-steps nil) ; seems buggy when on
+(setq org-outline-path-complete-in-steps t) ; seems buggy when off
 (setq org-completion-use-ido t)
 ; Targets start with the file name - allows creating level 1 tasks
 ;(setq org-refile-use-outline-path (quote file))
