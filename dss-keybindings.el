@@ -287,21 +287,25 @@
 (define-key f8-map "c" 'org-clock-cancel)
 
 ;(define-key f8-map "_" 'org-clock-select-task)
-(define-key f8-map "_" (lambda ()
-                          "C-u C-c C-x C-i -> org-clock-select-task"
-                          (interactive)
-                          (org-clock-in '(4))))
+(defun dss/org-clock-in-select ()
+  "C-u C-c C-x C-i -> org-clock-select-task"
+  (interactive)
+  (org-clock-in '(4)))
 
+(defun dss/org-clock-goto-select-task ()
+  "C-u C-c C-x C-i -> org-clock-goto via org-clock-select-task"
+  (interactive)
+  (org-clock-goto '(4)))
+
+(defun dss/org-refile-goto ()
+  "org-goto using refile ui"
+  (interactive)
+  (org-refile '(4)))
+
+(define-key f8-map "_" 'dss/org-clock-in-select)
 (define-key f8-map "-" 'org-clock-goto)
-(define-key f8-map "'" (lambda ()
-                          "C-u C-c C-x C-i -> org-clock-goto via org-clock-select-task"
-                          (interactive)
-                          (org-clock-goto '(4))))
-
-(define-key f8-map "g" (lambda ()
-                          "org-goto using refile ui"
-                          (interactive)
-                          (org-refile '(4))))
+(define-key f8-map "'" 'dss/org-clock-goto-select-task)
+(define-key f8-map "g" 'dss/org-refile-goto)
 
 ;; (define-key f8-map "l" (lambda ()
 ;;                           "org-goto last refile location"
