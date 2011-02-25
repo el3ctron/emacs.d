@@ -50,7 +50,7 @@
      (show-paren-match-face ((t (:background "cyan"))));;#303030
      (show-paren-mismatch-face ((t (:background "magenta" :foreground "white"))))
      (flymake-errline ((t (:background "#870000"))))
-     (flymake-warnline ((t (:background "#444444"))))
+     (flymake-warnline ((t (:background "#5f0000"))))
      (lineker-warning-face ((t (:background "#870000"))))
 
      (hl-line ((t (:background "#1a1a1a"))))
@@ -148,6 +148,10 @@
         (foreground-color . "white"))
        (org-meta-line ((t (:foreground "#080808")))); 1c1c1c
        (org-code ((t (:foreground "blue"))))
+
+       (org-level-1 ((t (:foreground "cyan"))))
+       (font-lock-comment-face ((t (:foreground "brightred"))))
+
        (visible-mark-face ((t (:background nil))))
        (header-line ((t (:background "black" :foreground "black"))))
        (fringe ((t (:background nil :foreground "black"))))
