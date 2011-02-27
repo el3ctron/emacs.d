@@ -166,7 +166,8 @@ Do nothing if not in string."
   (save-excursion
     (dss/out-sexp)
     (forward-to-word 2)
-    (k2-copy-whole-sexp)))
+    (k2-copy-whole-sexp)
+    (message (car kill-ring))))
 
 (defun dss/eval-defun ()
   "The built-in eval-defun doesn't choose the top level forms I would expect expect"
@@ -177,16 +178,29 @@ Do nothing if not in string."
     (cond ((or (equal major-mode 'clojure-mode)
                (equal major-mode 'slime-repl-mode))
            (slime-eval-last-expression))
-          (t (eval-last-sexp nil)))
-    ))
+          (t (eval-last-sexp nil)))))
 ;; (message "%S" (preceding-sexp))
 
 
-(defun dss/goto-defun-args ()
+(defun dss/goto-defun-name ()
   (interactive)
   (dss/out-sexp)
-  (forward-to-word 2)
-  (search-forward "("))
+  (forward-to-word 2))
+
+(defun dss/goto-defun-docstring ()
+  "Jumps to the first quote in the defun form. If there is no
+  docstring it just jumps forward to the first quote anyway. I
+  should make this smarter and have it automatically insert the
+  docstring if one does not exist."
+
+  (interactive)
+  (dss/goto-defun-name)
+  (search-forward-regexp "\""))
+
+(defun dss/goto-defun-args ()
+  (interactive)
+  (dss/goto-defun-name)
+  (search-forward-regexp "(\\|\\["))
 
 (defun dss/fix-sexp-whitespace ()
   (interactive)
