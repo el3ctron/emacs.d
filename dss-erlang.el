@@ -1,0 +1,9 @@
+(add-to-list 'load-path "~/src/distel/elisp/")
+(require 'distel)
+(distel-setup)
+(defun dss/erlang-mode-hook ()
+  (interactive)
+  (linum-mode))
+
+(add-hook 'erlang-mode-hook 'dss/erlang-mode-hook)
+(provide 'dss-erlang)
