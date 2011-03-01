@@ -5,7 +5,7 @@
 ;; Author: Tomohiro Matsuyama <m2ym.pub@gmail.com>
 ;; URL: http://cx4a.org/software/auto-complete
 ;; Keywords: completion, convenience
-;; Version: 1.3
+;; Version: 1.4
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -127,6 +127,22 @@
   :type 'string
   :group 'auto-complete)
 
+(defcustom ac-user-dictionary nil
+  "User defined dictionary"
+  :type '(repeat string)
+  :group 'auto-complete)
+
+(defcustom ac-dictionary-files '("~/.dict")
+  "Dictionary files."
+  :type '(repeat string)
+  :group 'auto-complete)
+(defvaralias 'ac-user-dictionary-files 'ac-dictionary-files)
+
+(defcustom ac-dictionary-directories nil
+  "Dictionary directories."
+  :type '(repeat string)
+  :group 'auto-complete)
+
 (defcustom ac-use-quick-help t
   "Non-nil means use quick help."
   :type 'boolean
@@ -148,10 +164,11 @@
   :type 'integer
   :group 'auto-complete)
 
-(defcustom ac-quick-help-prefer-x t
-  "Prefer X tooltip than overlay popup for displaying quick help."
+(defcustom ac-quick-help-prefer-pos-tip t
+  "Prefer native tooltip with pos-tip than overlay popup for displaying quick help."
   :type 'boolean
   :group 'auto-complete)
+(defvaralias 'ac-quick-help-prefer-x 'ac-quick-help-prefer-pos-tip)
 
 (defcustom ac-candidate-limit nil
   "Limit number of candidates. Non-integer means no limit."
@@ -160,8 +177,8 @@
 (defvaralias 'ac-candidate-max 'ac-candidate-limit)
 
 (defcustom ac-modes
-  '(emacs-lisp-mode
-    lisp-interaction-mode
+  '(emacs-lisp-mode lisp-mode lisp-interaction-mode
+    slime-repl-mode
     c-mode cc-mode c++-mode
     java-mode malabar-mode clojure-mode scala-mode
     scheme-mode
@@ -178,6 +195,12 @@
   "^ac-"
   "Regexp to indicate what packages can work with auto-complete."
   :type 'string
+  :group 'auto-complete)
+
+(defcustom ac-non-trigger-commands
+  '(*table--cell-self-insert-command)
+  "Commands that can't be used as triggers of `auto-complete'."
+  :type '(repeat symbol)
   :group 'auto-complete)
 
 (defcustom ac-trigger-commands
@@ -216,9 +239,15 @@ If you specify `nil', never be started automatically."
                  (integer :tag "Require"))
   :group 'auto-complete)
 
-(defcustom ac-ignores nil
-  "List of string to ignore completion."
+(defcustom ac-stop-words nil
+  "List of string to stop completion."
   :type '(repeat string)
+  :group 'auto-complete)
+(defvaralias 'ac-ignores 'ac-stop-words)
+
+(defcustom ac-use-dictionary-as-stop-words t
+  "Non-nil means a buffer related dictionary will be thought of as stop words."
+  :type 'boolean
   :group 'auto-complete)
 
 (defcustom ac-ignore-case 'smart
@@ -547,6 +576,51 @@ If there is no common part, this will be nil.")
 
 
 
+;;;; Dictionary
+(defvar ac-buffer-dictionary nil)
+(defvar ac-file-dictionary (make-hash-table :test 'equal))
+
+(defun ac-clear-dictionary-cache ()
+  (interactive)
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (if (local-variable-p 'ac-buffer-dictionary)
+          (kill-local-variable 'ac-buffer-dictionary))))
+  (clrhash ac-file-dictionary))
+
+(defun ac-file-dictionary (filename)
+  (let ((cache (gethash filename ac-file-dictionary 'none)))
+    (if (and cache (not (eq cache 'none)))
+        cache
+      (let (result)
+        (ignore-errors
+          (with-temp-buffer
+            (insert-file-contents filename)
+            (setq result (split-string (buffer-string) "\n"))))
+        (puthash filename result ac-file-dictionary)
+        result))))
+
+(defun ac-mode-dictionary (mode)
+  (loop for name in (cons (symbol-name mode)
+                          (ignore-errors (list (file-name-extension (buffer-file-name)))))
+        for dir in ac-dictionary-directories
+        for file = (concat dir "/" name)
+        if (file-exists-p file)
+        append (ac-file-dictionary file)))
+
+(defun ac-buffer-dictionary (&optional buffer)
+  (with-current-buffer (or buffer (current-buffer))
+    (if (local-variable-p 'ac-buffer-dictionary)
+        ac-buffer-dictionary
+      (make-local-variable 'ac-buffer-dictionary)
+      (setq ac-buffer-dictionary
+            (apply 'append
+                   ac-user-dictionary
+                   (ac-mode-dictionary major-mode)
+                   (mapcar 'ac-file-dictionary ac-dictionary-files))))))
+
+
+
 ;;;; Auto completion internals
 
 (defun ac-menu-at-wrapper-line-p ()
@@ -556,6 +630,11 @@ If there is no common part, this will be nil.")
            (save-excursion
              (vertical-motion 1)
              (line-beginning-position)))))
+
+(defun ac-stop-word-p (word)
+  (or (member word ac-stop-words)
+      (if ac-use-dictionary-as-stop-words
+          (member word (ac-buffer-dictionary)))))
 
 (defun ac-prefix-symbol ()
   "Default prefix definition function."
@@ -846,7 +925,7 @@ You can not use it in source definition like (prefix . `NAME')."
                 (setq point nil))
             (if point
                 (setq prefix-def prefix))))
-
+        
         if (equal prefix prefix-def) do (push source sources)
 
         finally return
@@ -962,9 +1041,10 @@ You can not use it in source definition like (prefix . `NAME')."
 (defun ac-reposition ()
   "Force to redraw candidate menu with current `ac-candidates'."
   (let ((cursor (popup-cursor ac-menu))
-        (scroll-top (popup-scroll-top ac-menu)))
+        (scroll-top (popup-scroll-top ac-menu))
+        (height (popup-height ac-menu)))
     (ac-menu-delete)
-    (ac-menu-create ac-point (popup-preferred-width ac-candidates) (popup-height ac-menu))
+    (ac-menu-create ac-point (popup-preferred-width ac-candidates) height)
     (ac-update-candidates cursor scroll-top)))
 
 (defun ac-cleanup ()
@@ -1171,15 +1251,18 @@ that have been made before in this function."
             (pos-tip-hide))
           t)))))
 
+(defun ac-quick-help-use-pos-tip-p ()
+  (and ac-quick-help-prefer-pos-tip
+       window-system
+       (featurep 'pos-tip)))
+
 (defun ac-quick-help (&optional force)
   (interactive)
   (when (and (or force (null this-command))
              (ac-menu-live-p)
              (null ac-quick-help))
       (setq ac-quick-help
-            (funcall (if (and ac-quick-help-prefer-x
-                              (eq window-system 'x)
-                              (featurep 'pos-tip))
+            (funcall (if (ac-quick-help-use-pos-tip-p)
                          'ac-pos-tip-show-quick-help
                        'popup-menu-show-quick-help)
                      ac-menu nil
@@ -1188,6 +1271,9 @@ that have been made before in this function."
                      :nowait t))))
 
 (defun ac-remove-quick-help ()
+  (when (ac-quick-help-use-pos-tip-p)
+    (with-no-warnings
+      (pos-tip-hide)))
   (when ac-quick-help
     (popup-delete ac-quick-help)
     (setq ac-quick-help nil)))
@@ -1200,9 +1286,7 @@ that have been made before in this function."
     (let ((doc (popup-item-documentation (cdr ac-last-completion)))
           (point (marker-position (car ac-last-completion))))
       (when (stringp doc)
-        (if (and ac-quick-help-prefer-x
-                 (eq window-system 'x)
-                 (featurep 'pos-tip))
+        (if (ac-quick-help-use-pos-tip-p)
             (with-no-warnings (pos-tip-show doc nil point nil 0))
           (popup-tip doc
                      :point point
@@ -1329,7 +1413,7 @@ that have been made before in this function."
       (ac-complete)
     (when (and (ac-inline-live-p)
                ac-common-part)
-      (ac-inline-hide)
+      (ac-inline-hide) 
       (ac-expand-string ac-common-part (eq last-command this-command))
       (setq ac-common-part nil)
       t)))
@@ -1371,8 +1455,9 @@ that have been made before in this function."
            prefix
            (init (or force-init (not (eq ac-point point)))))
       (if (or (null point)
-              (member (setq prefix (buffer-substring-no-properties point (point)))
-                      ac-ignores))
+              (progn
+                (setq prefix (buffer-substring-no-properties point (point)))
+                (ac-stop-word-p prefix)))
           (prog1 nil
             (ac-abort))
         (unless ac-cursor-color
@@ -1447,6 +1532,7 @@ that have been made before in this function."
 (defun ac-trigger-command-p (command)
   "Return non-nil if `COMMAND' is a trigger command."
   (and (symbolp command)
+       (not (memq command ac-non-trigger-commands))
        (or (memq command ac-trigger-commands)
            (string-match "self-insert-command" (symbol-name command))
            (string-match "electric" (symbol-name command)))))
@@ -1545,6 +1631,14 @@ This workaround avoid flyspell processes when auto completion is being started."
   (interactive)
   (defadvice flyspell-post-command-hook (around ac-flyspell-workaround activate)
     (unless ac-triggered
+      ad-do-it)))
+
+(defun ac-linum-workaround ()
+  "linum-mode tries to display the line numbers even for the
+completion menu. This workaround stops that annoying behavior."
+  (interactive)
+  (defadvice linum-update (around ac-linum-update-workaround activate)
+    (unless ac-completing
       ad-do-it)))
 
 
@@ -1692,6 +1786,8 @@ This workaround avoid flyspell processes when auto completion is being started."
         (princ " is ")
         (cond
          ((fboundp symbol)
+          ;; import help-xref-following
+          (require 'help-mode)
           (let ((help-xref-following t))
             (describe-function-1 symbol))
           (buffer-string))
@@ -1838,60 +1934,8 @@ This workaround avoid flyspell processes when auto completion is being started."
     (limit . nil)))
 
 ;; Dictionary source
-(defcustom ac-user-dictionary nil
-  "User dictionary"
-  :type '(repeat string)
-  :group 'auto-complete)
-
-(defcustom ac-user-dictionary-files '("~/.dict")
-  "User dictionary files."
-  :type '(repeat string)
-  :group 'auto-complete)
-
-(defcustom ac-dictionary-directories nil
-  "Dictionary directories."
-  :type '(repeat string)
-  :group 'auto-complete)
-
-(defvar ac-dictionary nil)
-(defvar ac-dictionary-cache (make-hash-table :test 'equal))
-
-(defun ac-clear-dictionary-cache ()
-  (interactive)
-  (clrhash ac-dictionary-cache))
-
-(defun ac-read-file-dictionary (filename)
-  (let ((cache (gethash filename ac-dictionary-cache 'none)))
-    (if (and cache (not (eq cache 'none)))
-        cache
-      (let (result)
-        (ignore-errors
-          (with-temp-buffer
-            (insert-file-contents filename)
-            (setq result (split-string (buffer-string) "\n"))))
-        (puthash filename result ac-dictionary-cache)
-        result))))
-
-(defun ac-buffer-dictionary ()
-  (apply 'append
-         (mapcar 'ac-read-file-dictionary
-                 (mapcar (lambda (name)
-                           (loop for dir in ac-dictionary-directories
-                                 for file = (concat dir "/" name)
-                                 if (file-exists-p file)
-                                 return file))
-                         (list (symbol-name major-mode)
-                               (ignore-errors
-                                 (file-name-extension (buffer-file-name))))))))
-
-(defun ac-dictionary-candidates ()
-  (apply 'append `(,ac-user-dictionary
-                   ,(ac-buffer-dictionary)
-                   ,@(mapcar 'ac-read-file-dictionary
-                             ac-user-dictionary-files))))
-
 (ac-define-source dictionary
-  '((candidates . ac-dictionary-candidates)
+  '((candidates . ac-buffer-dictionary)
     (symbol . "d")))
 
 (provide 'auto-complete)

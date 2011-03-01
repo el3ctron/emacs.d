@@ -7,9 +7,23 @@
       el-get-generate-autoloads t
       el-get-sources
       '(el-get
+        package
         (:name unit-test :type emacswiki)
+        rainbow-mode
+        smex
+        ;slime
+        ;(:name slime :type git :url "git://sbcl.boinkor.net/slime.git" :load-path ("." "./contrib") :compile nil :load "slime-autoloads.el") ; Overridden to prefer git mirror
+        (:name slime-fuzzy :type http :url
+               "http://elder-gods.org/~larry/repos/slime-tracker/contrib/slime-fuzzy.el")
+        ac-slime
+        clojure-mode
+        durendal
 
-        ))
+        undo-tree
+        (:name moz :type git :url "http://github.com/bard/mozrepl.git" :load-path "chrome/content/moz.el")
+        (:name pomodoro :type emacswiki)
+        (:name lineker :type emacswiki)
+        (:name js2-mode :type git :url "https://github.com/mooz/js2-mode")))
 
 (defun el-get-update-all ()
   "Update all el-get packages

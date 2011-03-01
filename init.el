@@ -1,15 +1,17 @@
 (add-to-list 'load-path (file-name-directory (or (buffer-file-name) load-file-name)))
 (require 'dss-paths)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; see .emacs.d/requirements.txt I install most dependencies in
 ;; /usr/share/emacs/site-lisp via gentoo's portage
+(require 'dss-elpa-support)
+(require 'dss-init-el-get)
+
 (require 'dss-basic-default-config)
 (require 'dss-no-rsi)
 ;; where to store ephemeral stuff, and what to store between sessions
 (require 'dss-command-history-and-freqs)
 (require 'dss-tmp-files)
-
-(require 'dss-elpa-support)
 
 ;; global stuff
 (require 'dss-basic-editing)
@@ -35,6 +37,7 @@
 (require 'dss-nxml)
 (require 'dss-lua)
 (require 'dss-clojure)
+;;(require 'dss-erlang)
 
 ;; other support funcs and minor modes
 (require 'dss-keybindings)
