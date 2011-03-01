@@ -1,5 +1,0 @@
-#name : function template
-# --
-(defun $1 ()
-  (interactive)
-  $0)
