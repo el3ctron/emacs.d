@@ -5,4 +5,5 @@
 
 # ignore my private user specific setup and custom.el
 ^tavis/.*$
+^el-get/.*$
 ^custom.el$
