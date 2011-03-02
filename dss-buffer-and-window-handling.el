@@ -22,6 +22,21 @@
             (if dedicated "no longer " "")
             (buffer-name))))
 
+(defun dss/sync-point-all-windows ()
+  (interactive)
+  (mapc '(lambda (f)
+           (mapc '(lambda (w)
+                    (if (eq (window-buffer w)
+                            (current-buffer))
+                        (set-window-point w (point))))
+                 (window-list f)))
+        (frame-list)))
+
+(defun dss/frame-by-name (name)
+  (car (delq nil
+             (mapcar (lambda (fr) (if (string= (frame-parameter fr 'name) name) fr))
+                     (frame-list)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun dss/kill-clean-buffer ()
   (interactive)
