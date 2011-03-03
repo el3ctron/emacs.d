@@ -3,6 +3,9 @@
 
 (fset 'yes-or-no-p 'y-or-n-p) ; less typing
 
+(setq warning-suppress-types nil)       ; get rid of strange warning that happens in 23.2
+;;; http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/ca5bdf88e61c0a94
+
 ;; encoding
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -71,6 +74,9 @@
 ;; mouse and selection settings
 (add-hook 'after-init-hook (lambda ()
                              (xterm-mouse-mode 1)))
+
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'dss-basic-default-config)
