@@ -1,3 +1,5 @@
+(require 'dss-elisp-funcs)  ; dss/map-define-key
+
 ;; Haskell
 (load "/usr/share/emacs/site-lisp/haskell-mode/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
@@ -29,13 +31,19 @@
   (interactive)
   (inferior-haskell-find-definition (haskell-ident-at-point)))
 
-(defun dss/haskell-hook ()
+(defun dss/haskell-mode-hook ()
+  (interactive)
   ;; (scion-mode 1)
   ;; (scion-flycheck-on-save 1)
   (linum-mode 1)
+  (require 'inf-haskell)
+
+  (define-key haskell-mode-map (kbd "M-.") 'dss/haskell-goto-definition)
+  (define-key inferior-haskell-mode-map (kbd "M-.") 'dss/haskell-goto-definition)
+  (dss/map-define-key haskell-mode-map '("\"" "(" "[" "{") 'dss/haskell-electric-pair)
+  (dss/map-define-key inferior-haskell-mode-map '("\"" "(" "[" "{") 'dss/haskell-electric-pair)
   (ghc-init)
   (flymake-mode)
-  (require 'inf-haskell)
   (dss/install-whitespace-cleanup-hook)
   (dss/load-lineker-mode)
   (setq ac-sources '(
@@ -43,19 +51,12 @@
                                         ;my/ac-source-haskell
                      ac-source-yasnippet
                      ac-source-abbrev
-                     ac-source-words-in-buffer))
-  (define-key haskell-mode-map (kbd "M-.") 'dss/haskell-goto-definition)
-  (define-key inferior-haskell-mode-map (kbd "M-.") 'dss/haskell-goto-definition)
-  (mapc (lambda (char)
-          (progn
-            (define-key haskell-mode-map char 'dss/haskell-electric-pair)
-            (define-key inferior-haskell-mode-map char 'dss/haskell-electric-pair)
-            ))
-        '("\"" "(" "[" "{")))
+                     ac-source-words-in-buffer)))
 
-;inferior-haskell-mode-map
+;; ;@@TR: remove the default .hs flymake hook and add ghc-flymake ...
+;; (setq flymake-allowed-file-name-masks (cdr flymake-allowed-file-name-masks))
 
-(add-hook 'haskell-mode-hook 'dss/haskell-hook)
+(add-hook 'haskell-mode-hook 'dss/haskell-mode-hook)
 
 (provide 'dss-haskell)
 
