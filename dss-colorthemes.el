@@ -5,14 +5,17 @@
 
 (defvar dss-modeline-background-color "#000087")
 
-(defun dss/flash-modeline ()
+(defun dss/flash-modeline (&optional time color)
   (interactive)
-  (set-face-background 'modeline "red")
-  (set-face-background 'modeline "#5f0000")
-  (run-with-timer 3 nil
-                  'set-face-background
-                  'modeline
-                  dss-modeline-background-color))
+  (let ((orig-modeline-fg (face-background 'modeline))
+        (time (or time 2))
+        (color (or color "#d70000")))
+    (set-face-background 'modeline color)
+    (run-with-
+     timer time nil
+                    'set-face-background
+                    'modeline
+                    orig-modeline-fg)))
 
 (defun dss/color-theme-dark-tty ()
   (interactive)
@@ -132,6 +135,11 @@
 
      (bookmarkp-local-file-without-region ((t (:foreground "white"))))
 
+     (magit-item-highlight ((t (:background "#161616"))))
+     (magit-diff-add ((t (:foreground "green"))))
+     (magit-diff-del ((t (:foreground "red"))))
+     (magit-diff-file-header ((t (:foreground "#0087af" :background "#121212"))))
+     (magit-diff-hunk-header ((t (:foreground "#0087ff" :background "#121212"))))
 
      ))
   (smex-update))
