@@ -8,6 +8,10 @@
       '(el-get
         package
 
+        magit
+        magithub
+        (:name gist :type git :url "https://github.com/tels7ar/gist.el")
+
         (:name unit-test :type emacswiki)
         rainbow-mode
         smex
@@ -54,7 +58,6 @@
   (dolist (package (mapcar 'el-get-source-name el-get-sources))
     (unless (memq (plist-get (el-get-package-def package) :type) '(http-tar elpa))
       (el-get-update package))))
-
 
 (el-get)
 
