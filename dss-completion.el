@@ -98,9 +98,9 @@ advice like this:
 
 ;http://www.rlazo.org/blog/entry/2008/sep/13/insert-a-path-into-the-current-buffer/
 (defun dss/insert-path (file)
- "insert file"
- (interactive "FPath: ")
- (insert (expand-file-name file)))
+  "insert file"
+  (interactive "FPath: ")
+  (insert (replace-regexp-in-string (getenv "HOME") "~" (expand-file-name file))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; dabbrev and hippie-expand
@@ -120,6 +120,15 @@ advice like this:
 (setq ac-use-comphist nil)
 (setq ac-candidate-limit 25)
 (setq ac-use-quick-help nil)
+
+(defun dss/ac-hide-help ()
+  (interactive)
+  (setq ac-use-quick-help nil))
+
+(defun dss/ac-show-help ()
+  (interactive)
+  (setq ac-use-quick-help t))
+
 (ac-config-default)
 
 (require 'dss-codenav-helpers)
@@ -157,6 +166,8 @@ advice like this:
 (define-key ac-completing-map "(" 'dss/ac-electric-pair)
 (define-key ac-completing-map "[" 'dss/ac-electric-pair)
 (define-key ac-completing-map "\r" 'ac-complete-no-fallback)
+;; (define-key ac-completing-map (kbd "M-/") 'dabbrev-completion)
+(define-key ac-completing-map (kbd "M-/") 'dss/hippie-expand)
 
 
 
