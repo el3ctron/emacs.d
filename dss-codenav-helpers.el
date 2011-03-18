@@ -178,7 +178,10 @@ Do nothing if not in string."
     (cond ((or (equal major-mode 'clojure-mode)
                (equal major-mode 'slime-repl-mode))
            (slime-eval-last-expression))
-          (t (eval-last-sexp nil)))))
+          (t (progn
+               (eval-last-sexp nil)
+               (smex-update))))))
+
 ;; (message "%S" (preceding-sexp))
 
 
