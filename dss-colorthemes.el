@@ -11,8 +11,7 @@
         (time (or time 2))
         (color (or color "#d70000")))
     (set-face-background 'modeline color)
-    (run-with-
-     timer time nil
+    (run-with-timer time nil
                     'set-face-background
                     'modeline
                     orig-modeline-fg)))
