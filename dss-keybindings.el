@@ -3,6 +3,7 @@
 (require 'comint)
 (require 'org)
 (require 'fm)
+(require 'dss-buffer-and-window-handling)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; additional custom keymaps, populated below
@@ -19,6 +20,8 @@
 (define-key global-map (kbd "M-x") 'smex)
 (define-key global-map (kbd "M-s") 'ido-goto-symbol)
 (define-key global-map (kbd "M-]") 'dss/goto-match-paren)
+
+(define-key global-map (kbd "C-M-l") 'dss/sync-point-all-windows)
 
 (defun dss/hippie-expand ()
   (interactive)
@@ -54,6 +57,8 @@
 (define-key global-map [(f7)] f7-map)
 (define-key global-map [(f8)] f8-map)
 
+(define-key global-map [(f12)] 'save-buffer)
+
 (define-key global-map [(alt insert)] 'yank-pop)
 (define-key global-map "\e[4~" 'end-of-line)
 (define-key global-map "\e\e[4~" 'end-of-buffer)
@@ -68,7 +73,9 @@
 
 (define-key global-map "\eOc" (kbd "M-f"))
 (require 'misc)
+(require 'subword)
 (define-key global-map (kbd "M-f") 'forward-to-word)
+(define-key subword-mode-map (kbd "M-f") 'forward-word)
 (define-key global-map "\eOd" 'backward-word)
 
 ;;
@@ -175,8 +182,11 @@
 (define-key f4-map "s" 'dss/eval-region-or-last-sexp)
 (define-key f4-map "d" 'dss/eval-defun)
 
-(define-key f4-map "0" 'dss/out-sexp)
+(define-key f4-map "3" 'dss/out-sexp)
 (define-key f4-map "8" 'dss/out-one-sexp)
+
+(define-key f4-map "9" 'paredit-wrap-round)
+(define-key f4-map "0" 'paredit-close-round-and-newline)
 
 (define-key f4-map [(f4)] (kbd "TAB"))
 ;(define-key f4-map [(f4)] 'kill-ring-save)
@@ -188,9 +198,32 @@
 
 (define-key f4-map "'" (kbd "\""))
 
-;;(define-key f4-map "n" 'dss/goto-match-paren)
+(define-key f4-map "c" 'k2-copy-whole-sexp)
 
+;;(define-key f4-map "n" 'dss/goto-match-paren)
 (define-key f4-map ";" 'goto-last-change)
+
+(require 'iedit)
+
+(defvar *dss-iedit-auto-complete-was-on* nil)
+(make-variable-buffer-local '*dss-iedit-auto-complete-was-on*)
+(defun dss/iedit-toggle ()
+  (interactive)
+  (if iedit-mode
+      (progn
+        (if *dss-iedit-auto-complete-was-on*
+            (progn
+              (setq *dss-iedit-auto-complete-was-on* nil)
+              (auto-complete-mode t)))
+        (iedit-mode))
+    (progn
+      (if auto-complete-mode
+          (progn
+            (setq *dss-iedit-auto-complete-was-on* t)
+            (auto-complete-mode nil)))
+      (iedit-mode))))
+
+(define-key f4-map "e" 'dss/iedit-toggle)
 
 (define-key f4-map "6" 'dss/backward-string)
 (define-key f4-map "7" 'dss/forward-string)
@@ -237,35 +270,27 @@
 (define-key f7-map "g" 'dss/bookmark-jump)
 (define-key f7-map "b" 'ido-switch-buffer)
 
+(require 'skeleton)
+(define-skeleton dss-defun-skeleton
+  "A simple e-lisp defun skeleton"
+  ""
+  "(defun dss/" _ " ()\n"
+  (indent-according-to-mode)
+  "(interactive)\n"
+  (indent-according-to-mode)
+  ")")
+
+(define-key f7-map "d" 'dss-defun-skeleton)
+(define-key f7-map "i" '(lambda ()
+                          (interactive)
+                          (insert "(interactive)")))
+
 (define-key f7-map "a" 'auto-complete-mode)
 (define-key f7-map "=" 'dss/toggle-current-window-dedication)
-
-;(define-key f7-map "1" 'k2-kill-whole-sexp)
-;(define-key f7-map "2" 'k2-copy-whole-sexp)
-;(define-key f7-map "3" 'mark-sexp)
 (define-key f7-map "'" 'k2-kill-whole-paragraph)
 (define-key f7-map "," 'k2-copy-whole-paragraph)
 (define-key f7-map "." 'mark-paragraph)
-
-;; (define-key f7-map "a" 'k2-kill-whole-line)
-;; (define-key f7-map "o" 'k2-copy-whole-line)
-;; (define-key f7-map "e" 'k2-mark-whole-line)
-
-;; (define-key f7-map ";" 'k2-kill-whole-sentence)
-;; (define-key f7-map "q" 'k2-copy-whole-sentence)
-;; (define-key f7-map "j" 'k2-mark-whole-sentence)
-
 (define-key f7-map "0" 'k2-toggle-mark)
-
-;; (define-key f7-map "g" 'k2-kill-whole-defun)
-;; (define-key f7-map "c" 'k2-copy-whole-defun)
-;; (define-key f7-map "r" 'mark-defun)
-
-;; (define-key f7-map "h" 'k2-kill-whole-word)
-;; (define-key f7-map "t" 'k2-copy-whole-word)
-;; (define-key f7-map "n" 'mark-word)
-
-
 
 ;; f8 map for org-mode
 ;; @@TR: add bindings for org node promote, demote
