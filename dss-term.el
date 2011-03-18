@@ -85,23 +85,18 @@
     (kill-region beg (point)))
   (term-send-raw-string (substring-no-properties (current-kill 0))))
 
+(defun dss/term-insert-path ()
+  (interactive)
+  (let ((beg (point)))
+    (call-interactively 'dss/insert-path)
+    (kill-region beg (point)))
+  (term-send-raw-string (substring-no-properties (current-kill 0))))
+
 (defun dss/term-backward-kill-word ()
   (interactive)
   (if (term-in-line-mode)
       (backward-kill-word 1)
     (term-send-backward-kill-word)))
-
-(add-hook 'term-mode-hook
-          '(lambda ()
-             (define-key term-raw-escape-map "/"
-               'dss/term-dabbrev)
-             (define-key term-mode-map (kbd "C-c C-j")
-               'dss/term-toggle-mode)
-             (define-key term-mode-map (kbd "M-DEL")
-               'dss/term-backward-kill-word)
-             (define-key term-mode-map (kbd "M-g")
-               'dss/term-toggle-mode)
-             (linum-mode -1)))
 
 (defun dss/term-yank ()
   (interactive)
@@ -163,6 +158,22 @@ export -f eterm-set-cwd
 
 ")))
 
+(defun dss/term-mode-hook ()
+  (interactive)
+  (define-key term-mode-map (kbd "M-/")
+    'dss/term-dabbrev)
+  (define-key term-mode-map (kbd "C-c C-j")
+    'dss/term-toggle-mode)
+  (define-key term-mode-map (kbd "M-DEL")
+    'dss/term-backward-kill-word)
+  (define-key term-mode-map (kbd "M-RET")
+    'find-file-at-point)
+  (define-key term-mode-map (kbd "M-g")
+    'dss/term-toggle-mode)
+  (linum-mode -1))
+
+(add-hook 'term-mode-hook 'dss/term-mode-hook)
+
 (setq term-bind-key-alist
       '(("C-c C-c" . term-interrupt-subjob)
         ("C-x C-x" . term-send-raw)
@@ -175,6 +186,9 @@ export -f eterm-set-cwd
         ("C-r" . dss/term-reverse-search)
         ("C-m" . term-send-raw)
 
+        ("M-/" . dss/term-dabbrev)
+        ("M-RET" . find-file-at-point)
+        ("M-`" . dss/term-insert-path)
         ("M-k" . term-send-raw-meta)
         ("M-y" . term-send-raw-meta)
         ("M-u" . term-send-raw-meta)
