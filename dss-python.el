@@ -5,6 +5,8 @@
 (require 'python-mode)
 (require 'flymake)
 
+(require 'dss-generic-code-tools) ; flymake/lint stuff
+
 ;;; see http://pedrokroger.net/blog/2010/07/configuring-emacs-as-a-python-ide-2/
 ;;; for a good overview of another very complete setup
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
@@ -24,18 +26,10 @@
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pycodecheck-init)))
 
-(defun dss/pylint-msgid-at-point ()
-  (interactive)
-  (let (msgid
-        (line-no (line-number-at-pos)))
-    (dolist (elem flymake-err-info msgid)
-      (if (eq (car elem) line-no)
-            (let ((err (car (second elem))))
-              (setq msgid (second (split-string (flymake-ler-text err)))))))))
 
 (defun dss/pylint-silence (msgid)
   "Add a special pylint comment to silence a particular warning."
-  (interactive (list (read-from-minibuffer "msgid: " (dss/pylint-msgid-at-point))))
+  (interactive (list (read-from-minibuffer "msgid: " (dss/flymake-msgid-at-point))))
   (save-excursion
     (comment-dwim nil)
     (if (looking-at "pylint:")
