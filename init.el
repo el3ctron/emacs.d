@@ -17,6 +17,7 @@
 (require 'dss-basic-editing)
 (require 'dss-whitespace-and-linelen)
 (require 'dss-buffer-and-window-handling)
+(require 'dss-generic-code-tools)
 (require 'dss-codenav-helpers)
 (require 'dss-completion)
 (require 'dss-search-occur-etc)
@@ -29,6 +30,7 @@
 (require 'dss-ecb)
 
 ;; language related major modes
+(require 'dss-slime)
 (require 'dss-python)
 (require 'dss-javascript)
 (require 'dss-ess) ; emacs-speaks-statistics for R-lang support
