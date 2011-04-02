@@ -27,15 +27,18 @@
   ;; I should make the following shell commands asynchronous to avoid
   ;; freezing Emacs while they run
   (setq sound "/usr/share/sounds/phone.wav")
-  (when sound (shell-command
-               (concat "ssh b3 aplay " sound " 2> /dev/null")))
-  (shell-command (concat "ssh b3 \"DISPLAY=:0 notify-send "
-                         (if icon (concat "-i " icon) "")
-                         " --expire-time=10000 -u critical"
-                         " '" title "' '" msg "'"
-                         "\""))
-  (shell-command (concat
-                  "echo '" title "' | prowl_tavis.sh -1 'Emacs notification'"))
+  (when sound (call-process-shell-command
+               (concat "ssh vb3 aplay " sound " 2> /dev/null &")
+               nil 0))
+  (call-process-shell-command
+   (concat "ssh vb3 \"DISPLAY=:0 notify-send "
+           (if icon (concat "-i " icon) "")
+           " --expire-time=10000 -u critical"
+           " '" title "' '" msg "'"
+           "\""))
+  (call-process-shell-command
+   (concat
+    "echo '" title "' | prowl_tavis.sh -1 'Emacs notification'"))
   (message (concat title ": " msg)))
 
 (setq org-show-notification-handler
