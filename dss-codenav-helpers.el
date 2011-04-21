@@ -161,13 +161,22 @@ Do nothing if not in string."
     (forward-char)
     (dss/indent-sexp)))
 
-(defun dss/copy-defun-name ()
+(defun dss/defun-name ()
   (interactive)
   (save-excursion
     (dss/out-sexp)
     (forward-to-word 2)
-    (k2-copy-whole-sexp)
-    (message (car kill-ring))))
+    (mark-sexp 1)
+    (let ((defun-name (buffer-substring (region-beginning) (region-end))))
+      (if defun-name
+          (set-text-properties 0 (length defun-name) nil defun-name))
+      defun-name)))
+
+(defun dss/copy-defun-name ()
+  (interactive)
+  (let ((defun-name (dss/defun-name)))
+    (kill-new defun-name)
+    (message defun-name)))
 
 (defun dss/eval-defun ()
   "The built-in eval-defun doesn't choose the top level forms I would expect expect"
