@@ -34,6 +34,7 @@
                :url "https://github.com/technomancy/clojure-mode.git"
                )
 
+        yaml-mode
         durendal
         (:name ac-dabbrev :type emacswiki)
         pymacs
