@@ -55,7 +55,8 @@
      (flymake-warnline ((t (:background "#5f0000"))))
      (lineker-warning-face ((t (:background "#870000"))))
 
-     (hl-line ((t (:background "#1a1a1a"))))
+     (hl-line ((t (:background "#232323"))))
+     ;; (hl-line ((t (:background "#1a1a1a"))))
      (col-highlight-face ((t (:background "#4a4a4a"))))
      (vline ((t (:background "#121212"))))
 
