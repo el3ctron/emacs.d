@@ -2,8 +2,11 @@
 ^\.#.*$
 ^tramp$
 ^ac-comphist.dat$
+^elpa/.*$
+^dss-yas-snippets/.*$
+^el-get/.*$
 
 # ignore my private user specific setup and custom.el
 ^tavis/.*$
-^el-get/.*$
 ^custom.el$
+^url/.*$
