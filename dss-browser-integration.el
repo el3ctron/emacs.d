@@ -60,9 +60,28 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
            (get-buffer-process inferior-moz-buffer))
       (progn
         (delete-process inferior-moz-buffer)
-        (kill-buffer inferior-moz-buffer)))
+        ;; (kill-buffer inferior-moz-buffer)
+        ))
   (set-process-query-on-exit-flag (inferior-moz-process) nil)
   (inferior-moz-process))
+
+(defun dss/moz-reset ()
+  (interactive)
+  (progn
+    (comint-send-string (inferior-moz-process)
+                        (concat ;; moz-repl-name ".pushenv('printPrompt', 'inputMode'); "
+                         moz-repl-name ".setenv('inputMode', 'syntax'); "
+                         moz-repl-name ".setenv('printPrompt', true); undefined;"))
+    (comint-send-string (inferior-moz-process)
+                        (concat ;; moz-repl-name ".pushenv('printPrompt', 'inputMode'); "
+                         moz-repl-name ".home(); "
+                         ))))
+
+(defun dss/moz-eval-buffer ()
+  "Send full buffer of js to Moz."
+  (interactive)
+                                        ;(comint-send-string (inferior-moz-process) exp)
+  (dss/moz-send-string (buffer-string)))
 
 (defun dss/moz-eval-expression (exp)
   "Send expression to Moz."
@@ -110,10 +129,19 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
         (kill-new value))
     value))
 
+(defun dss/moz-repl-home ()
+  (interactive)
+  (dss/moz-eval-expression "repl.home()"))
+
+(defun dss/moz-repl-content ()
+  (interactive)
+  (dss/moz-eval-expression "repl.enter(content)"))
+
 (defun dss/moz-reload ()
   "Reload the url in the current tab"
   (interactive)
-  (dss/moz-eval-expression "this.BrowserReload()\n"))
+  (dss/moz-repl-home)
+  (dss/moz-eval-expression "repl._creationContext.BrowserReload()\n"))
 
 (defun dss/moz-reload-delayed ()
   "Reload the url in the current tab"
@@ -140,18 +168,18 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 
 ;; (defun moz-find-next ()
 ;;   (interactive)
-;;   (dss/moz-eval-expression "gBrowser.webBrowserFind.findNext()\n"))
+;;   (dss/moz-eval-expression "repl._creationContext.gBrowser.webBrowserFind.findNext()\n"))
 
 ;;;
 
 (defun dss/moz-new-tab ()
   (interactive)
-  (dss/moz-eval-expression "gBrowser.selectedTab = gBrowser.addTab()\n"))
+  (dss/moz-eval-expression "repl._creationContext.gBrowser.selectedTab = repl._creationContext.gBrowser.addTab()\n"))
 
 (defun dss/moz-new-tab-url (url)
   (interactive "sURL:")
   (dss/moz-eval-expression
-   (format "gBrowser.selectedTab = gBrowser.addTab('%s')\n" url)))
+   (format "repl._creationContext.gBrowser.selectedTab = repl._creationContext.gBrowser.addTab('%s')\n" url)))
 
 (defvar dss-browse-url-hook nil
   "Hook run on after each call of browser-url.")
@@ -165,24 +193,25 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 
 (defun dss/moz-duplicate-tab ()
   (interactive)
-  (dss/moz-eval-expression "gBrowser.duplicateTab(gBrowser.mCurrentTab)\n"))
+  (dss/moz-eval-expression "repl._creationContext.gBrowser.duplicateTab(repl._creationContext.gBrowser.mCurrentTab)\n"))
 
 (defun dss/moz-close-tab ()
   (interactive)
-  (dss/moz-eval-expression "gBrowser.removeCurrentTab()\n"))
+  (dss/moz-eval-expression "repl._creationContext.gBrowser.removeCurrentTab()\n"))
 
 (defun dss/moz-back ()
   (interactive)
-  (dss/moz-eval-expression "this.BrowserBack()\n"))
+  (dss/moz-eval-expression "repl._creationContext.BrowserBack()\n"))
 
 (defun dss/moz-forward ()
   (interactive)
-  (dss/moz-eval-expression "this.BrowserForward()\n"))
+  (dss/moz-eval-expression "repl._creationContext.BrowserForward()\n"))
 
 (defun dss/moz-next-tab ()
   (interactive)
+  (dss/moz-repl-home)
   (dss/moz-eval-expression "
-var tabbrowser = window.getBrowser();
+var tabbrowser = repl._creationContext.window.getBrowser();
 var _lastTab = tabbrowser.selectedTab;
 tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos+1];
 "))
@@ -190,7 +219,7 @@ tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos+1];
 (defun dss/moz-print-tabs ()
   (interactive)
   (dss/moz-eval-expression-capture "
-var tabbrowser = window.getBrowser();
+var tabbrowser = repl._creationContext.window.getBrowser();
 for (var i=0, tab; tab = tabbrowser.mTabs[i]; i++) {
    repl.print('Tab '+i);
    repl.print(tab.linkedBrowser.contentDocument.title);
@@ -213,10 +242,23 @@ for (var i=0, tab; tab = tabbrowser.mTabs[i]; i++) {
   (dss/moz-get-expression-value
    "content.document.title" t))
 
+
+(defun dss/moz-find-in-tab (text)
+  (interactive "sWhat: ")
+  (dss/moz-eval-expression
+   (concat
+    "repl._creationContext.gFindBar._findField.value = '" text "'
+repl._creationContext.gFindBar.open()
+repl._creationContext.gFindBar._find()")))
+
+(defun dss/moz-find-again ()
+  (interactive)
+  (dss/moz-eval-expression "repl._creationContext.gFindBar._findAgain()"))
+
 (defun dss/moz-previous-tab ()
   (interactive)
   (dss/moz-eval-expression "
-var tabbrowser = window.getBrowser();
+var tabbrowser = repl._creationContext.window.getBrowser();
 var _lastTab = tabbrowser.selectedTab;
 tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos-1];
 "))
@@ -224,7 +266,7 @@ tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos-1];
 (defun dss/moz-select-tab (n)
   (interactive "nTab: ")
   (dss/moz-eval-expression
-   (format "window.getBrowser().selectedTab = window.getBrowser().mTabs[%d];\n" (- n 1))))
+   (format "repl._creationContext.window.getBrowser().selectedTab = repl._creationContext.window.getBrowser().mTabs[%d];\n" (- n 1))))
 
 (defun dss/moz-select-window (n)
   (interactive "nWindow: ")
