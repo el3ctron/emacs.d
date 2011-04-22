@@ -95,8 +95,22 @@
 
 (define-key ido-common-completion-map "\e[A" 'previous-history-element)
 (define-key ido-common-completion-map "\e[B" 'next-history-element)
+
+;;;;;;;;;
+;; this crap is only necessary because of the kbd macro crap above
 (define-key ido-common-completion-map "\e[C" 'ido-next-match)
 (define-key ido-common-completion-map "\e[D" 'ido-prev-match)
+
+;; (define-key ido-completion-map "\e[C" 'ido-next-match)
+;; (define-key ido-completion-map "\e[D" 'ido-prev-match)
+
+(define-key ido-file-completion-map "\e[C" 'ido-next-match)
+(define-key ido-file-completion-map "\e[D" 'ido-prev-match)
+
+(define-key ido-buffer-completion-map "\e[C" 'ido-next-match)
+(define-key ido-buffer-completion-map "\e[D" 'ido-prev-match)
+
+;;;;;;;;
 
 (defun up-slightly () (interactive) (scroll-up 5))
 (defun down-slightly () (interactive) (scroll-down 5))
@@ -127,8 +141,11 @@
 (global-set-key "\C-x\C-b" 'ibuffer)
 
 ;comint-previous-matching-input-from-input
-  ;; (define-key py-shell-map (quote [up]) 'comint-previous-matching-input-from-input)
-  ;; (define-key py-shell-map (quote [down]) 'comint-next-matching-input-from-input)
+;; (define-key py-shell-map (quote [up])
+;;'comint-previous-matching-input-from-input)
+
+;; (define-key py-shell-map (quote [down])
+;; 'comint-next-matching-input-from-input)
 
 (add-hook 'comint-mode-hook
           (lambda ()
@@ -200,7 +217,7 @@
 
 (define-key f4-map "c" 'k2-copy-whole-sexp)
 
-;;(define-key f4-map "n" 'dss/goto-match-paren)
+;;(define-keymap f4-map "n" 'dss/goto-match-paren)
 (define-key f4-map ";" 'goto-last-change)
 
 (require 'iedit)
