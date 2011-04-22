@@ -35,10 +35,10 @@
            (if icon (concat "-i " icon) "")
            " --expire-time=10000 -u critical"
            " '" title "' '" msg "'"
-           "\""))
+           "\"") nil 0)
   (call-process-shell-command
    (concat
-    "echo '" title "' | prowl_tavis.sh -1 'Emacs notification'"))
+    "echo '" title "' | prowl_tavis.sh -1 'Emacs notification'") nil 0)
   (message (concat title ": " msg)))
 
 (setq org-show-notification-handler
