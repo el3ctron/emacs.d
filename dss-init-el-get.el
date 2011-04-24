@@ -17,11 +17,11 @@
         smex
         (:name slime :type git
                ;;:url "https://github.com/technomancy/slime.git"
-               :url "http://sbcl.boinkor.net/git/slime.git"
+               :url "git://sbcl.boinkor.net/slime.git"
                :load "slime-autoloads.el")
         (:name slime-repl :type git
                ;;:url "https://github.com/technomancy/slime.git"
-               :url "http://sbcl.boinkor.net/git/slime.git"
+               :url "git://sbcl.boinkor.net/slime.git"
                :load "contrib/slime-repl.el")
                                         ;(:name slime :type git :url "git://sbcl.boinkor.net/slime.git" :load-path ("." "./contrib") :compile nil :load "slime-autoloads.el") ; Overridden to prefer git mirror
 
