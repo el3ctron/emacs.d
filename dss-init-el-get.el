@@ -41,7 +41,7 @@
         yasnippet
         iedit
         undo-tree
-        (:name relax :type elpa)
+        (:name relax :type git :url "https://github.com/technomancy/relax.el")
         coffee-mode
         (:name moz :type git :url "http://github.com/bard/mozrepl.git"
                :load "chrome/content/moz.el")
