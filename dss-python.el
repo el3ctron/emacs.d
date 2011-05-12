@@ -22,10 +22,14 @@
            (local-file (file-relative-name
                         temp-file
                         (file-name-directory buffer-file-name))))
-      (list dss-pycodechecker (list local-file))))
+      (if (not (string-match-p tramp-file-name-regexp buffer-file-name))
+          ;; don't run for tramp buffers.
+          (list dss-pycodechecker (list local-file)))))
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pycodecheck-init)))
 
+;; (setq flymake-allowed-file-name-masks (assq-delete-all "\\.py\\'" flymake-allowed-file-name-masks))
+;; (assoc "\\.py\\'" flymake-allowed-file-name-masks)
 
 (defun dss/pylint-silence (msgid)
   "Add a special pylint comment to silence a particular warning."
