@@ -30,17 +30,18 @@
       (switch-to-buffer term-buffer))
     term-buffer))
 
-(defun dss/remote-term (host &optional command)
+(defun dss/remote-term (host &optional command term-command)
   (interactive)
-  (let (term-buffer
-        (index 1)
-        term-name)
+  (let* (term-buffer
+         (index 1)
+         (term-command (or term-command "eterm-ssh"))
+         term-name)
     (while (buffer-live-p
             (get-buffer (format "*%s<%s>*" host index)))
       (setq index (1+ index)))
     (setq term-name (format "%s<%s>" host index))
     (setq term-buffer
-          (make-term term-name "/usr/bin/ssh" nil host))
+          (make-term term-name term-command nil host))
     (set-buffer term-buffer)
     ;; Internal handle for `multi-term' buffer.
     (multi-term-internal)
@@ -52,7 +53,7 @@
 
 (defun dss/multi-term ()
   (interactive)
-  (if (string-match-p "^/scp:" default-directory)
+  (if (string-match-p tramp-file-name-regexp default-directory)
       (let ((host (second (split-string default-directory ":")))
             (dir (third (split-string default-directory ":"))))
         (dss/remote-term
