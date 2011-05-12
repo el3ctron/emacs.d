@@ -50,6 +50,7 @@
                :url "http://www.helsinki.fi/~sjpaavol/programs/lineker.el")
         (:name js2-mode :type git :url "https://github.com/mooz/js2-mode")
 
+        (:name pg :type http :url "http://www.online-marketwatch.com/pgel/pg.el")
         ))
 
 (defun el-get-update-all ()
