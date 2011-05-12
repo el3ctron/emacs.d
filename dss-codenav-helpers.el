@@ -310,6 +310,7 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
 ;;       (if (markerp position)
 ;;             (goto-char position) (goto-char (overlay-start position))))))
 
+(setq imenu-auto-rescan t)
 
 (require 'column-marker)
 (defvar  dss/major-column-face 'dss/major-column-face
