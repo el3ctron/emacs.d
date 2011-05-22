@@ -23,9 +23,7 @@
 ;; http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
 (defun dss-popup-notify (title msg &optional icon sound)
   (interactive)
-                                        ;(setq sound "/usr/share/sounds/logout.wav")
-  ;; I should make the following shell commands asynchronous to avoid
-  ;; freezing Emacs while they run
+  ;@@TR: fix next line!
   (setq sound "/usr/share/sounds/phone.wav")
   (when sound (call-process-shell-command
                (concat "ssh vb3 aplay " sound " 2> /dev/null &")
@@ -93,6 +91,7 @@
 (setq org-directory "~/org_mode/")
 (setq org-clock-persist-file (concat org-directory "/.org-clock-save.el"))
 (setq org-icalendar-include-todo t)
+(setq org-use-speed-commands t)
 
 (defun dss/babel-no-confirm ()
   (interactive)
