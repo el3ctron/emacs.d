@@ -15,6 +15,7 @@
         (:name unit-test :type emacswiki)
         rainbow-mode
         smex
+        bookmark+
         (:name slime :type git
                ;;:url "https://github.com/technomancy/slime.git"
                :url "git://sbcl.boinkor.net/slime.git"
