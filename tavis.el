@@ -65,6 +65,7 @@
 (setq org-timer-done-hook 'dss/org-timer-done-hook)
 
 (setq org-timer-default-timer 25)
+(setq org-clock-idle-time 10)
 
 (defun dss/org-set-default-timer (time)
   (interactive "nDefault: ")
