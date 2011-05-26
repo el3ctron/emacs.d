@@ -6,12 +6,10 @@
       (buffer-string))))
 
 (defun dss/map-define-key (mode-map keylist fname)
-  "like define-key but the key arg is a list that should be mapped over"
+  "Like define-key but the key arg is a list that should be mapped over"
   (mapc (lambda (k)
           (progn
-            (define-key mode-map k fname)
-            ))
+            (define-key mode-map k fname)))
         keylist))
-
 
 (provide 'dss-elisp-funcs)
