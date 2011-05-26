@@ -20,7 +20,8 @@
   ;; it. Else, nil is returned, so whatever is in the top of the
   ;; kill-ring will be used.
   (let ((xsel-output (shell-command-to-string "xsel --clipboard --output")))
-    (unless (string= (car kill-ring) xsel-output)
+    (unless (or (string-match-p "^xsel: Can't open display" xsel-output)
+                (string= (car kill-ring) xsel-output))
       xsel-output)))
 
 (defun dss/x-display-sync ()
