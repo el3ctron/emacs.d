@@ -119,8 +119,11 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
     (accept-process-output (inferior-moz-process) 0.75)
     ;; (while (not (string-match "^repl>" read-buffer)) (accept-process-output proc))
     (set-process-filter proc comint-filt)
-    ;(message (mapconcat 'identity (butlast (split-string read-buffer "\n")) "\n"))
-    (mapconcat 'identity (butlast (split-string read-buffer "\n")) "\n")))
+                                        ;(message (mapconcat 'identity (butlast (split-string read-buffer "\n")) "\n"))
+    (let ((result (mapconcat
+                   'identity
+                   (butlast (split-string read-buffer "\n")) "\n")))
+      (substring result 0 (- (length result) 1)))))
 
 (defun dss/moz-get-expression-value (expr &optional save-as-kill)
   (let ((value (dss/moz-eval-expression-capture
