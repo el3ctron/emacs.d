@@ -1,4 +1,6 @@
 (require 'ibuffer)
+(defalias 'list-buffers 'ibuffer)
+
 (require 'window-numbering)
 (window-numbering-mode 1)
 ;; (setq window-numbering-assign-func
