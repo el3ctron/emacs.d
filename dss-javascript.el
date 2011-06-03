@@ -49,6 +49,7 @@
 (require 'flymake-jslint)
 (defun dss/js2-mode-hook ()
   (require 'espresso)
+  (dss/lintnode -1)
   (flymake-jslint-init)
   (flymake-mode)
   (setq espresso-indent-level 4
