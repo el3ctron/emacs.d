@@ -10,6 +10,7 @@
 (require 'dss-basic-default-config)
 (require 'dss-no-rsi)
 ;; where to store ephemeral stuff, and what to store between sessions
+(require 'dss-desktop)
 (require 'dss-command-history-and-freqs)
 (require 'dss-tmp-files)
 
