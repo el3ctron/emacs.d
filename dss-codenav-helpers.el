@@ -366,7 +366,7 @@ Comes from http://github.com/technomancy/emacs-starter-kit/blob/master/starter-k
 (defun dss/local-line-jump-search (n txt)
   (interactive "nLine: \nsText:")
   (dss/local-line-jump n)
-  (search-forward txt (line-end-position)))
+  (search-forward (downcase txt) (line-end-position)))
 
 (defun dss/highlight-watchwords ()
   ;; http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.el
