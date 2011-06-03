@@ -65,7 +65,7 @@
 (setq org-timer-done-hook 'dss/org-timer-done-hook)
 
 (setq org-timer-default-timer 25)
-(setq org-clock-idle-time 10)
+(setq org-clock-idle-time 30)
 
 (defun dss/org-set-default-timer (time)
   (interactive "nDefault: ")
@@ -172,17 +172,72 @@
 ;; http://orgmode.org/manual/Remember-templates.html
 ; (desc ?key "<template>" <file> <heading> <context where avail, can be left out>)
 
-(setq org-remember-templates
-      '(
-        ("Todo" ?t "* TODO %?\n  ADDED:%U" nil "Tasks")
-        ("Started" ?s "* STARTED %?\n  ADDED:%U\n :CLOCK-IN:" nil "Tasks")
-        ("Journal" ?j "* %U %?" nil "Journal")
-        ("Idea" ?i "* %?\n  %i\n  ADDED:%U" nil "Ideas")
-        ("Note" ?n "* %?\n  %i\n  ADDED:%U" nil "Notes")
-        ("Snippet" ?k "* %?\n  %^C\n  ADDED:%U" nil "Snippets")
+;; (setq org-remember-templates
+;;       '(
+;;         ("Todo" ?t "* TODO %?\n  ADDED:%U" nil "Tasks")
+;;         ("Started" ?s "* STARTED %?\n  ADDED:%U\n :CLOCK-IN:" nil "Tasks")
+;;         ("Journal" ?j "* %U %?" nil "Journal")
+;;         ("Idea" ?i "* %?\n  %i\n  ADDED:%U" nil "Ideas")
+;;         ("Note" ?n "* %?\n  %i\n  ADDED:%U" nil "Notes")
+;;         ("Snippet" ?k "* %?\n  %^C\n  ADDED:%U" nil "Snippets")
+;;         ("URL" ?u "* %? %(dss/moz-get-url)\n ADDED:%U" nil "Notes")
 
-        (?w "* %:description\n\n  Source: %u, %:link %c\n\n  %i" nil "Notes")
+;;         ;; ("link" ?l " %? %(dss/moz-get-url)\n ADDED:%U" nil "Notes")
+
+;;         ;; (?w "* %:description\n\n  Source: %u, %:link %c\n\n  %i" nil "Notes")
+;;         ))
+
+;;; http://orgmode.org/manual/Template-elements.html#Template-elements
+(setq org-capture-templates
+      '(("t" "Todo" entry
+         (file+headline "~/org_mode//refile.org" "Tasks")
+         "* TODO %?\n  :ADDED: %U")
+        ("s" "Started" entry
+         (file+headline "~/org_mode//refile.org" "Tasks")
+         "* STARTED %?\n  :ADDED: %U\n :CLOCK-IN:")
+        ("j" "Journal" entry
+         (file+headline "~/org_mode//refile.org" "Journal")
+         "* %U %?")
+        ("i" "Idea" entry
+         (file+headline "~/org_mode//refile.org" "Ideas")
+         "* %?\n  %i\n  :ADDED: %U")
+        ("n" "Note" entry
+         (file+headline "~/org_mode//refile.org" "Notes")
+         "* %?\n  %i\n  :ADDED: %U")
+
+        ("d" "dentalle task" entry
+         (file "~/org_mode/dentalle-current.org")
+         "* TODO %u %?\n :ADDED: %U")
+
+        ("k" "Snippet" entry
+         (file+headline "~/org_mode//refile.org" "Snippets")
+         "* %?\n  %^C\n  :ADDED: %U")
+        ("u" "URL" entry
+         (file+headline "~/org_mode//refile.org" "Notes")
+         "* %? %(dss/moz-get-url)\n :ADDED: %U")
+
+        ("l" "Link" entry
+         (file+headline "~/org_mode//refile.org" "Notes")
+         "* %? %(dss/moz-get-url)")
+
+        ;; just playing around:
+        ;; ("l" "Link" item
+        ;;  (id "4bcfaca6-d6ad-4f10-8325-17f77f54006c")
+        ;;  " %? %(dss/moz-get-url) %(or (org-capture-get :foo) \"\")"
+        ;;  :foo "asdfasdf"
+        ;;  :before-finalize (org-set-property "foo" "999"))
+
+        ;; just playing around:
+        ;; ("T" "tbl" table-line
+        ;;  (id "4bcfaca6-d6ad-4f10-8325-17f77f54006c")
+        ;;  "| # | %T | %^{weight} | |" :table-line-pos "II-1"
+        ;;  )
+
         ))
+
+(defun dss/org-capture-before-finalize-hook ()
+  (eval (org-capture-get :before-finalize)))
+(add-hook 'org-capture-before-finalize-hook 'dss/org-capture-before-finalize-hook)
 
 ;; see http://sachachua.com/wp/2008/07/20/emacs-smarter-interactive-prompts-with-org-remember-templates/
 ;; for a way to do something like this
