@@ -1,4 +1,4 @@
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/org-mode")
+;; this is installed with el-get
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (require 'org-install)
 (require 'remember)
