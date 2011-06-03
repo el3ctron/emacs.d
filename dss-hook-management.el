@@ -25,7 +25,7 @@
 
 (defun dss/remove-from-hook (hook fname &optional local)
   (interactive
-   iqikqq   (let ((hook (intern (ido-completing-read
+   (let ((hook (intern (ido-completing-read
                         "Which hook? "
                         (mapcar #'symbol-name (dss/-get-all-hooks))))))
      (list hook
