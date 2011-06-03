@@ -8,10 +8,23 @@
       '(el-get
         package
 
+        (:name desktop-recover :type git :url "https://github.com/doomvox/desktop-recover.git")
+
         magit
         magithub
         (:name gist :type git :url "https://github.com/tels7ar/gist.el")
 
+        (:name org-mode
+               :type git
+               :url "git://orgmode.org/org-mode.git"
+               :info "doc"
+               :build `,(mapcar
+                         (lambda (target)
+                           (concat "make " target " EMACS=" el-get-emacs))
+                         '("clean" "all"))
+               :load-path ("lisp" "contrib/lisp")
+               :autoloads nil
+               :features org-install)
         (:name unit-test :type emacswiki)
         rainbow-mode
         smex
@@ -44,6 +57,11 @@
         undo-tree
         (:name relax :type git :url "https://github.com/technomancy/relax.el")
         coffee-mode
+
+        ;; python-mode
+        ;; alternate python mode
+                                        ;(:name python :type git :url "https://github.com/fgallina/python.el.git")
+
         (:name moz :type git :url "http://github.com/bard/mozrepl.git"
                :load "chrome/content/moz.el")
         (:name pomodoro :type emacswiki)
