@@ -4,6 +4,10 @@
 (require 'org)
 (require 'fm)
 (require 'dss-buffer-and-window-handling)
+(require 'dss-command-history-and-freqs)
+(require 'dss-lisps)
+(require 'dss-completion)
+(require 'dss-bookmarks-registers)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; additional custom keymaps, populated below
@@ -37,6 +41,9 @@
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cb" 'org-iswitchb)
 (global-set-key (kbd "C-M-r") 'org-remember)
+
+(global-set-key (kbd "C-x C-r") 'dss/ido-choose-from-recentf)
+(global-set-key (kbd "C-x C-p") 'dss/ido-find-file-at-point)
 
 (global-set-key (kbd "C-x r b") 'dss/bookmark-jump)
 (global-set-key (kbd "C-x r v") 'list-register)
@@ -95,6 +102,7 @@
 
 (define-key ido-common-completion-map "\e[A" 'previous-history-element)
 (define-key ido-common-completion-map "\e[B" 'next-history-element)
+;; (define-key ido-common-completion-map (kbd "C-g") 'keyboard-escape-quit)
 
 ;;;;;;;;;
 ;; this crap is only necessary because of the kbd macro crap above
@@ -316,7 +324,7 @@
 (define-key f8-map "t" 'org-insert-todo-heading-respect-content)
 (define-key f8-map "m" 'dss/multi-term)
 
-(define-key f8-map "r" 'org-remember)
+(define-key f8-map "r" 'org-capture)
 
 (define-key f8-map "i" 'org-clock-in)
 (define-key f8-map "o" 'org-clock-out)
