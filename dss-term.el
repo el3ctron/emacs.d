@@ -156,7 +156,7 @@ eterm-tramp-init
 export -f eterm-tramp-init
 export -f eterm-set-variables
 export -f eterm-set-cwd
-
+echo \"tramp initialized\"
 ")))
 
 (defun dss/term-mode-hook ()
