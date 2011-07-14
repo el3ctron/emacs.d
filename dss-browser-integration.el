@@ -39,6 +39,9 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
 ;;                     (interactive)
 ;;                     (save-buffer)
 ;;                     (dss/moz-eval-expression "this.BrowserReload()\n"))))
+(add-to-list 'desktop-globals-to-save 'moz-repl-host)
+(add-to-list 'desktop-globals-to-save 'moz-repl-port)
+
 (defun dss/moz-connect-mac ()
   (interactive)
   (setq moz-repl-host "tavismac")
