@@ -29,7 +29,9 @@
     (find-file
      (ido-completing-read "Recentf open: "
                           (mapcar (lambda (path)
-                                    (replace-regexp-in-string home "~" path))
+                                    (replace-regexp-in-string
+                                     (concat home "/") "~/"
+                                     path))
                                   recentf-list)
                           nil t))))
 
