@@ -32,7 +32,7 @@
      (bold ((t (:bold t))))
      ;;(bold-italic ((t (:underline t :foreground "white"))))
      (highlight ((t (:background "blue" :foreground "yellow"))))
-     (italic ((t (:underline t :background "red"))))
+     (italic ((t (:underline t :background nil))))
      (underline ((t (:underline t))))
      ;;
      (minibuffer-prompt ((t (:foreground "yellow"))))
@@ -40,9 +40,11 @@
      (modeline ((t (:background "#000087" :foreground "#ffffaf"))))
      ;;(modeline-inactive ((t (:background "#161616" :foreground "#5f5f5f"))))
      ;;(modeline-inactive ((t (:background "#161616" :foreground "white"))))
+
      (modeline-inactive ((t (:background "#262626" :foreground "white"))))
      (modeline-mousable-minor-mode ((t (:background "black" :foreground "white"))))
      (modeline-mousable ((t (:background "black" :foreground "white"))))
+
      ;;(scroll-bar ((t (:background "#121212"))))
      ;;(tool-bar ((t (:background "#121212" ))))
      ;;(fringe ((t (:background "#121212"))))
@@ -86,7 +88,7 @@
      ;; (linum ((t (:foreground "#777777" :background "#000087"))))
      ;; (linum ((t (:foreground "white" :background "#005f00"))))
      (show-ws-tab ((t (:background "#4e4e4e"))))
-     (which-func ((t (:foreground "cyan"))))
+     (which-func ((t (:inherit modeline)))) ;#878700
      (info-xref ((t (:inherit link :foreground "purple"))))
      (org-hide ((t (:foreground "#3a3a3a"))))
      (org-link ((t (:underline t :foreground "#afafff"))))
@@ -101,6 +103,7 @@
      (org-table ((t (:foreground "#005fff"))))
 
      (org-meta-line ((t (:foreground "#767676"))))
+     (org-upcoming-deadline ((t (:foreground "bright red"))))
 
      (outline-2 ((t (:foreground "#5fffff"))))
      (outline-3 ((t (:foreground "#00afaf"))))
@@ -140,6 +143,11 @@
      (magit-diff-del ((t (:foreground "red"))))
      (magit-diff-file-header ((t (:foreground "#0087af" :background "#121212"))))
      (magit-diff-hunk-header ((t (:foreground "#0087ff" :background "#121212"))))
+
+     (message-header-subject ((t (:foreground "green" :weight bold :background "#121212"))))
+     (message-header-other ((t (:foreground "#6c6c6c" :background nil))))
+     (message-header-xheader ((t (:foreground "#6c6c6c" :background nil))))
+     (message-header-name ((t (:foreground "red" :background nil))))
 
      ))
   (smex-update))
