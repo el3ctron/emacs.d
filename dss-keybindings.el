@@ -44,6 +44,7 @@
 
 (global-set-key (kbd "C-x C-r") 'dss/ido-choose-from-recentf)
 (global-set-key (kbd "C-x C-p") 'dss/ido-find-file-at-point)
+(global-set-key (kbd "C-x C-v") 'revert-buffer)
 
 (global-set-key (kbd "C-x r b") 'dss/bookmark-jump)
 (global-set-key (kbd "C-x r v") 'list-register)
