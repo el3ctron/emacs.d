@@ -10,6 +10,38 @@
 
         (:name desktop-recover :type git :url "https://github.com/doomvox/desktop-recover.git")
 
+        ;;vm
+        flim
+        apel
+        semi
+        bbdb
+        emacs-jabber
+        (:name wanderlust :type git
+               :url "https://github.com/wanderlust/wanderlust.git"
+               :load-path ("wl" "elmo")
+               ;; :build `,(mapcar
+               ;;           (lambda (target)
+               ;;             (concat "make " target " EMACS=" el-get-emacs))
+               ;;           '("clean" "all"))
+               :build (mapcar
+                       (lambda (target-and-dirs)
+                         (list el-get-emacs
+                               (mapcar (lambda (pkg)
+                                         (mapcar (lambda (d) `("-L" ,d)) (el-get-load-path pkg)))
+                                       (append
+                                        '("apel" "flim" "semi")
+                                        (when (el-get-package-exists-p "bbdb") (list "bbdb"))))
+                               "--eval" (prin1-to-string
+                                         '(progn (setq wl-install-utils t)
+                                                 (setq wl-info-lang "en")
+                                                 (setq wl-news-lang "en")))
+
+                               (split-string "-batch -q -no-site-file -l WL-MK -f")
+                               target-and-dirs))
+                       '(("wl-texinfo-format" "doc")
+                         ("compile-wl-package"  "site-lisp" "icons")
+                         ("install-wl-package" "site-lisp" "icons")))
+               :info "doc/wl.info")
         magit
         magithub
         (:name gist :type git :url "https://github.com/tels7ar/gist.el")
@@ -49,6 +81,9 @@
                )
 
         yaml-mode
+        (:name mustache-mode
+               :type http
+               :url "https://raw.github.com/defunkt/mustache/master/contrib/mustache-mode.el")
         durendal
         (:name ac-dabbrev :type emacswiki)
         pymacs
@@ -58,7 +93,7 @@
         (:name relax :type git :url "https://github.com/technomancy/relax.el")
         coffee-mode
 
-        ;; python-mode
+        python-mode
         ;; alternate python mode
                                         ;(:name python :type git :url "https://github.com/fgallina/python.el.git")
 
@@ -69,8 +104,7 @@
                :url "http://www.helsinki.fi/~sjpaavol/programs/lineker.el")
         (:name js2-mode :type git :url "https://github.com/mooz/js2-mode")
 
-        (:name pg :type http :url "http://www.online-marketwatch.com/pgel/pg.el")
-        ))
+        (:name pg :type http :url "http://www.online-marketwatch.com/pgel/pg.el")))
 
 (defun el-get-update-all ()
   "Update all el-get packages
