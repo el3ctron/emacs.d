@@ -23,21 +23,23 @@
 ;; http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html
 (defun dss-popup-notify (title msg &optional icon sound)
   (interactive)
-  ;@@TR: fix next line!
-  (setq sound "/usr/share/sounds/phone.wav")
-  (when sound (call-process-shell-command
-               (concat "ssh vb3 aplay " sound " 2> /dev/null &")
-               nil 0))
-  (call-process-shell-command
-   (concat "ssh vb3 \"DISPLAY=:0 notify-send "
-           (if icon (concat "-i " icon) "")
-           " --expire-time=10000 -u critical"
-           " '" title "' '" msg "'"
-           "\"") nil 0)
-  (call-process-shell-command
-   (concat
-    "echo '" title "' | prowl_tavis.sh -1 'Emacs notification'") nil 0)
-  (message (concat title ": " msg)))
+  (let ((sound (if (and (numberp sound) (not (< sound 0)))
+                   (or sound "/usr/share/sounds/phone.wav"))))
+    (when sound (call-process-shell-command
+                 (concat "ssh vb3 aplay " sound " 2> /dev/null &")
+                 nil 0))
+    (call-process-shell-command
+     (concat "ssh vb3 \"DISPLAY=:0 notify-send "
+             (if icon (concat "-i " icon) "")
+             " --expire-time=3500 -u critical"
+             " '" title "' '" msg "'"
+             "\"") nil 0)
+    (call-process-shell-command
+     (concat
+      "echo '" title "' | prowl_tavis.sh -1 'Emacs notification'") nil 0)
+    (message (concat title ": " msg))))
+
+;(dss-popup-notify "test" "test")
 
 (setq org-show-notification-handler
       (lambda (msg)
@@ -48,8 +50,32 @@
   (interactive "sMessage:")
   (setq dss-org-timer-message message))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar *dss-annoying-modeline-timer* nil)
+
+(defun dss/cancel-annoying-modeline ()
+  (interactive)
+  (if *dss-annoying-modeline-timer*
+      (cancel-timer *dss-annoying-modeline-timer*))
+  (run-with-timer 1 nil (lambda () (set-face-inverse-video-p 'modeline nil))))
+
+(defun dss/start-annoying-modeline ()
+  (interactive)
+  (if *dss-annoying-modeline-timer*
+      (cancel-timer *dss-annoying-modeline-timer*))
+  (setq *dss-annoying-modeline-timer*
+        (run-with-timer 0 1
+                        (lambda ()
+                          (if (face-inverse-video-p 'modeline)
+                              (set-face-inverse-video-p 'modeline nil)
+                            (set-face-inverse-video-p 'modeline t))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun dss/org-clock-in-hook ()
   (dss/org-set-timer-message "take a break")
+  (dss/cancel-annoying-modeline)
   (org-timer-set-timer '(16)))
 
 (defun dss/org-clock-out-hook ()
@@ -58,7 +84,8 @@
   (org-timer-set-timer 5))
 
 (defun dss/org-timer-done-hook ()
-  (dss-popup-notify "org-mode" dss-org-timer-message))
+  (dss-popup-notify "org-mode" dss-org-timer-message)
+  (dss/start-annoying-modeline))
 
 (add-hook 'org-clock-in-hook 'dss/org-clock-in-hook)
 (add-hook 'org-clock-out-hook 'dss/org-clock-out-hook)
@@ -286,7 +313,7 @@
 (setq org-clock-persist t)
 (org-clock-persistence-insinuate)
 (setq org-clock-history-length 35)
-;; Resume clocking task on clock-in if the clock is open
+(setq org-clock-persist-query-resume nil)
 (setq org-clock-in-resume t)
 ;; Change task state to STARTED when clocking in
 (setq org-clock-in-switch-to-state "STARTED")
