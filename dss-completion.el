@@ -84,6 +84,12 @@ advice like this:
   (let (ido-enable-replace-completing-read)
      (call-interactively 'where-is)))
 
+(defun dss/load-library ()
+  "wrapper around load-library that doesn't use ido for completion"
+  (interactive)
+  (let (ido-enable-replace-completing-read)
+    (call-interactively 'load-library)))
+
 (defun dss/ido-search-file (dir pattern ex-pattern)
   (let* ((file-list
           (split-string
