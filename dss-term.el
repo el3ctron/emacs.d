@@ -47,6 +47,7 @@
     (multi-term-internal)
     ;; Switch buffer
     (switch-to-buffer term-buffer)
+    (sleep-for 1)
     (dss/term-setup-tramp)
     (if command
         (term-send-raw-string command))))
@@ -120,24 +121,25 @@
 
 ;;; derived from http://www.enigmacurry.com/2008/12/26/emacs-ansi-term-tricks/
 (defun dss/term-setup-tramp ()
-  "Setup ansi-term/tramp remote directory tracking"
+  "Setup ansi-term/tramp remote directory tracking
+   NOTE:  this appears to have some sort of timing bug in it and doesn't always work"
   (interactive)
   (term-send-raw-string
    (concat "
 function eterm-set-variables {
     local emacs_host=\"" (car (split-string (system-name) "\\.")) "\"
     if [[ $TERM == \"eterm-color\" ]]; then
-        echo -e \"\\033AnSiTc\" $(pwd)
         if [[ ${HOSTNAME-$(hostname)} != \"$emacs_host\" ]]; then
             echo -e \"\\033AnSiTu\" ${TRAMP_USERNAME-$(whoami)}
             echo -e \"\\033AnSiTh\" ${TRAMP_HOSTNAME-$(hostname)}
         fi
+        echo -e \"\\033AnSiTc\" $(pwd)
     elif [[ $TERM == \"screen\" || $TERM  == \"screen-256color\" ]]; then
-        echo -e \"\\033P\\033AnSiTc\\033\\\\\" $(pwd)
         if [[ ${HOSTNAME-$(hostname)} != \"$emacs_host\" ]]; then
             echo -e \"\\033P\\033AnSiTu\\033\\\\\" ${TRAMP_USERNAME-$(whoami)}
             echo -e \"\\033P\\033AnSiTh\\033\\\\\" ${TRAMP_HOSTNAME-$(hostname)}
         fi
+        echo -e \"\\033P\\033AnSiTc\\033\\\\\" $(pwd)
     fi
 }
 function eterm-tramp-init {
