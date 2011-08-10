@@ -125,11 +125,30 @@
   (interactive)
   (if (not mark-active)
       (save-excursion
+        (if (looking-at-p " +\(")
+            (progn
+              (search-forward "(")
+              (backward-char)))
         (mark-sexp)
         (call-interactively 'kill-ring-save))
     (call-interactively 'kill-ring-save)))
 
 (define-key paredit-mode-map (kbd "M-w") 'dss/paredit-kill-ring-save)
+
+(defun dss/paredit-yank ()
+  (interactive)
+  (if (not mark-active)
+      (progn
+        (call-interactively 'yank)
+        (if (and (looking-back "\)")
+                 (looking-at-p "\("))
+            (progn
+              (reindent-then-newline-and-indent)
+              (if (looking-at-p "^")
+                  (newline)))))
+    (call-interactively 'yank)))
+
+(define-key paredit-mode-map (kbd "C-y") 'dss/paredit-yank)
 
 (define-key paredit-mode-map (kbd "C-M-s") 'paredit-backward-up)
 
