@@ -85,6 +85,10 @@
 
 (defun dss/paredit-semicolon ()
   (interactive)
+  (if (looking-at-p " +\(")
+      (progn
+        (search-forward "(")
+        (backward-char)))
   (cond ((and (not mark-active) (looking-at-p "\("))
          (progn
            (mark-sexp)
