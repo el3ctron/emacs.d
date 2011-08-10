@@ -79,7 +79,8 @@
          (progn
            (mark-sexp)
            (paredit-open-parenthesis)
-           (save-excursion (insert " "))))
+           (if (looking-at-p "\(")
+               (save-excursion (insert " ")))))
         (t (paredit-open-parenthesis))))
 (define-key paredit-mode-map "(" 'dss/paredit-open-parenthesis)
 
@@ -154,7 +155,7 @@
 (define-key paredit-mode-map (kbd "C-M-s") 'paredit-backward-up)
 
 (define-key paredit-mode-map (kbd "C-M-k") 'paredit-forward-slurp-sexp)
-(define-key paredit-mode-map (kbd "C-M-j") 'paredit-backward-barf-sexp)
+(define-key paredit-mode-map (kbd "C-M-j") 'paredit-backward-slurp-sexp)
 
 ;; (define-key paredit-mode-map (kbd "M-b") 'paredit-for)
 
