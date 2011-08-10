@@ -146,7 +146,8 @@
               (reindent-then-newline-and-indent)
               (if (looking-at-p "^")
                   (newline)))))
-    (call-interactively 'yank)))
+    (call-interactively 'yank))
+  (dss/indent-defun))
 
 (define-key paredit-mode-map (kbd "C-y") 'dss/paredit-yank)
 
