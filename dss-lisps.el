@@ -28,10 +28,10 @@
    :group 'dss-faces)
 
 (defface dss-end-paren-face
-   '((((class color))
-      (:foreground "#9e9e9e")))
-   "Face used to dim parentheses."
-   :group 'dss-faces)
+  '((((class color))
+     (:foreground "#8e8e8e")))         ;#9e9e9e
+  "Face used to dim parentheses."
+  :group 'dss-faces)
 
 ;; this form also from emacs starter kit
 (dolist (x '(scheme emacs-lisp lisp lisp-interaction clojure))
@@ -71,6 +71,68 @@
     (paredit-backward-delete)))
 
 (define-key paredit-mode-map (kbd "DEL") 'dss/paredit-backward-delete)
+
+(defun dss/paredit-open-parenthesis ()
+  (interactive)
+  (cond ((and (not (or mark-active (dss/in-string-p)))
+              (looking-at-p "[\(a-z\"]"))
+         (progn
+           (mark-sexp)
+           (paredit-open-parenthesis)
+           (save-excursion (insert " "))))
+        (t (paredit-open-parenthesis))))
+(define-key paredit-mode-map "(" 'dss/paredit-open-parenthesis)
+
+(defun dss/paredit-semicolon ()
+  (interactive)
+  (cond ((and (not mark-active) (looking-at-p "\("))
+         (progn
+           (mark-sexp)
+           (paredit-comment-dwim)
+           (save-excursion (reindent-then-newline-and-indent))
+           (indent-according-to-mode)))
+        ((and (not mark-active)
+              (looking-at-p "^[[:blank:]]*$"))
+         (insert ";;; "))
+        ((and (not mark-active)
+              (and (looking-back "^[[:blank:]]*")
+                   (looking-at-p "[[:blank:]]*$")))
+         (insert ";; "))
+        (t (paredit-semicolon))))
+(define-key paredit-mode-map ";" 'dss/paredit-semicolon)
+
+(defun dss/paredit-open-line ()
+  (interactive)
+  (save-excursion
+    (reindent-then-newline-and-indent))
+  (indent-according-to-mode))
+(define-key paredit-mode-map (kbd "M-o") 'dss/paredit-open-line)
+
+(defun dss/replace-sexp ()
+  (interactive)
+  (if (dss/in-string-p)
+      (dss/mark-string)
+    (mark-sexp))
+  (delete-region (point) (mark))
+  (yank))
+(define-key paredit-mode-map (kbd "C-M-y") 'dss/replace-sexp)
+
+(defun dss/paredit-kill-ring-save ()
+  (interactive)
+  (if (not mark-active)
+      (save-excursion
+        (mark-sexp)
+        (call-interactively 'kill-ring-save))
+    (call-interactively 'kill-ring-save)))
+
+(define-key paredit-mode-map (kbd "M-w") 'dss/paredit-kill-ring-save)
+
+(define-key paredit-mode-map (kbd "C-M-s") 'paredit-backward-up)
+
+(define-key paredit-mode-map (kbd "C-M-k") 'paredit-forward-slurp-sexp)
+(define-key paredit-mode-map (kbd "C-M-j") 'paredit-backward-barf-sexp)
+
+;; (define-key paredit-mode-map (kbd "M-b") 'paredit-for)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; elisp
