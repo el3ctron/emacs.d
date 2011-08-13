@@ -1,3 +1,11 @@
+(defun dss/local-shell-command-to-string (str)
+  "An alternative to shell-command-to-string that is always local
+  so tramp doesn't get in the way"
+  (interactive)
+  (with-temp-buffer
+    (call-process-shell-command str nil t)
+    (buffer-string)))
+
 (defun dss/file-to-string (file)
   "There must be a built-in that does this... why can't I find it?"
   (when (file-readable-p file)
