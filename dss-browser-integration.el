@@ -92,6 +92,25 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
   ;(comint-send-string (inferior-moz-process) exp)
   (dss/moz-send-string exp))
 
+(defun dss/moz-eval-para ()
+  (interactive)
+  (mark-paragraph)
+  (setq mark-active nil)
+  (call-interactively 'dss/flash-region)
+  (call-interactively 'dss/moz-eval-region))
+
+(defun dss/moz-eval-region-or-para ()
+  (interactive)
+  (if mark-active
+      (dss/moz-eval-region)
+    (dss/moz-eval-para)))
+
+(defun dss/moz-eval-region (start end)
+  (interactive "r")
+  (let ((str (buffer-substring start end)))
+    (message str)
+    (dss/moz-eval-expression str)))
+
 (defun dss/moz-send-string (str)
   (interactive "sJSEval: ")
   (let ((proc (inferior-moz-process)))
@@ -103,7 +122,7 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
                                   "undefined; \n"))
       ;; Give the previous line a chance to be evaluated on its own.  If
       ;; it gets concatenated to the following ones, we are doomed.
-      (sleep-for 0 1)
+      (sleep-for 0.1)
       (comint-send-string proc str)
       (comint-send-string proc "\n--end-remote-input\n")
       (comint-send-string proc
