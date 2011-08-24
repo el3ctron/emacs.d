@@ -23,5 +23,23 @@
   (dss/load-slime-completion))
 
 (add-hook 'slime-mode-hook 'dss/slime-hook)
-
 (provide 'dss-slime)
+
+
+;;; the following code is just me playing around
+;; (let ((string "(find-namespaces-on-classpath)"))
+;;   (slime-eval-async `(swank:eval-and-grab-output ,string)
+;;     (lambda (result)
+;;       (destructuring-bind (output value) result
+;;         (insert output value)))))
+
+;; (defun dss/slime-eval (string)
+;;   (interactive)
+;;   (slime-eval `(swank:eval-and-grab-output ,string)))
+
+;; (let ((string "(find-namespaces-on-classpath)"))
+;;   (dss/slime-eval string)
+;;   )
+;; (setq foobar (dss/slime-eval "1234"))
+;; foobar
+;; (slime-interactive-eval )
