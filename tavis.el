@@ -64,7 +64,7 @@
   (if *dss-annoying-modeline-timer*
       (cancel-timer *dss-annoying-modeline-timer*))
   (setq *dss-annoying-modeline-timer*
-        (run-with-timer 0 1
+        (run-with-timer 0 1.5
                         (lambda ()
                           (if (face-inverse-video-p 'modeline)
                               (set-face-inverse-video-p 'modeline nil)
@@ -72,9 +72,72 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; http://osdir.com/ml/emacs-orgmode-gnu/2009-06/msg00144.html
+
+(defun dss/org-clock-increase-effort-estimate (add-effort)
+  "Add time to the effort estimate.
+Update Effort property of currently clocked item.
+Update mode line."
+  (interactive "sHow much to add? (hh:mm or mm)? ")
+  (if (and (dss/org-clock-is-active) org-clock-effort)
+      (let ((add-effort-minutes (dss/org-string-to-minutes add-effort)))
+        (progn (setq new-effort (org-minutes-to-hh:mm-string
+                                 (+ add-effort-minutes
+                                    (org-hh:mm-string-to-minutes
+                                     org-clock-effort))))
+               (dss/org-clock-set-effort new-effort)))))
+
+(defun dss/org-clock-set-effort (effort-string)
+  "Increase effort estimate PROPERTY for the currently clocked item.
+Jump to the correct buffer, increace the PROPERTY, jump back."
+  (interactive "sHow much to add? (hh:mm or mm)? ")
+  (if (dss/org-clock-is-active)
+      (save-window-excursion
+        (setq org-clock-effort effort-string)
+        (org-clock-update-mode-line)
+        (org-clock-goto)
+        (org-set-property "Effort" effort-string)
+        (message "Effort was increased."))))
+
+
+(defun dss/org-string-to-minutes (string)
+  "Recognizes two formats:
+1:30 - converted to minutes
+30 - interpreted as minutes."
+  (case (length (split-string string ":"))
+    (2 (org-hh:mm-string-to-minutes string))
+    (1 (string-to-int string))))
+
+(defun dss/org-clock-is-active ()
+  "Return true if clock is currently running.
+nil otherwise."
+  (if (marker-buffer org-clock-marker)
+      t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun dss/org-clock-heading ()
+  (interactive)
+  (if (org-clocking-p)
+      (let ((heading org-clock-heading))
+        (if heading (set-text-properties 0 (length heading) nil heading))
+        heading)))
+
+(defun dss/org-insert-link-to-clock ()
+  (interactive)
+  (save-window-excursion
+    (save-excursion
+      (org-clock-goto)
+      (org-id-get-create)
+      (call-interactively 'org-store-link)))
+  (let* ((last-stored (car org-stored-links))
+         (link (car last-stored))
+         ;; (desc (cdr last-stored))
+         (desc (dss/org-clock-heading)))
+    (insert (org-make-link-string link desc))))
 
 (defun dss/org-clock-in-hook ()
   (dss/org-set-timer-message "take a break")
+  (org-id-get-create)
   (dss/cancel-annoying-modeline)
   (org-timer-set-timer '(16)))
 
@@ -192,7 +255,7 @@
 ;  %a" nil bottom nil)
 ;  ("working on" ?w "* STARTED %?
 ;  %U
-;  :CLOCK-IN:
+;
 ;  %a" nil bottom nil)
 ;  )))
 
@@ -215,37 +278,49 @@
 ;;         ))
 
 ;;; http://orgmode.org/manual/Template-elements.html#Template-elements
+(defun dss/org-capture-current-location ()
+  "NOTE: this does not work at present"
+  (interactive)
+  (widen)
+  ;; (call-interactively 'org-mark-subtree)
+  ;; (exchange-point-and-mark)
+  ;; (k2-toggle-mark)
+  (if (not (org-at-heading-p))
+      (outline-previous-visible-heading 1)))
+;;  (goto-char (point-max))
+
 (setq org-capture-templates
       '(("t" "Todo" entry
          (file+headline "~/org_mode//refile.org" "Tasks")
-         "* TODO %?\n  :ADDED: %U")
+         "* TODO %?")
+        ("T" "Todo right here" entry
+         (function dss/org-capture-current-location)
+         "* TODO %?" :unnarrowed)
         ("s" "Started" entry
          (file+headline "~/org_mode//refile.org" "Tasks")
-         "* STARTED %?\n  :ADDED: %U\n :CLOCK-IN:")
+         "* STARTED %?"
+         :clock-in)
         ("j" "Journal" entry
          (file+headline "~/org_mode//refile.org" "Journal")
          "* %U %?")
         ("i" "Idea" entry
          (file+headline "~/org_mode//refile.org" "Ideas")
-         "* %?\n  %i\n  :ADDED: %U")
+         "* %?\n  %i")
         ("n" "Note" entry
          (file+headline "~/org_mode//refile.org" "Notes")
-         "* %?\n  %i\n  :ADDED: %U")
+         "* %?\n  %i")
 
         ("d" "dentalle task" entry
          (file "~/org_mode/dentalle-current.org")
-         "* TODO %u %?\n :ADDED: %U")
+         "* TODO %?")
 
         ("k" "Snippet" entry
          (file+headline "~/org_mode//refile.org" "Snippets")
-         "* %?\n  %^C\n  :ADDED: %U")
-        ("u" "URL" entry
-         (file+headline "~/org_mode//refile.org" "Notes")
-         "* %? %(dss/moz-get-url)\n :ADDED: %U")
+         "* %?\n  %^C\n")
 
         ("l" "Link" entry
          (file+headline "~/org_mode//refile.org" "Notes")
-         "* %? %(dss/moz-get-url)")
+         "* %?%(dss/moz-get-title) %(dss/moz-get-url)")
 
         ;; just playing around:
         ;; ("l" "Link" item
@@ -262,9 +337,23 @@
 
         ))
 
+
+(defun dss/org-current-timestamp ()
+  (let ((fmt (concat
+              "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")))
+    (format-time-string fmt)))
+
 (defun dss/org-capture-before-finalize-hook ()
-  (eval (org-capture-get :before-finalize)))
+  (eval (org-capture-get :before-finalize))
+  (org-id-get-create)
+  (org-set-property "ADDED" (dss/org-current-timestamp)))
+
 (add-hook 'org-capture-before-finalize-hook 'dss/org-capture-before-finalize-hook)
+
+;; (defun dss/org-capture-after-finalize-hook ()
+;;   (interactive)
+;;   )
+;; (add-hook 'org-capture-after-finalize-hook 'dss/org-capture-after-finalize-hook)
 
 ;; see http://sachachua.com/wp/2008/07/20/emacs-smarter-interactive-prompts-with-org-remember-templates/
 ;; for a way to do something like this
@@ -274,14 +363,7 @@
 ;       '(("T" . "https://secure.dentalle.com/ticket_redirector/?ticket_id=")))
 
 
-;; Start clock if a remember buffer includes :CLOCK-IN:
-(add-hook 'remember-mode-hook 'dss/start-clock-if-needed 'append)
-(defun dss/start-clock-if-needed ()
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward " *:CLOCK-IN: *" nil t)
-      (replace-match "")
-      (org-clock-in))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; norang sec 5 refiling
