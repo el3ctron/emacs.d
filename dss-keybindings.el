@@ -156,17 +156,46 @@
 ;; (define-key py-shell-map (quote [down])
 ;; 'comint-next-matching-input-from-input)
 
-(add-hook 'comint-mode-hook
-          (lambda ()
-            (define-key comint-mode-map [(meta p)]
-              'comint-previous-matching-input-from-input)
-            (define-key comint-mode-map [(meta n)]
-              'comint-next-matching-input-from-input)
-            (define-key comint-mode-map [(control n)]
-              'comint-next-input)
-            (define-key comint-mode-map [(control p)]
-              'comint-previous-input)
-            ))
+(defun dss/comint-previous-matching-input ()
+  (interactive)
+  (if (comint-after-pmark-p)
+      (call-interactively 'comint-previous-matching-input-from-input)
+    (call-interactively 'scroll-down-command)))
+
+(defun dss/comint-next-matching-input ()
+  (interactive)
+  (if (comint-after-pmark-p)
+      (call-interactively 'comint-next-matching-input-from-input)
+    (call-interactively 'scroll-up-command)))
+
+(defun dss/comint-next-input ()
+  (interactive)
+  (if (comint-after-pmark-p)
+      (call-interactively 'comint-next-input)
+    (call-interactively 'next-line)))
+
+(defun dss/comint-previous-input ()
+  (interactive)
+  (if (comint-after-pmark-p)
+      (call-interactively 'comint-previous-input)
+    (call-interactively 'previous-line)))
+
+(defun dss/comint-mode-hook (&optional mode-map)
+  (interactive)
+  (let ((mode-map (or mode-map comint-mode-map)))
+    (define-key mode-map (kbd "<prior>") 'dss/comint-previous-matching-input)
+    (define-key mode-map (kbd "<next>") 'dss/comint-next-matching-input)
+    (define-key mode-map (kbd "<down>") 'dss/comint-next-input)
+    (define-key mode-map (kbd "<up>") 'dss/comint-previous-input)
+
+    (define-key mode-map (kbd "C-M-r") 'comint-history-isearch-backward)
+    (define-key mode-map (kbd "C-M-s") 'comint-history-isearch-search)
+
+    (define-key mode-map (kbd "M-p") 'previous-line)
+    (define-key mode-map (kbd "M-n") 'next-line)
+    (define-key mode-map (kbd "C-M-l") 'comint-goto-process-mark)))
+
+(add-hook 'comint-mode-hook 'dss/comint-mode-hook)
 
 
 (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
@@ -296,15 +325,6 @@
 (define-key f7-map "g" 'dss/bookmark-jump)
 (define-key f7-map "b" 'ido-switch-buffer)
 
-(require 'skeleton)
-(define-skeleton dss-defun-skeleton
-  "A simple e-lisp defun skeleton"
-  ""
-  "(defun dss/" _ " ()\n"
-  (indent-according-to-mode)
-  "(interactive)\n"
-  (indent-according-to-mode)
-  ")")
 
 (define-key f7-map "d" 'dss-defun-skeleton)
 (define-key f7-map "i" '(lambda ()
