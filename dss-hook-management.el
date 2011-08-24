@@ -29,8 +29,7 @@
                         "Which hook? "
                         (mapcar #'symbol-name (dss/-get-all-hooks))))))
      (list hook
-           (ido-completing-read "Which? " (dss/-get-hook-funcs-names hook))
-           local)))
+           (ido-completing-read "Which? " (dss/-get-hook-funcs-names hook)))))
   (remove-hook hook
                (if (stringp fname)
                    (intern fname)
