@@ -1,10 +1,12 @@
+(require 'skeleton)
 (require 'diminish)
 (require 'paredit)
 (require 'eldoc)
 (diminish 'eldoc-mode "")
 (diminish 'paredit-mode "PE")
 
-
+(eval-when-compile
+  (require 'cl))
 (require 'dss-codenav-helpers)
 
 (eldoc-add-command
@@ -21,28 +23,175 @@
 
 ;;  idea from esk-paren-face in emacs starter Kit
 (defface dss-paren-face
-   '((((class color))
-      ;; 9e9e9e or a8a8a8 are also good
-      (:foreground "#b2b2b2")))
-   "Face used to dim parentheses."
-   :group 'dss-faces)
+  '((((class color))
+     ;; 9e9e9e or a8a8a8 are also good
+     (:foreground "#8a8a8a")))
+  "Face used to dim parentheses."
+  :group 'dss-faces)
 
 (defface dss-end-paren-face
   '((((class color))
-     (:foreground "#8e8e8e")))         ;#9e9e9e
+     (:foreground "#8a8a8a")))         ;#9e9e9e
   "Face used to dim parentheses."
   :group 'dss-faces)
 
 ;; this form also from emacs starter kit
-(dolist (x '(scheme emacs-lisp lisp lisp-interaction clojure))
+(dolist (x '(scheme emacs-lisp lisp slime-repl lisp-interaction clojure))
   (font-lock-add-keywords
-     (intern (concat (symbol-name x) "-mode"))
-     '(("(" . 'dss-paren-face)      ;("(\\|)" . 'dss-paren-face)
-       (")" . 'dss-end-paren-face)
-       ))
+   (intern (concat (symbol-name x) "-mode"))
+   '(("(" . 'dss-paren-face)      ;("(\\|)" . 'dss-paren-face)
+     (")" . 'dss-end-paren-face)
+     ))
   (add-hook
    (intern (concat (symbol-name x) "-mode-hook")) 'dss/lisp-modes-init))
 
+(setq dss-greyscale
+      ["#080808"
+       "#121212"
+       "#1c1c1c"
+       "#262626"
+       "#303030"
+       "#3a3a3a"
+       "#444444"
+       "#4e4e4e"
+       "#585858"
+       "#626262"
+       "#6c6c6c"
+       "#767676"
+       "#808080"
+       "#8a8a8a"
+       "#949494"
+       "#9e9e9e"
+       "#a8a8a8"
+       "#b2b2b2"
+       "#bcbcbc"
+       "#c6c6c6"
+       "#d0d0d0"
+       "#dadada"
+       "#e4e4e4"
+       "#eeeeee"])
+
+(defun dss/greyscale-pos (colour)
+  (interactive)
+  (or
+   (position colour dss-greyscale :test 'string=)
+   (1- (length dss-greyscale))))
+
+(defun dss/greyscale-incr (colour &optional i)
+  (interactive)
+  (let* ((i (or i 1))
+         (min-or-max (if (> i 0) 'min 'max))
+         (arg2 (if (> i 0) (1- (length dss-greyscale)) 0)))
+    (elt dss-greyscale
+         (funcall min-or-max (+ (dss/greyscale-pos colour) i) arg2))))
+
+(defun dss/greyscale-decr (colour &optional i)
+  (interactive)
+  (dss/greyscale-incr colour (or i -1)))
+
+;; (dss/greyscale-incr (elt dss-greyscale 0) 25)
+;; (dss/greyscale-incr (elt dss-greyscale (1- (length dss-greyscale))) 4)
+
+                                        ;rainbow-delimiters-depth-1-face
+
+;; (loop for i from 1 to 9
+;;       do (message (symbol-name (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face")))))
+(setq rainbow-delimiters-max-face-count 8)
+
+(defun dss/lisp-setup-rainbow-delimeters ()
+  (let ((dss-rainbow-delim-colors
+         [
+          "red"
+          "brightblue"
+          "yellow"
+          "purple"
+          "cyan"
+          "#626262"
+          "#6c6c6c"
+          "#767676"
+          "#808080"
+          "#8a8a8a"
+          "#949494"
+          "#9e9e9e"
+          "#a8a8a8"
+          "#b2b2b2"
+          "#bcbcbc"
+          "#c6c6c6"
+          "#d0d0d0"
+          "#dadada"
+          "#e4e4e4"
+          "#eeeeee"]))
+    (loop for i from 1 to rainbow-delimiters-max-face-count
+          do (set-face-foreground
+              (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face"))
+              (elt dss-rainbow-delim-colors (1- i)))))
+  )
+
+(defun dss/lisp-rainbow-flash ()
+  (interactive)
+  (let* ((depth 1)
+         (beg (cond
+               ((looking-at "\\s\(") (forward-list 1))
+               (t
+                (call-interactively 'dss/goto-match-paren)
+                (forward-list 1))))
+         (end (save-excursion
+                (cond
+                 ((looking-at "\\s\(") (forward-list 1))
+                 (t
+                  (call-interactively 'dss/goto-match-paren)
+                  (forward-list 1)))
+                (point))))
+    (save-excursion
+      (while (and (< (point) end)
+                  (re-search-forward rainbow-delimiters-delim-regex end t))
+        (backward-char) ; re-search-forward places point after delim; go back.
+        (unless (rainbow-delimiters-char-ineligible-p (point))
+          (let ((delim (char-after (point))))
+            (cond ((eq ?\( delim)       ; (
+                   (setq depth (1+ depth))
+                   (rainbow-delimiters-apply-color "paren" depth (point)))
+                  ((eq ?\) delim)       ; )
+                   (rainbow-delimiters-apply-color "paren" depth (point))
+                   (setq depth (or (and (<= depth 0) 0) ; unmatched paren
+                                   (1- depth))))
+                  ((eq ?\[ delim)       ; [
+                   (setq depth (1+ depth))
+                   (rainbow-delimiters-apply-color "bracket" depth (point)))
+                  ((eq ?\] delim)       ; ]
+                   (rainbow-delimiters-apply-color "bracket" depth (point))
+                   (setq depth (or (and (<= depth 0) 0) ; unmatched bracket
+                                   (1- depth))))
+                  ((eq ?\{ delim)       ; {
+                   (setq depth (1+ depth))
+                   (rainbow-delimiters-apply-color "brace" depth (point)))
+                  ((eq ?\} delim)       ; }
+                   (rainbow-delimiters-apply-color "brace" depth (point))
+                   (setq depth (or (and (<= depth 0) 0) ; unmatched brace
+                                   (1- depth)))))))
+        ;; move past delimiter so re-search-forward doesn't pick it up again
+        (forward-char)))
+    (font-lock-fontify-region (point) end)
+    (sit-for 3)
+    (rainbow-delimiters-unpropertize-region (point) end)
+    (font-lock-fontify-region (point) end)
+    )
+  )
+
+(defun dss/lisp-set-parens-color (i)
+  (interactive "n1-23: ")
+  (dolist (face '(dss-paren-face dss-end-paren-face))
+    (set-face-foreground face (elt dss-greyscale i))))
+
+(defun dss/lisp-brighten-parens ()
+  (interactive)
+  (dolist (face '(dss-paren-face dss-end-paren-face))
+    (set-face-foreground face (dss/greyscale-incr (face-foreground face) 2))))
+
+(defun dss/lisp-dim-parens ()
+  (interactive)
+  (dolist (face '(dss-paren-face dss-end-paren-face))
+    (set-face-foreground face (dss/greyscale-decr (face-foreground face) -2))))
 
 (defun dss/goto-match-paren (arg)
   "Go to the matching parenthesis if on parenthesis. Else go to the
@@ -136,6 +285,80 @@
 
 (define-key paredit-mode-map (kbd "M-w") 'dss/paredit-kill-ring-save)
 
+(define-skeleton dss/elisp-let-skeleton
+  "A simple e-lisp let skeleton"
+  nil
+  "(let ((" @ - "))" \n >
+  @ _ ")")
+(setq dss-let-skeleton-func 'dss/elisp-let-skeleton)
+
+(defun dss/paredit-l-or-sexp-wrap-let ()
+  (interactive)
+  (if (and (not (dss/in-string-p))
+           (looking-at-p "\("))
+      (progn
+        (if (not mark-active)
+            (mark-sexp))
+        (funcall dss-let-skeleton-func))
+    (self-insert-command 1)))
+(define-key paredit-mode-map "l" 'dss/paredit-l-or-sexp-wrap-let)
+
+(define-skeleton dss/elisp-defun-skeleton
+  "A simple e-lisp defun skeleton"
+  nil
+  "(defun dss/" @ - " (" @ ")" \n >
+  "(interactive" @ ")" \n >
+  @ _
+    ")")
+(setq dss-defun-skeleton-func 'dss/elisp-defun-skeleton)
+
+(defun dss/in-slime-repl-p ()
+  (equal mode-name "REPL"))
+
+(defun dss/paredit-d-or-defun ()
+  (interactive)
+  (if (and (not (dss/in-string-p))
+           (or (and (dss/in-slime-repl-p)
+                    (slime-repl-at-prompt-start-p))
+               (looking-at-p "^")))
+      (progn (if (and (not (looking-at "\(def"))
+                      (looking-at "\("))
+                 (if (not mark-active)
+                     (mark-sexp)))
+             (funcall dss-defun-skeleton-func)
+             (dss/indent-defun))
+    (self-insert-command 1)))
+(define-key paredit-mode-map "d" 'dss/paredit-d-or-defun)
+
+(defun dss/paredit-9-or-paren ()
+  (interactive)
+  (if (and (not (dss/in-string-p))
+           (or (looking-at-p "^")
+               (looking-at-p "\(")
+               (and (dss/in-slime-repl-p)
+                    (slime-repl-at-prompt-start-p))))
+      (dss/paredit-open-parenthesis)
+    (self-insert-command 1)))
+(define-key paredit-mode-map "9" 'dss/paredit-9-or-paren)
+
+(define-skeleton dss-elisp-progn-skeleton
+  "A simple e-lisp progn skeleton"
+  nil
+  "(progn" @ \n >
+  @ _ - ")"
+    (dss/indent-defun))
+
+(defun dss/paredit-p-or-progn ()
+  (interactive)
+  (if (and (not (dss/in-string-p))
+           (looking-at-p "\("))
+      (progn
+        (if (not mark-active)
+            (mark-sexp))
+        (dss-elisp-progn-skeleton))
+    (self-insert-command 1)))
+(define-key paredit-mode-map "p" 'dss/paredit-p-or-progn)
+
 (defun dss/paredit-yank ()
   (interactive)
   (if (not mark-active)
@@ -148,7 +371,7 @@
               (if (looking-at-p "^")
                   (newline)))))
     (call-interactively 'yank))
-  (dss/indent-defun))
+  (condition-case nil (dss/indent-defun)))
 
 (define-key paredit-mode-map (kbd "C-y") 'dss/paredit-yank)
 
