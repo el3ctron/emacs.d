@@ -1,9 +1,6 @@
 (defvar dss/ecb-loaded nil)
 (defun dss/load-ecb ()
   (interactive)
-  (load "/usr/share/emacs/site-lisp/cedet/common/cedet")
-  (load "/usr/share/emacs/site-lisp/cedet/common/cedet" nil t)
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/ecb")
   (require 'ecb)
 
   (setq ecb-source-file-regexps (quote ((".*" ("\\(^\\(\\.\\|#\\)\\|\\(~$\\|\\(_i\\|_p\\)\\.\\(h\\|c\\)$\\)\\|\\(~$\\|\\.\\(elc\\|obj\\|o\\|class\\|lib\\|pyc\\|a\\|so\\|cache\\|bak\\|vspscc\\|WW\\|plg\\|tlb\\|opt\\|ncb\\|scc\\|aps\\|APS\\|clw\\|bin\\)$\\)\\)") ("^\\.\\(emacs\\|gnus\\)$")))))
