@@ -84,7 +84,7 @@
 (defun dss/ess-mode-hook ()
   (interactive)
   (linum-mode 1)
-  (dss/map-define-key ess-mode-map '("\"" "(" "[" "{") 'dss/ess-electric-pair)
+  (dss/map-define-key ess-mode-map '("\"" "(" "[" "{" "'") 'dss/ess-electric-pair)
 
   (define-key ess-mode-map (kbd "C-c C-c") #'dss/ess-load-file)
   (define-key ess-mode-map "_" #'dss/ess-smart-underscore)
@@ -94,7 +94,8 @@
 
 (defun dss/ess-help-mode-hook ()
   (interactive)
-  (linum-mode 1))
+  (linum-mode 1)
+  (define-key ess-help-mode-map "q" #'dss/kill-buffer))
 
 (add-hook 'ess-help-mode-hook 'dss/ess-help-mode-hook)
 
@@ -104,35 +105,34 @@
   ;; (linum-mode 1)
   (define-key ess-mode-map "_" #'dss/ess-smart-underscore)
   (dss/ess-ac-setup)
-  (define-key ess-help-mode-map (kbd "M-.") #'ess-help)
+  ;;(define-key ess-help-mode-map (kbd "M-.") #'ess-help)
   (dss/map-define-key inferior-ess-mode-map '("\"" "(" "[" "{") 'dss/ess-electric-pair))
 (add-hook 'inferior-ess-mode-hook 'dss/inferior-ess-mode-hook)
 
 
 
 (require 'skeleton)
+
 (define-skeleton dss/ess-get-csv-skeleton
   "A simple read.csv skeleton"
-  ""
+  nil
   "df <- read.csv('./"
   _
-                                        ;(call-interactively 'dss/insert-path)
-
   "', as.is=TRUE)\n")
 
 (define-skeleton dss/ess-subset-skeleton
   "A subset function skeleton"
-  ""
+  nil
   "df <- subset(df," \n
   > "subset=(" \n
-  > "TRUE" \n
+  > @ "TRUE" \n
   > ")," \n
-  > "select=c(" _ "))")
+  > "select=c(" @ _ "))")
 
 (define-skeleton dss/ess-display-plot-skeleton
   "A display_plot skeleton"
-  ""
-  "display_plot(" _ ", filename=\"chart.png\")")
+  nil
+  "display_plot(" @ _ ", filename=\"" @ - ".png\")")
 
 
 ;; (define-key inferior-ess-mode-map (kbd "C-d")
