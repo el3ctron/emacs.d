@@ -18,6 +18,7 @@
 (require 'dss-basic-editing)
 (require 'dss-whitespace-and-linelen)
 (require 'dss-buffer-and-window-handling)
+(require 'dss-skeleton)
 (require 'dss-generic-code-tools)
 (require 'dss-codenav-helpers)
 (require 'dss-completion)
