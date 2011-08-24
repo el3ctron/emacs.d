@@ -10,16 +10,17 @@
 
 (defun dss/xsel-cut-function (text &optional push)
   ;; Insert text to temp-buffer, and "send" content to xsel stdin
-  (with-temp-buffer
-    (insert text)
-    (call-process-region (point-min) (point-max) "xsel" nil 0 nil "--input" "-p" "--clipboard")))
+  (with-current-buffer "*scratch*"
+    (with-temp-buffer
+      (insert text)
+      (call-process-region (point-min) (point-max) "xsel" nil 0 nil "--input" "-p" "--clipboard"))))
 
 (defun dss/xsel-paste-function()
   ;; Find out what is current selection by xsel. If it is different
   ;; from the top of the kill-ring (car kill-ring), then return
   ;; it. Else, nil is returned, so whatever is in the top of the
   ;; kill-ring will be used.
-  (let ((xsel-output (shell-command-to-string "xsel --clipboard --output")))
+  (let ((xsel-output (dss/local-shell-command-to-string "xsel --clipboard --output")))
     (unless (or (string-match-p "^xsel: Can't open display" xsel-output)
                 (string= (car kill-ring) xsel-output))
       xsel-output)))
@@ -28,6 +29,16 @@
   (interactive)
   (setenv "DISPLAY"
           (or (dss/file-to-string "~/.last-display") ":0")))
+
+(defun dss/osx-cut-function (text &optional push)
+  (with-temp-buffer
+    (insert text)
+    (call-process-region (point-min) (point-max) "mac_copy" nil 0 nil)))
+
+(defun dss/osx-paste-function()
+  (let ((pb (dss/local-shell-command-to-string "mac_paste")))
+    (unless (string= (car kill-ring) pb)
+      pb)))
 
 (defun dss/tty-x-clipboard-init ()
   (interactive)
@@ -42,6 +53,10 @@
   (setq interprogram-cut-function nil)
   (setq interprogram-paste-function nil))
 
+(defun dss/osx-clipboard-enable ()
+  (interactive)
+  (setq interprogram-cut-function #'dss/osx-cut-function)
+  (setq interprogram-paste-function #'dss/osx-paste-function))
 
 ;; http://bbs.archlinux.org/viewtopic.php?id=80226
 ;; and run the following
