@@ -51,8 +51,8 @@
      (region ((t (:background "#000087" )))) ;;#0000d7 ;;#0000af
      (secondary-selection ((t (:background "#0000ff"))))
      ;;(show-paren-match-face ((t (:background "#000087"))));;#303030
-     (show-paren-match-face ((t (:background "cyan"))));;#303030
-     (show-paren-mismatch-face ((t (:background "magenta" :foreground "white"))))
+     (show-paren-match-face ((t (:background "#875fd7" :foreground "white"))));;#303030
+     (show-paren-mismatch-face ((t (:background "red" :foreground "blue"))))
      (flymake-errline ((t (:background "#870000"))))
      (flymake-warnline ((t (:background "#5f0000"))))
      (lineker-warning-face ((t (:background "#870000"))))
@@ -66,7 +66,7 @@
      (isearch-secondary ((t (:inherit secondary-selection))))
      (lazy-highlight ((t (:inherit secondary-selection))))
      (match ((t (:background "#0000ff"))))
-     (font-lock-builtin-face ((t (nil :foreground "blue"))))
+     (font-lock-builtin-face ((t (:foreground "yellow"))))
      (font-lock-comment-face ((t (:foreground "red"))))
      (font-lock-constant-face ((t (:foreground "magenta"))))
      (font-lock-function-name-face ((t (:bold t :foreground "yellow"))))
@@ -149,6 +149,7 @@
      (message-header-xheader ((t (:foreground "#6c6c6c" :background nil))))
      (message-header-name ((t (:foreground "red" :background nil))))
 
+     (comint-highlight-prompt ((t (:foreground "yellow"))))
      ))
   (smex-update))
 
