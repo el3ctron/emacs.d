@@ -1,12 +1,21 @@
 (require 'multi-term)
 (require 'comint)
 
+;;; study this http://snarfed.org/why_i_run_shells_inside_emacs
+;;; and this http://snarfed.org/emacsclient_in_tramp_remote_shells
+
+(setq comint-scroll-to-bottom-on-input t
+      comint-scroll-to-bottom-on-output nil
+      comint-scroll-show-maximum-output t)
+
 (setq shell-command-switch "-lc")
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 ;; multi-term
 (autoload 'multi-term "multi-term")
 (setq multi-term-program "/bin/bash")
+(setq multi-term-switch-after-close nil)
+
 (defun dss/cd-multi-term (dir &optional command switch buffer-name)
   (let (tmp-buffer term-buffer)
     ;; with-temp-buffer gets in the way here
@@ -41,7 +50,7 @@
       (setq index (1+ index)))
     (setq term-name (format "%s<%s>" host index))
     (setq term-buffer
-          (make-term term-name term-command nil host))
+          (make-term term-name term-command nil term-name host))
     (set-buffer term-buffer)
     ;; Internal handle for `multi-term' buffer.
     (multi-term-internal)
@@ -51,6 +60,15 @@
     (dss/term-setup-tramp)
     (if command
         (term-send-raw-string command))))
+
+
+;; (defun dss/reconnect-term ()
+;;   (interactive)
+;;   ;;(term-exec buffer name program startfile switches)
+;;   (let* ((buffer (current-buffer))
+;;          (bufname (buffer-name buffer))
+;;          (term-name (substring bufname 1 (- (length bufname) 1))))
+;;     (term-exec buffer term-name "screen" nil (list "-rx" "-e^Uu" "-S" term-name))))
 
 (defun dss/multi-term ()
   (interactive)
@@ -126,7 +144,7 @@
   (interactive)
   (term-send-raw-string
    (concat "
-function eterm-set-variables {
+function eterm_set_variables {
     local emacs_host=\"" (car (split-string (system-name) "\\.")) "\"
     if [[ $TERM == \"eterm-color\" ]]; then
         if [[ ${HOSTNAME-$(hostname)} != \"$emacs_host\" ]]; then
@@ -142,22 +160,23 @@ function eterm-set-variables {
         echo -e \"\\033P\\033AnSiTc\\033\\\\\" $(pwd)
     fi
 }
-function eterm-tramp-init {
+function eterm_tramp_init {
     for temp in cd pushd popd; do
-        alias $temp=\"eterm-set-cwd $temp\"
+        alias $temp=\"eterm_set_cwd $temp\"
     done
 
     # set hostname, user, and cwd now
-    eterm-set-variables
+    eterm_set_variables
 }
-function eterm-set-cwd {
+function eterm_set_cwd {
     $@
-    eterm-set-variables
+    eterm_set_variables
 }
-eterm-tramp-init
-export -f eterm-tramp-init
-export -f eterm-set-variables
-export -f eterm-set-cwd
+eterm_tramp_init
+export -f eterm_tramp_init
+export -f eterm_set_variables
+export -f eterm_set_cwd
+clear
 echo \"tramp initialized\"
 ")))
 
