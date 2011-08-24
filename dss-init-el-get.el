@@ -7,8 +7,11 @@
       el-get-sources
       '(el-get
         package
-
+        ;;cedet
+        ;;ecb
         (:name desktop-recover :type git :url "https://github.com/doomvox/desktop-recover.git")
+
+        ess
 
         ;;vm
         flim
@@ -18,7 +21,7 @@
         emacs-jabber
         (:name wanderlust :type git
                :url "https://github.com/wanderlust/wanderlust.git"
-               :load-path ("wl" "elmo")
+               :load-path ("site-lisp/wl" "elmo")
                ;; :build `,(mapcar
                ;;           (lambda (target)
                ;;             (concat "make " target " EMACS=" el-get-emacs))
@@ -42,10 +45,11 @@
                          ("compile-wl-package"  "site-lisp" "icons")
                          ("install-wl-package" "site-lisp" "icons")))
                :info "doc/wl.info")
+
         magit
         magithub
         (:name gist :type git :url "https://github.com/tels7ar/gist.el")
-
+        auto-complete
         (:name org-mode
                :type git
                :url "git://orgmode.org/org-mode.git"
@@ -75,11 +79,20 @@
                "http://elder-gods.org/~larry/repos/slime-tracker/contrib/slime-fuzzy.el")
         ac-slime
         clojure-mode
-        (:name clojure-test-mode
-               :type git
-               :url "https://github.com/technomancy/clojure-mode.git"
-               )
 
+        (:name eredis :type http :url "http://eredis.googlecode.com/svn/trunk/eredis.el")
+        ;; http://code.google.com/p/eredis/wiki/wiki for docs
+
+        ;; (:name clojure-test-mode
+        ;;        :type git
+        ;;        :url "https://github.com/technomancy/clojure-mode.git"
+        ;;        )
+        ;; (:name swank-clojure
+        ;;        :type git
+        ;;        :url "https://github.com/technomancy/clojure-mode.git"
+        ;;        )
+        scala-mode
+        ensime
         yaml-mode
         (:name mustache-mode
                :type http
@@ -100,10 +113,11 @@
         (:name moz :type git :url "http://github.com/bard/mozrepl.git"
                :load "chrome/content/moz.el")
         (:name pomodoro :type emacswiki)
+        (:name rainbow-delimiters :type git :url "https://github.com/jlr/rainbow-delimiters.git")
         (:name lineker :type http
                :url "http://www.helsinki.fi/~sjpaavol/programs/lineker.el")
         (:name js2-mode :type git :url "https://github.com/mooz/js2-mode")
-
+        (:name elein :type git :url "https://github.com/remvee/elein.git")
         (:name pg :type http :url "http://www.online-marketwatch.com/pgel/pg.el")))
 
 (defun el-get-update-all ()
