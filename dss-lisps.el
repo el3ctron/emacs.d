@@ -96,6 +96,7 @@
 
 ;; (loop for i from 1 to 9
 ;;       do (message (symbol-name (intern (concat "rainbow-delimiters-depth-" (number-to-string i) "-face")))))
+(require 'rainbow-delimiters)
 (setq rainbow-delimiters-max-face-count 8)
 
 (defun dss/lisp-setup-rainbow-delimeters ()
@@ -127,14 +128,18 @@
               (elt dss-rainbow-delim-colors (1- i)))))
   )
 
+(dss/lisp-setup-rainbow-delimeters)
+
 (defun dss/lisp-rainbow-flash ()
   (interactive)
   (let* ((depth 1)
-         (beg (cond
-               ((looking-at "\\s\(") (forward-list 1))
-               (t
-                (call-interactively 'dss/goto-match-paren)
-                (forward-list 1))))
+         (beg (save-excursion
+                (cond
+                 ((looking-at "\\s\(") (point))
+                 (t
+                  (progn
+                    (call-interactively 'dss/goto-match-paren)
+                    (point))))))
          (end (save-excursion
                 (cond
                  ((looking-at "\\s\(") (forward-list 1))
@@ -143,6 +148,7 @@
                   (forward-list 1)))
                 (point))))
     (save-excursion
+      (goto-char beg)
       (while (and (< (point) end)
                   (re-search-forward rainbow-delimiters-delim-regex end t))
         (backward-char) ; re-search-forward places point after delim; go back.
@@ -171,12 +177,11 @@
                                    (1- depth)))))))
         ;; move past delimiter so re-search-forward doesn't pick it up again
         (forward-char)))
-    (font-lock-fontify-region (point) end)
+    (save-excursion (font-lock-fontify-region beg end))
     (sit-for 3)
-    (rainbow-delimiters-unpropertize-region (point) end)
-    (font-lock-fontify-region (point) end)
-    )
-  )
+    (save-excursion
+      (rainbow-delimiters-unpropertize-region beg end)
+      (font-lock-fontify-region beg end))))
 
 (defun dss/lisp-set-parens-color (i)
   (interactive "n1-23: ")
