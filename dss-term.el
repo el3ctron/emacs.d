@@ -210,6 +210,7 @@ echo \"tramp initialized\"
 
         ("M-/" . dss/term-dabbrev)
         ("M-RET" . find-file-at-point)
+        ("M-DEL" . dss/term-backward-kill-word)
         ("M-`" . dss/term-insert-path)
         ("M-k" . term-send-raw-meta)
         ("M-y" . term-send-raw-meta)
