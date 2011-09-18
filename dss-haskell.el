@@ -1,7 +1,7 @@
 (require 'dss-elisp-funcs)  ; dss/map-define-key
 
 ;; Haskell
-(load "/usr/share/emacs/site-lisp/haskell-mode/haskell-site-file")
+(require 'haskell-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
