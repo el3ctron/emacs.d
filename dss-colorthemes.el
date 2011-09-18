@@ -163,15 +163,18 @@
      '(dss/color-theme-slides
        ((background-mode . dark)
         (foreground-color . "white"))
-       (org-meta-line ((t (:foreground "#080808")))); 1c1c1c
+       (org-meta-line ((t (:foreground "#222222")))); 1c1c1c ; 080808
        (org-code ((t (:foreground "blue"))))
 
-       (org-level-1 ((t (:foreground "cyan"))))
+       (org-level-1 ((t (:foreground "yellow"))))
        (font-lock-comment-face ((t (:foreground "brightred"))))
 
        (visible-mark-face ((t (:background nil))))
        (header-line ((t (:background "black" :foreground "black"))))
        (fringe ((t (:background nil :foreground "black"))))
+       (modeline ((t (:background "#090909" :foreground "#222222"))))
+       (modeline-inactive ((t (:background "#090909" :foreground "#333333"))))
+
        ))))
 
 (add-hook 'after-make-frame-functions
