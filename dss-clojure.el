@@ -1,6 +1,5 @@
 ;;; setting up clojure/slime http://technomancy.us/126
 (require 'dss-slime)
-(require 'durendal)
 
 (defmacro dss/defface (name color desc &optional others)
   `(defface ,name '((((class color)) (:foreground ,color ,@others))) ,desc :group 'faces))
@@ -38,6 +37,7 @@
               1 'dss-clojure-java-call))
             ))
   (font-lock-fontify-buffer))
+;; see https://github.com/purcell/emacs.d/blob/master/init-clojure.el
 
 (defun dss/init-clojure ()
   (interactive)
