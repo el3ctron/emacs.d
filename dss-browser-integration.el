@@ -92,6 +92,23 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
   ;(comint-send-string (inferior-moz-process) exp)
   (dss/moz-send-string exp))
 
+(defun trim-ws-in-string (string)
+  "This function removes the leading and trailing whitespace from
+   a string"
+  (replace-regexp-in-string "\\(^[ \t]*\\|[ \t]*$\\)" "" string))
+
+(defun dss/join-lines (s &optional sep)
+  "remove blank lines from string and join what remains with sep"
+  (let ((sep (or sep "")))
+    (mapconcat #'identity (delq "" (split-string s "\n")) sep)))
+
+(defun dss/moz-eval-expression-fresno (expr)
+  (interactive "sExpr: ")
+  (message (string- (dss/local-shell-command-to-string
+            (concat "~/src/fresno/fresno -j \""
+                    expr
+                    "\"")))))
+
 (defun dss/moz-eval-para ()
   (interactive)
   (mark-paragraph)
@@ -166,7 +183,7 @@ http://github.com/technomancy/emacs-starter-kit/blob/master/starter-kit-defuns.e
   "Reload the url in the current tab"
   (interactive)
   (dss/moz-repl-home)
-  (dss/moz-eval-expression "repl._creationContext.BrowserReload()\n"))
+  (dss/moz-eval-expression-fresno "repl._creationContext.BrowserReload()"))
 
 (defun dss/moz-reload-delayed ()
   "Reload the url in the current tab"
@@ -291,7 +308,7 @@ tabbrowser.selectedTab = tabbrowser.mTabs[_lastTab._tPos-1];
 (defun dss/moz-select-tab (n)
   (interactive "nTab: ")
   (dss/moz-eval-expression
-   (format "repl._creationContext.window.getBrowser().selectedTab = repl._creationContext.window.getBrowser().mTabs[%d];\n" (- n 1))))
+   (format "repl._creationContext.window.getBrowser().selectedTab = repl._creationContext.window.getBrowser().mTabs[%d];" (- n 1))))
 
 (defun dss/moz-select-window (n)
   (interactive "nWindow: ")
