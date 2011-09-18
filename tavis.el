@@ -39,11 +39,16 @@
       "echo '" title "' | prowl_tavis.sh -1 'Emacs notification'") nil 0)
     (message (concat title ": " msg))))
 
-;(dss-popup-notify "test" "test")
+(defvar *dss-org-notification-hooks* nil)
+(defun dss/org-notify (msg)
+  (interactive "sMsg: ")
+  (dss-popup-notify "org-mode" msg)
+  (dss/org-set-task-state msg)
+  (run-hooks '*dss-org-notification-hooks*))
 
 (setq org-show-notification-handler
       (lambda (msg)
-        (dss-popup-notify "org-mode" msg)))
+        (dss/org-notify msg)))
 
 (setq dss-org-timer-message "timer done")
 (defun dss/org-set-timer-message (message)
@@ -59,16 +64,26 @@
       (cancel-timer *dss-annoying-modeline-timer*))
   (run-with-timer 1 nil (lambda () (set-face-inverse-video-p 'modeline nil))))
 
+(defvar *dss-nag-timer-hook* nil)
+(defun dss/osx-nag ()
+  (interactive)
+  (if (> (random 2) 0)
+      (dss/org-set-task-state "FOCUS !!!")
+    (dss/org-set-task-state "!!! FOCUS")))
+
+(add-hook '*dss-nag-timer-hook* 'dss/osx-nag)
+
 (defun dss/start-annoying-modeline ()
   (interactive)
   (if *dss-annoying-modeline-timer*
       (cancel-timer *dss-annoying-modeline-timer*))
   (setq *dss-annoying-modeline-timer*
-        (run-with-timer 0 1.5
+        (run-with-timer 0 4
                         (lambda ()
                           (if (face-inverse-video-p 'modeline)
                               (set-face-inverse-video-p 'modeline nil)
-                            (set-face-inverse-video-p 'modeline t))))))
+                            (set-face-inverse-video-p 'modeline t))
+                          (run-hooks '*dss-nag-timer-hook*)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
