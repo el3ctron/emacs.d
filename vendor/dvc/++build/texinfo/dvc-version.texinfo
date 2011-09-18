@@ -1,2 +1,0 @@
-@set VERSION 0
-@set UPDATED 2010-04-22
