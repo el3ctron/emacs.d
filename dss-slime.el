@@ -1,6 +1,6 @@
 
 (require 'slime)
-(slime-setup '(slime-repl slime-js))
+(slime-setup '(slime-repl))
 (setq slime-protocol-version 'ignore)
 
 (add-to-list 'load-path (concat dss-vendor-dir "ac-slime"))
