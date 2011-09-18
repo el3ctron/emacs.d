@@ -1,7 +1,6 @@
 ;; python-mode
 (require 'dss-paths)
 (require 'dss-codenav-helpers)
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/python-mode")
 (require 'python-mode)
 (require 'flymake)
 
@@ -280,15 +279,6 @@ This is python-comment-line-p from Dave Love's python.el"
 (add-to-list 'auto-mode-alist '("\\.pyx$" . cython-mode))
 (add-to-list 'auto-mode-alist '("\\.pxd$" . cython-mode))
 
-
-;; pylookup, to look though online Python docs
-;; (git clone git://github.com/tsgates/pylookup.git)
-(defvar dss-pylookup-dir (concat dss-vendor-dir "pylookup/"))
-(setq-default pylookup-program (concat dss-pylookup-dir "pylookup.py"))
-(setq-default pylookup-db-file (concat dss-pylookup-dir "pylookup.db"))
-
-;(load-file (concat dss-pylookup-dir "pylookup.el"))
-(add-to-list 'load-path dss-pylookup-dir)
 (require 'pylookup)
 (autoload 'pylookup-lookup "pylookup"
   "Lookup SEARCH-TERM in the Python HTML indexes." t)
