@@ -115,6 +115,19 @@
      (ac-selection-face ((t (:foreground "black" :background "cyan"))))
 
      (log-view-message ((t (:foreground "#0087af" :background "#1c1c1c"))))
+
+     (highlight-changes ((t (:foreground nil :background "#382f2f"))))
+     (highlight-changes-delete ((t (:foreground nil :background "#916868"))))
+
+     (bookmarkp-local-file-without-region ((t (:foreground "white"))))
+
+     (message-header-subject ((t (:foreground "green" :weight bold :background "#121212"))))
+     (message-header-other ((t (:foreground "#6c6c6c" :background nil))))
+     (message-header-xheader ((t (:foreground "#6c6c6c" :background nil))))
+     (message-header-name ((t (:foreground "red" :background nil))))
+
+     (comint-highlight-prompt ((t (:foreground "yellow"))))
+
      (diff-header ((t (:foreground "#0087af" :background "#1c1c1c"))))
      (diff-file-header ((t (:foreground "#0087af" :background "#121212"))))
      (diff-refine-change ((t (:background "#1c1c1c"))))
@@ -132,24 +145,18 @@
      (ediff-fine-diff-A ((t (:background "#5f005f"))))
      (ediff-fine-diff-B ((t (:background "#0000d7"))))
      (ediff-fine-diff-C ((t (:background "#0000d7"))))
-
-     (highlight-changes ((t (:foreground nil :background "#382f2f"))))
-     (highlight-changes-delete ((t (:foreground nil :background "#916868"))))
-
-     (bookmarkp-local-file-without-region ((t (:foreground "white"))))
-
      (magit-item-highlight ((t (:background "#161616"))))
      (magit-diff-add ((t (:foreground "green"))))
      (magit-diff-del ((t (:foreground "red"))))
      (magit-diff-file-header ((t (:foreground "#0087af" :background "#121212"))))
      (magit-diff-hunk-header ((t (:foreground "#0087ff" :background "#121212"))))
+     (egg-text-base ((t (:foreground "#005faf"))))
+     (egg-help-header-2 ((t (:foreground "grey"))))
+     (egg-diff-file-header ((t (:foreground "#0087af" :background "#121212"))))
+     (egg-diff-hunk-header ((t (:foreground "#0087ff" :background "#121212"))))
+     (egg-diff-add ((t (:foreground "green"))))
+     (egg-diff-del ((t (:foreground "red"))))
 
-     (message-header-subject ((t (:foreground "green" :weight bold :background "#121212"))))
-     (message-header-other ((t (:foreground "#6c6c6c" :background nil))))
-     (message-header-xheader ((t (:foreground "#6c6c6c" :background nil))))
-     (message-header-name ((t (:foreground "red" :background nil))))
-
-     (comint-highlight-prompt ((t (:foreground "yellow"))))
      ))
   (smex-update))
 
