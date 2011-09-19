@@ -20,4 +20,18 @@
             (define-key mode-map k fname)))
         keylist))
 
+
+(defun dss/call-command-with-input (command input-str out-buffer &rest args)
+  "A convenient wrapper around `call-process-region` that accepts a
+  string input instead of a buffer region"
+  (let ((args (or args "")))
+    (with-temp-buffer
+      (insert input-str)
+      (call-process-region
+       (point-min) (point-max) command nil out-buffer nil args))))
+
+(defun dss/async-call-command (command input &rest args)
+  "An asynchronous version of `dss/call-command-with-input`"
+  (apply 'dss/call-command-with-input (append (list command input 0) args)))
+
 (provide 'dss-elisp-funcs)
