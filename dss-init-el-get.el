@@ -7,6 +7,8 @@
     (eval-print-last-sexp))
   (load-library "el-get"))
 
+;;; see https://github.com/purcell/emacs.d for more ideas
+
 ;;; load packages
 (setq el-get-byte-compile t
       el-get-generate-autoloads t
