@@ -39,6 +39,21 @@
              (mapcar (lambda (fr) (if (string= (frame-parameter fr 'name) name) fr))
                      (frame-list)))))
 
+(defun dss/window-list ()
+  (interactive)
+  (mapc #'(lambda (f)
+           (insert (format "%S\n" f))
+           (let ((selectedw (frame-selected-window f)))
+             (mapc '(lambda (w)
+                      (if (eq w selectedw)
+                          (insert "*"))
+                      (insert (format "  %S" w))
+                      (insert (format "  %s" (buffer-name (window-buffer w))))
+                      (insert (format ":%S\n" (window-point w))))
+                   (window-list f))))
+        (frame-list)))
+
+;;; get-buffer-window-list
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun dss/kill-clean-buffer ()
   (interactive)
