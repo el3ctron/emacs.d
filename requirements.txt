@@ -1,73 +1,23 @@
-# init.el
-smex 
+Most of the dependencies are automatically downloaded and installed
+via el-get (see dss-init-el-get.el) but there are several that must be
+installed separately prior to running Emacs the first time after this
+repository is unpacked in ~/.emacs.d/. 
 
-# dss-bookmarks-registers.el
-bookmark+
-list-register
+Install the following using your operating systems package manager:
 
-# dss-browser-integration.el
-moz http://github.com/bard/mozrepl/raw/master/chrome/content/moz.el (vendors/)
-webjump std?
-w3m
+ - texlive (whatever package includes the full thing)
+ - w3m (used by dss-browser-integration.el)
+ - bzr, cvs, mercurial, git
 
-# dss-colorthemes.el
-color-theme
-
-# dss-command-history-and-freqs.el
-command-frequency http://xahlee.org/emacs/command-frequency.html (vendors/)
-session http://emacs-session.sourceforge.net/ (app-emacs/session)
-
-# dss-ess.el
-ess 
-
-# dss-haskell
-haskell-mode 
-
-# dss-javascript.el
-js2-mode 
-espresso http://www.nongnu.org/espresso/ 
-
-# dss-lisps
-paredit 
-
-# dss-lua
-lua-mode
+Install the following via Python:
  
-# dss-nxml.el
-nxml 
-whattf-dt (vendors/)
+ - pymacs http://pymacs.progiciels-bpi.ca/ 
+ - ropemacs & ropemode
 
-# dss-org-mode.el
-org-mode
+The following dependencies are installed automatically from the
+vendors/ directory instead of from el-get:
 
-# dss-python.el
-python-mode
-  # the standard one, not Dave Love's, but I had to patch it for
-  # triple-quote strings
-ipython (dev-python/ipython)
-doctest-mode (app-emacs/python-mode)
-rst (app-emacs/rst)
-pylookup (vendors/)
-flymake-cursor http://paste.lisp.org/display/60617,1/raw (vendors/)
-auto-complete-python http://www.cx4a.org/pub/auto-complete-python.el (vendors/)
-
-pymacs http://pymacs.progiciels-bpi.ca/ (installed via python)
-ropemacs (installed via python)
-
-# dss-search-occur-etc.el
-isearch+ http://www.emacswiki.org/cgi-bin/wiki/isearch+.el (vendors/)
-fm http://www.damtp.cam.ac.uk/user/sje30/emacs/fm.el (vendors/)
-
-# dss-term.el
-multi-term 
-
-# dss-vc.el
-dvc
-
-# dss-whitespace-and-linelen.el
-lineker
-show-wspace 
-col-highlight http://www.emacswiki.org/cgi-bin/wiki/col-highlight.el (vendors/)
-
-# dss-buffer-and-window-handling
-window-numbering-mode 
+ - an older version of espresso.el http://www.nongnu.org/espresso/ 
+   is used in conjunction with js2-mode to fix some indentation issues
+ - whattf-dt is installed for use with nxml
+ - flymake-cursor http://paste.lisp.org/display/60617,1/raw 
