@@ -84,22 +84,19 @@
 
 (setq dss-el-get-packages
       '(package
-        smex
-        multi-term
-
-        org-mode
-        ess
-        wanderlust
+        smex command-frequency
+        session
+        diminish
+        color-theme
+        rainbow-mode
 
         dvc egg magit magithub gist
 
-        emacs-jabber
-
-        auto-complete ac-dabbrev
+        yasnippet auto-complete ac-dabbrev
 
         paredit rainbow-delimiters autopair
         slime slime-fuzzy ac-slime
-        clojure-mode
+        clojure-mode elein
         coffee-mode
         python-mode pymacs ipython virtualenv pylookup
         haskell-mode
@@ -107,33 +104,26 @@
         js2-mode
         yaml-mode
 
-        diminish
-        color-theme
-        rainbow-mode
-        breadcrumb
 
-        yasnippet
-        iedit
+        org-mode
+        ess
+        wanderlust emacs-jabber
+        multi-term
+
+
         isearch+
-        undo-tree
+        undo-tree goto-last-change
         filladapt
-        goto-last-change
-        highlight-symbol
-        idle-highlight-mode
-        list-register
-        bm
-        window-numbering
-        column-marker
-        col-highlight
-        command-frequency
+        show-wspace lineker
+        iedit highlight-symbol idle-highlight-mode
+        list-register bm breadcrumb
+        window-numbering column-marker col-highlight
+
         eredis
         desktop-recover
         mustache-mode
-        show-wspace
-        relax
-        moz
-        lineker
-        elein
+        relax moz
+
         pg
         ;; nose
         ;; flymake-point or flymake-cursor
