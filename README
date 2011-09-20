@@ -1,6 +1,6 @@
-This is my personal .emacs.d configuration.  Feel free to clone it or
-copy anything you like.  Everything in the top directory is licensed
-under the GPL v3 (see the COPYING file).
+This is public bit of my personal .emacs.d configuration. Feel free
+to clone it or copy anything you like. Everything in the top directory
+is licensed under the GPL v3 (see the COPYING file).
 
 I've structured this as Phil Hagelberg did in the "Emacs Starter Kit"
 (http://github.com/technomancy/emacs-starter-kit).  I've stolen ideas
@@ -11,4 +11,28 @@ stuff, but apologize in advance if I've missed someone.
 The 'dss' prefix stands for 'Damn Simple Solutions', my
 company name.
 
-See "requirements.txt".
+INSTALLATION
+------------
+Most of the dependencies are automatically downloaded and installed
+via el-get (see dss-init-el-get.el) but there are several that must be
+installed separately prior to running Emacs the first time after this
+repository is unpacked in ~/.emacs.d/. 
+
+Install the following using your operating system's package manager:
+
+ - texlive (whatever package includes the full thing)
+ - w3m (used by dss-browser-integration.el)
+ - bzr, cvs, mercurial, git
+
+Install the following via Python:
+ 
+ - pymacs http://pymacs.progiciels-bpi.ca/ 
+ - ropemacs & ropemode
+
+The following dependencies are installed automatically from the
+vendors/ directory instead of from el-get:
+
+ - an older version of espresso.el http://www.nongnu.org/espresso/ 
+   is used in conjunction with js2-mode to fix some indentation issues
+ - whattf-dt is installed for use with nxml
+ - flymake-cursor http://paste.lisp.org/display/60617,1/raw 
