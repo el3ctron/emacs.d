@@ -66,8 +66,6 @@
         (:name col-highlight :type emacswiki)
         (:name eredis :type http :url "http://eredis.googlecode.com/svn/trunk/eredis.el")
         (:name desktop-recover :type git :url "https://github.com/doomvox/desktop-recover.git")
-        (:name mustache-mode :type http
-               :url "https://raw.github.com/defunkt/mustache/master/contrib/mustache-mode.el")
         (:name ac-dabbrev :type emacswiki)
         (:name show-wspace :type emacswiki)
         (:name relax :type git :url "https://github.com/technomancy/relax.el")
@@ -85,10 +83,18 @@
 (setq dss-el-get-packages
       '(package
         smex command-frequency
-        session
+        session desktop-recover
+
         diminish
         color-theme
         rainbow-mode
+        isearch+
+        undo-tree goto-last-change
+        filladapt
+        show-wspace lineker
+        iedit highlight-symbol idle-highlight-mode
+        list-register bm breadcrumb
+        window-numbering column-marker vline col-highlight
 
         dvc egg magit magithub gist
 
@@ -110,20 +116,9 @@
         wanderlust emacs-jabber
         multi-term
 
-
-        isearch+
-        undo-tree goto-last-change
-        filladapt
-        show-wspace lineker
-        iedit highlight-symbol idle-highlight-mode
-        list-register bm breadcrumb
-        window-numbering column-marker col-highlight
-
         eredis
-        desktop-recover
-        mustache-mode
-        relax moz
-
+        relax
+        moz
         pg
         ;; nose
         ;; flymake-point or flymake-cursor
