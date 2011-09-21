@@ -20,7 +20,10 @@ repository is unpacked in ~/.emacs.d/.
 
 Install the following using your operating system's package manager:
 
- - texlive (whatever package includes the full thing)
+ - texlive (whatever package includes the full thing) and
+   texlive-latexextra. ess and slime will not install properly without
+   the full package as el-get builds their docs
+
  - w3m (used by dss-browser-integration.el)
  - bzr, cvs, mercurial, git
 
