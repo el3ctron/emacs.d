@@ -121,8 +121,8 @@
         moz
         pg
         ;; nose
-        ;; flymake-point or flymake-cursor
-        ;; bookmark+ ;; fails sometimes
+        ;; flymake-point or flymake-cursor ;; I'm installing this from the vendors directory now
+        ;; bookmark+ ;; the el-get recipe for this seems to be broken
 
         ))
 
