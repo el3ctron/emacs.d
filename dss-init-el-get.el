@@ -68,6 +68,7 @@
         (:name desktop-recover :type git :url "https://github.com/doomvox/desktop-recover.git")
         (:name ac-dabbrev :type emacswiki)
         (:name show-wspace :type emacswiki)
+        (:name visible-mark :type emacswiki)
         (:name relax :type git :url "https://github.com/technomancy/relax.el")
         (:name moz :type git :url "http://github.com/bard/mozrepl.git"
                :load "chrome/content/moz.el")
@@ -92,6 +93,7 @@
         undo-tree goto-last-change
         filladapt
         show-wspace lineker
+        visible-mark
         iedit highlight-symbol idle-highlight-mode
         list-register bm breadcrumb
         window-numbering column-marker vline col-highlight
