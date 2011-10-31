@@ -107,6 +107,10 @@
 
 (add-hook 'clojure-mode-hook 'dss/clojure-mode-hook)
 
+(defun dss/clojure-repl-switch-to-current-ns ()
+  (interactive)
+  (slime-repl-set-package (clojure-find-ns)))
+
 (defun dss/slime-repl-mode-setup-map (&optional mode-map)
   (interactive)
   (let ((mode-map (or mode-map slime-repl-mode-map)))
@@ -117,17 +121,21 @@
 
     ;; (define-key mode-map (kbd "C-M-r") 'comint-history-isearch-backward)
     ;; (define-key mode-map (kbd "C-M-s") 'comint-history-isearch-search)
+    (define-key mode-map (kbd "M-r") 'paredit-raise-sexp)
 
     (define-key mode-map (kbd "M-p") 'previous-line)
     (define-key mode-map (kbd "M-n") 'next-line)
     (define-key mode-map (kbd "C-M-l") 'end-of-buffer)
     (define-key mode-map "{" 'paredit-open-curly)
     (define-key mode-map "}" 'paredit-close-curly)
-    (define-key mode-map "u" 'dss/slime-repl-use)))
+    (define-key mode-map (kbd "DEL") 'dss/paredit-backward-delete)
+
+    ;; (define-key mode-map "u" 'dss/slime-repl-use)
+    ))
 
 ;;; see Clementson's Blog: Clojure SLIME Mods for Java Documentation
 ;;; http://bc.tech.coop/blog/081120.html
-
+(require 'clojure-mode)
 (defun dss/slime-repl-hook ()
   (interactive)
 
@@ -152,8 +160,9 @@
   (clojure-mode-font-lock-setup)
   (set-syntax-table clojure-mode-syntax-table)
   (font-lock-mode t)
-  (ad-activate #'slime-repl-emit)
-  (ad-activate #'slime-repl-insert-prompt)
+
+  ;; (ad-activate #'slime-repl-emit)
+  ;; (ad-activate #'slime-repl-insert-prompt)
   (set (make-local-variable 'comment-start-skip)
        "\\(\\(^\\|[^\\\\\n]\\)\\(\\\\\\\\\\)*\\)\\(;+\\|#|\\) *")
   (dss/clojure-add-extra-fontlock))
