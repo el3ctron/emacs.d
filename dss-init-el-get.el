@@ -9,6 +9,10 @@
 
 ;;; see https://github.com/purcell/emacs.d for more ideas
 
+(require 'package)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+
 ;;; load packages
 (setq el-get-byte-compile t
       el-get-generate-autoloads t
@@ -53,8 +57,24 @@
                             (require 'auto-complete-config)
                             (ac-config-default)
                             ))
-        (:name slime-fuzzy :type http :url
-               "http://elder-gods.org/~larry/repos/slime-tracker/contrib/slime-fuzzy.el")
+
+        ;; (:name slime-fuzzy :type http :url
+        ;;        "http://elder-gods.org/~larry/repos/slime-tracker/contrib/slime-fuzzy.el")
+
+	(:name slime :type elpa)
+
+        ;; (:name slime
+        ;;        :description "Superior Lisp Interaction Mode for Emacs"
+        ;;        :type git
+        ;;        :module "slime"
+        ;;        :info "doc"
+        ;;                                 ;:url "https://github.com/nablaone/slime.git"
+        ;;        :url "git://sbcl.boinkor.net/slime.git"
+        ;;        :load-path ("." "contrib")
+        ;;        :compile (".")
+        ;;        :build ("make -C doc && rm contrib/slime-tramp.elc")
+        ;;        )
+
         (:name isearch+ :type emacswiki)
         (:name idle-highlight-mode :type git :url
                "https://github.com/nonsequitur/idle-highlight-mode.git")
@@ -81,6 +101,7 @@
         (:name stompem :type git :url "https://github.com/jwhitlark/Stompem.git")))
 
 
+
 (setq dss-el-get-packages
       '(package
         smex command-frequency
@@ -103,7 +124,9 @@
         yasnippet auto-complete ac-dabbrev
 
         paredit rainbow-delimiters autopair
-        slime slime-fuzzy ac-slime
+
+        slime ac-slime
+
         clojure-mode elein
         coffee-mode
         python-mode pymacs ipython virtualenv pylookup
