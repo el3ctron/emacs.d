@@ -45,6 +45,8 @@
 (setq scroll-conservatively 50)
 (setq scroll-preserve-screen-position nil)
 
+;; (setq enable-recursive-minibuffers t)
+
 ;; misc minor / helper modes
 (global-font-lock-mode 1)
 (delete-selection-mode 1)
