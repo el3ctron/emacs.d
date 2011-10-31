@@ -127,6 +127,8 @@
      (message-header-name ((t (:foreground "red" :background nil))))
 
      (comint-highlight-prompt ((t (:foreground "yellow"))))
+     (slime-repl-input-face ((t (:background "#333333" :underline t))))
+     (slime-repl-prompt-face ((t (:background "#00005f" :underline t))))
 
      (diff-header ((t (:foreground "#0087af" :background "#1c1c1c"))))
      (diff-file-header ((t (:foreground "#0087af" :background "#121212"))))
